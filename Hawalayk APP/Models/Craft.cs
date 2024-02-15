@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using Hawalayk_APP.Enums;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Hawalayk_APP.Model
+namespace Hawalayk_APP.Models
 {
     public class Craft
     {

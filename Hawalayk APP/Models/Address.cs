@@ -1,11 +1,12 @@
-﻿namespace Hawalayk_APP.Model
+﻿namespace Hawalayk_APP.Models
 {
     public class Address
     {
         // معملتش فيه حاجةلأن لسه هنهندلة في ديكشيناري او لسه هنشوف هنعمل ايه
         public int Id;
-        public string Country;
-        public string City;
-        public string Street;
+        public string Country { get; set; }
+        public string City { get; set; }
+        public string Street { get; set; }
+
     }
 }

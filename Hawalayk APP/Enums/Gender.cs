@@ -1,4 +1,4 @@
-﻿namespace Hawalayk_APP.Enum
+﻿namespace Hawalayk_APP.Enums
 {
     public class Gender
     {

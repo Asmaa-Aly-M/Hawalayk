@@ -1,16 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace Hawalayk_APP.model
+namespace Hawalayk_APP.Models
 {
     public class ServiceRequest
     {
-        [Key]
+      
         public int Id { get; set; }
         [Required]
         public string Content { get; set; }
         public Image? Image { get; set; }
-        [Required]
+     
+        [ForeignKey("Customer")]
+        public int CustomerId { get; set; }
         public Customer Customer { get; set; }
         public DateTime DatePosted { get; set; }
     }

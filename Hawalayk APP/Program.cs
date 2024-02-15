@@ -1,3 +1,7 @@
+using Hawalayk_APP.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+
 namespace Hawalayk_APP
 {
     public class Program
@@ -5,6 +9,12 @@ namespace Hawalayk_APP
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 
             // Add services to the container.
 
@@ -21,6 +31,7 @@ namespace Hawalayk_APP
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseAuthentication();
 
             app.UseAuthorization();
 

@@ -2,7 +2,7 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using static System.Net.Mime.MediaTypeNames;
 
-namespace Hawalayk_APP.Model
+namespace Hawalayk_APP.Models
 {
     public class Post
     {
@@ -11,6 +11,8 @@ namespace Hawalayk_APP.Model
         public Image Image { get; set; }
 
         [Required]
+        [ForeignKey("Craftsman")]
+        public int CraftsmanId { get; set; }
         public Craftsman Craftsman { get; set; }
         public string? Content { get; set; }
     }

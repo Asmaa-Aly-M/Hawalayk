@@ -1,13 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Hawalayk_APP.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Hawalayk_APP.Model
+namespace Hawalayk_APP.Models
 {
     public class JobApplication
     {
         public int Id { get; set; }
         public string? Content { get; set; }
-        [Required]
+        
         public int InitialPrice { get; set; }
         public ResponseStatus ResponseStatus { get; set; }
         [ForeignKey("Craftsman")]
