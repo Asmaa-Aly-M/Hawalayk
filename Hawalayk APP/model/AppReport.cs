@@ -6,9 +6,10 @@ namespace Hawalayk_APP.model
     {
         [Key]
         public int Id { get; set; }
+        [Required]
         public User Reporter { get; set; }
         public ReportedIssue ReportedIssue { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public DateTime DatePosted { get; set; }
     }
 }
