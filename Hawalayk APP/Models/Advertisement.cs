@@ -1,16 +1,18 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Hawalayk_APP.Models
 {
     public class Advertisement
     {
-        [Key]
+        
         public int Id { get; set; }
         [Required]
         public string Title { get; set; }
 
-        [Required]
+        [ForeignKey("Image")]
+        public int ImageId { get; set; }
         public Image Image { get; set; }
         [Required]
         public string ClickUrl { get; set; }

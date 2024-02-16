@@ -1,6 +1,9 @@
 ﻿namespace Hawalayk_APP.Enums
 {
-    public class ResponseStatus
+    public enum ResponseStatus
     {
+        Accepted,
+        Pending,
+        Rejected
     }
 }

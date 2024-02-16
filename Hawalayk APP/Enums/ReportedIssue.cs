@@ -1,6 +1,16 @@
 ﻿namespace Hawalayk_APP.Enums
 {
-    public class ReportedIssue
+    public enum ReportedIssue
     {
+        BUG,
+        CRASH,
+        PERFORMANCE,
+        UI_UX,
+        LOGIN_AUTHENTICATION,
+        DATA_LOSS,
+        NETWORK_CONNECTION,
+        FEATURE_REQUEST,
+        SECURITY,
+        OTHER
     }
 }

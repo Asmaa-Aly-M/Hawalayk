@@ -7,10 +7,12 @@ namespace Hawalayk_APP.Models
     public class Post
     {
         public int Id { get; set; }
-        [Required]
+       
+        [ForeignKey("Image")]
+        public int ImageId { get; set; }
         public Image Image { get; set; }
 
-        [Required]
+        
         [ForeignKey("Craftsman")]
         public int CraftsmanId { get; set; }
         public Craftsman Craftsman { get; set; }
