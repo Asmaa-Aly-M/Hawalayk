@@ -8,15 +8,15 @@ namespace Hawalayk_APP.Models
     {
         
         public int Id { get; set; }
-        [Required]
+        
         public string Title { get; set; }
 
         [ForeignKey("Image")]
         public int ImageId { get; set; }
         public Image Image { get; set; }
-        [Required]
+      
         public string ClickUrl { get; set; }
-        [Required]
+         
         public string Advertiser { get; set; }
         
         public string? Description { get; set; }

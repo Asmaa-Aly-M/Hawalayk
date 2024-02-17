@@ -44,7 +44,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses");
+                    b.ToTable("Addresses", (string)null);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Advertisement", b =>
@@ -89,7 +89,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("Advertisements");
+                    b.ToTable("Advertisements", (string)null);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.ApplicationUser", b =>
@@ -139,7 +139,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ProfilePictureId");
 
-                    b.ToTable("ApplicationUsers");
+                    b.ToTable("ApplicationUsers", (string)null);
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("ApplicationUser");
                 });
@@ -169,7 +169,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ReporerId");
 
-                    b.ToTable("AppReports");
+                    b.ToTable("AppReports", (string)null);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Craft", b =>
@@ -186,7 +186,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Crafts");
+                    b.ToTable("Crafts", (string)null);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Image", b =>
@@ -210,7 +210,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Image");
+                    b.ToTable("Image", (string)null);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.JobApplication", b =>
@@ -241,7 +241,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("CraftsmanId");
 
-                    b.ToTable("JobApplications");
+                    b.ToTable("JobApplications", (string)null);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Post", b =>
@@ -272,7 +272,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("Posts");
+                    b.ToTable("Posts", (string)null);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Review", b =>
@@ -310,7 +310,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("CraftsmanId");
 
-                    b.ToTable("Reviews");
+                    b.ToTable("Reviews", (string)null);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.ServiceRequest", b =>
@@ -340,7 +340,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("ServiceRequests");
+                    b.ToTable("ServiceRequests", (string)null);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.UserReport", b =>
@@ -370,7 +370,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ReporterId");
 
-                    b.ToTable("UserReports");
+                    b.ToTable("UserReports", (string)null);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Admin", b =>

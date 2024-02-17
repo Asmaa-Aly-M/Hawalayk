@@ -8,14 +8,14 @@ namespace Hawalayk_APP.Models
     {
       
         public int Id { get; set; }
-        [Required]
+        
         public string Content { get; set; }
         [ForeignKey("Image")]
         public int ImageId { get; set; }
         public Image? Image { get; set; }
      
         [ForeignKey("Customer")]
-        public int CustomerId { get; set; }
+        public string CustomerId { get; set; }
         public Customer Customer { get; set; }
         public DateTime DatePosted { get; set; }
     }

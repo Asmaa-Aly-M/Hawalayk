@@ -1,4 +1,6 @@
 using Hawalayk_APP.Context;
+using Hawalayk_APP.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -11,7 +13,8 @@ namespace Hawalayk_APP
             var builder = WebApplication.CreateBuilder(args);
 
 
-
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+         
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 

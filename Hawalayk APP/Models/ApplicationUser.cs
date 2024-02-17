@@ -5,9 +5,9 @@ using static System.Net.Mime.MediaTypeNames;
 namespace Hawalayk_APP.Models
 {
 
-    public class ApplicationUser
+    public class ApplicationUser:IdentityUser
     { 
-        public int Id { get; set; }
+       
         public string FirstName { get; set; }
 
         public string LastName { get; set; }

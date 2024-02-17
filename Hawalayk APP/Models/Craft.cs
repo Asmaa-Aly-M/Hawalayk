@@ -8,7 +8,7 @@ namespace Hawalayk_APP.Models
     public class Craft
     {
         public int Id { get; set; }
-        [Required]
+       
         public CraftName Name { get; set; }
 
         public ICollection<Craftsman> Craftsmen { get; set; }

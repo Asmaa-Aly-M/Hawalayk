@@ -6,7 +6,7 @@ namespace Hawalayk_APP.Models
     {
        
         public int Id { get; set; }
-        [Required]
+        
         public int Rating { get; set; }
         public string Headline { get; set; }
         public string Content { get; set; }

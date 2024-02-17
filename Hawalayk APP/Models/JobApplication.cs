@@ -12,7 +12,7 @@ namespace Hawalayk_APP.Models
         public int InitialPrice { get; set; }
         public ResponseStatus ResponseStatus { get; set; }
         [ForeignKey("Craftsman")]
-        public int CraftsmanId { get; set; }
+        public string CraftsmanId { get; set; }
         public Craftsman Craftsman { get; set; }
         public DateTime DatePosted { get; set; } 
 }

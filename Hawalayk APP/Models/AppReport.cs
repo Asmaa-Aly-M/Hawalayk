@@ -8,7 +8,7 @@ namespace Hawalayk_APP.Models
     { 
         public int Id { get; set; }
         [ForeignKey("Reporter")]
-        public int ReporerId { get; set; }
+        public string ReporerId { get; set; }
         public ApplicationUser Reporter { get; set; }
         public ReportedIssue ReportedIssue { get; set; }
         public string? Description { get; set; }
