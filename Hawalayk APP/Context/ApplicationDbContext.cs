@@ -16,7 +16,7 @@ namespace Hawalayk_APP.Context
         }
         
         public virtual DbSet<ApplicationUser>ApplicationUsers { get; set; }
-        public virtual DbSet<Craftsman> Craftsmen { get; set; }
+        public virtual DbSet<Craftsmen> Craftsmen { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<Address>Addresses { get; set; }
@@ -26,6 +26,7 @@ namespace Hawalayk_APP.Context
         public virtual DbSet<JobApplication> JobApplications{ get; set; }
         public virtual DbSet<Post>Posts{ get; set; }
         public virtual DbSet<Review>Reviews{ get; set; }
+        public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<ServiceRequest> ServiceRequests { get; set; }
         public virtual DbSet<UserReport>UserReports{ get; set; }
 

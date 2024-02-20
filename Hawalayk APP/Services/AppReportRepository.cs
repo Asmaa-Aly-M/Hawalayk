@@ -3,12 +3,12 @@ using Hawalayk_APP.Models;
 
 namespace Hawalayk_APP.Services
 {
-    public class AppReportRepository
+    public class AppReportRepository : IAppReportRepository
     {
 
 
         ApplicationDbContext _context;
-        public CustomerRepository(ApplicationDbContext context)
+        public AppReportRepository(ApplicationDbContext context)
         {
             _context = context;
 
@@ -16,13 +16,13 @@ namespace Hawalayk_APP.Services
 
         public List<AppReport> GetAll()
         {
-            List<AppReport> AppReports = _context.Customers.ToList();
+            List<AppReport> AppReports = _context.AppReports.ToList();
 
             return AppReports;
 
 
         }
-        public AppReport GetById(string id)
+        public AppReport GetById(int id)
         {
             AppReport appreport = _context.AppReports.SingleOrDefault(c => c.Id == id);
             return appreport;
@@ -33,10 +33,10 @@ namespace Hawalayk_APP.Services
             int row = _context.SaveChanges();
             return row;
         }
-        public int Update(string id, AppReport appreport)
+        public int Update(int id, AppReport appreport)
         {
             AppReport Oldappreport = _context.AppReports.SingleOrDefault(c => c.Id == id);
-            Oldappreport.Id = id;
+            Oldappreport.Id = appreport.Id;
             Oldappreport.Reporter = appreport.Reporter;
             Oldappreport.ReporerId = appreport.ReporerId;
             Oldappreport.ReportedIssue = appreport.ReportedIssue;
