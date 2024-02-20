@@ -5,58 +5,52 @@ namespace Hawalayk_APP.Services
 {
     public class AppReportRepository
     {
-        private readonly ApplicationDbContext _dbContext;
+        
 
-        public AppReportRepository(ApplicationDbContext dbContext)
+        ApplicationDbContext _context;
+        public CustomerRepository(ApplicationDbContext context)
         {
-            _dbContext = dbContext;
+            _context = context;
+
         }
 
-        // Create operation
-        public void Add(AppReport report)
+        public List<AppReport> GetAll()
         {
-            _dbContext.AppReports.Add(report);
-            _dbContext.SaveChanges();
+            List<AppReport> AppReports = _context.Customers.ToList();
+
+            return AppReports;
+
+
         }
-
-        // Read operation
-        public AppReport GetById(int id)
+        public AppReport GetById(string id)
         {
-            return _dbContext.AppReports.FirstOrDefault(r => r.Id == id);
+            AppReport appreport = _context.AppReports.SingleOrDefault(c => c.Id == id);
+            return appreport;
         }
-
-        // Update operation
-        public void Update(AppReport updatedReport)
+        public int Create(AppReport appreport)
         {
-            var existingReport = _dbContext.AppReports.FirstOrDefault(r => r.Id == updatedReport.Id);
-            if (existingReport != null)
-            {
-                existingReport.Reporter = updatedReport.Reporter;
-                existingReport.ReportedIssue = updatedReport.ReportedIssue;
-                existingReport.Description = updatedReport.Description;
-                existingReport.DatePosted = updatedReport.DatePosted;
-
-                _dbContext.SaveChanges();
-            }
-            else
-            {
-                throw new InvalidOperationException("Report not found");
-            }
+            _context.AppReports.Add(appreport);
+            int row = _context.SaveChanges();
+            return row;
         }
-
-        // Delete operation
-        public void Delete(int id)
+        public int Update(string id, AppReport appreport)
         {
-            var reportToRemove = _dbContext.AppReports.FirstOrDefault(r => r.Id == id);
-            if (reportToRemove != null)
-            {
-                _dbContext.AppReports.Remove(reportToRemove);
-                _dbContext.SaveChanges();
-            }
-            else
-            {
-                throw new InvalidOperationException("Report not found");
-            }
+            AppReport Oldappreport = _context.AppReports.SingleOrDefault(c => c.Id == id);
+            Oldappreport.Id = id;
+            Oldappreport.Reporter = appreport.Reporter;
+            Oldappreport.ReporerId = appreport.ReporerId;
+            Oldappreport.ReportedIssue = appreport.ReportedIssue;
+            Oldappreport.DatePosted = appreport.DatePosted;
+            Oldappreport.Description = appreport.Description;
+            
+             int row = _context.SaveChanges();
+            return row;
+        }
+        public int Delete(Customer customer)
+        {
+            _context.Customers.Remove(customer);
+            int row = _context.SaveChanges();
+            return row;
         }
     }
 }

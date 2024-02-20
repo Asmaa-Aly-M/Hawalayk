@@ -30,27 +30,7 @@ namespace Hawalayk_APP.Services
             Customer customer = _context.Customers.SingleOrDefault(c => c.Id == id);
             return customer;
         }
-        public void Create(Customer customer) //url الي هيجيب العميل الي اضفته
-        {
-            _context.Customers.Add(customer);
-            _context.SaveChanges();
-        }
-        public void Update(string id, Customer customer)
-        {
-            Customer Oldcustomer = _context.Customers.SingleOrDefault(c => c.Id == id);
-            Oldcustomer.Id = id;
-            Oldcustomer.FirstName = customer.FirstName;
-            Oldcustomer.LastName = customer.LastName;
-            Oldcustomer.UserName = customer.UserName;
-            Oldcustomer.BirthDate = customer.BirthDate;
-            Oldcustomer.Email = customer.Email;
-            Oldcustomer.Address = customer.Address;
-            _context.SaveChanges();
-        }
-        public void Delete(Customer customer)
-        {
-            _context.Customers.Remove(customer);
-            _context.SaveChanges();
-        }
+      
+        
     }
 }
