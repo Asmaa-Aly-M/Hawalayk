@@ -5,7 +5,7 @@ namespace Hawalayk_APP.Services
 {
     public class AppReportRepository
     {
-        
+
 
         ApplicationDbContext _context;
         public CustomerRepository(ApplicationDbContext context)
@@ -42,8 +42,8 @@ namespace Hawalayk_APP.Services
             Oldappreport.ReportedIssue = appreport.ReportedIssue;
             Oldappreport.DatePosted = appreport.DatePosted;
             Oldappreport.Description = appreport.Description;
-            
-             int row = _context.SaveChanges();
+
+            int row = _context.SaveChanges();
             return row;
         }
         public int Delete(Customer customer)
