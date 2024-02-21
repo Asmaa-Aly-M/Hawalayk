@@ -11,7 +11,7 @@ namespace Hawalayk_APP.Models
        
         public CraftName Name { get; set; }
 
-        public ICollection<Craftsman> Craftsmen { get; set; }
+        public ICollection<Craftsmen> Craftsmen { get; set; }
         public ICollection<Post> Gallery { get; set; }
     }
 }

@@ -2,29 +2,29 @@
 {
     public enum CraftName
     {
-        plumber,
-        carpenter,
-        painter,
-        muralArtist,
-        homemadeFood,
-        electrician,
-        applianceElectrician, ////////////كهربائى اجهزة
-        handmade,
-        nursing,
-        mechanic,
-        glazier,
-        ceramicWorker,
-        cleaner,
-        sewingMachineTechnician, ////////////فنى مكن خياطة
-        tailor,
-        plasterer,
+        plumber,//////سباك
+        carpenter,/////نجار
+        painter,//////نقاش
+        muralArtist,///////رسام حائط
+        homeCook,//////// طباخ منزلي
+        electrician,/////////كهربائي
+        electricApplianceTechnicians, ////////////كهربائى اجهزة
+        handmade,///////
+        nurse,///////ممرض 
+        mechanic,//////ميكانيكي
+        glazier,//////تاني
+        ceramist,/////////عامل سيراميك
+        cleaner,/////////عامل نظافة
+        sewingMachineMechanic, ////////////فنى مكن خياطة
+        tailor,/////خياطة
+        plasterer,/////////مبيض محارة
         welder,///////////////////لحام
-        blacksmith,
-        HVACTechnician,
-        ////صناعي الونتال///مش راضية تترجم
-        ///// carpenter,///////////////مش مفرق بين نجار مسلح ونجار باب وشباك
-        /////delivery,// هيكون موجود؟
-        //photography////هيكون موجود؟
+        blacksmith,//////////حداد
+        HVACTechnician,//////Heating, Ventilation, and Air Conditioning/////فنى تكيف وتبريد
+        artisans,  //صناعي الونتال/// 
+        reinforcementIronworker///نجار مسلح
+        delivery/////// اكيد؟
+        photography//////// اكيد؟
 
 
     }

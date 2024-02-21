@@ -15,7 +15,7 @@ namespace Hawalayk_APP.Models
         
         [ForeignKey("Craftsman")]
         public string CraftsmanId { get; set; }
-        public Craftsman Craftsman { get; set; }
+        public Craftsmen Craftsman { get; set; }
         public string? Content { get; set; }
     }
 }

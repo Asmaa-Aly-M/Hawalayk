@@ -3,10 +3,11 @@
 namespace Hawalayk_APP.Models
 {
 
-    public class Craftsman:ApplicationUser
+    public class Craftsmen:ApplicationUser
     {
-        public string NationalId { get; set; }
-       
+        
+        public Image PersonalImage { get; set; }
+        public Image NationalIDImage { get; set; }
         [ForeignKey("Craft")]
         public int CraftId { get; set; }
         public Craft Craft { get; set; }

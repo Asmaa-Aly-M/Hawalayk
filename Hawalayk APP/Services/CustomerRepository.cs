@@ -30,7 +30,7 @@ namespace Hawalayk_APP.Services
             Customer customer = _context.Customers.SingleOrDefault(c => c.Id == id);
             return customer;
         }
-      
-        
+
+
     }
 }
