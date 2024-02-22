@@ -9,9 +9,9 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class AdvertisementController : ControllerBase
     {
-         AdvertisementRepository advertisementRepository;
+         IAdvertisementRepository advertisementRepository;
 
-        public AdvertisementController(AdvertisementRepository _advertisementRepository)
+        public AdvertisementController(IAdvertisementRepository _advertisementRepository)
         {
             advertisementRepository = _advertisementRepository;
         }
