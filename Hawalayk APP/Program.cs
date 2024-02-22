@@ -19,6 +19,7 @@ namespace Hawalayk_APP
 
             // Add services to the container.
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+            builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
 
