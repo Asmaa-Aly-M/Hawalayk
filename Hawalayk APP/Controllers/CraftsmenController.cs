@@ -7,5 +7,6 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class CraftsmenController : ControllerBase
     {
+        
     }
 }
