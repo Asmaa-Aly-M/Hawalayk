@@ -1,4 +1,4 @@
-using Hawalayk_APP.Context;
+﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.Helpers;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
@@ -48,7 +48,7 @@ namespace Hawalayk_APP
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
                     };
                 });
-            ////  Controller ?????? ? ?? //////////
+            ////  Controller الخاصة ب ال //////////
             builder.Services.AddScoped<IPostRepository,PostRepository >();
 
             builder.Services.AddControllers();

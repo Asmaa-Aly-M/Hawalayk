@@ -19,7 +19,7 @@ namespace Hawalayk_APP.Controllers
         public IActionResult addPost (Post newPost )
         {
             postRepo.Create(newPost);
-            return Ok(new { message = "post is add" });
+            return Ok(new { message = "post is added" });
         }
 
         [HttpGet]
@@ -28,7 +28,7 @@ namespace Hawalayk_APP.Controllers
             List<Post> posts = postRepo.GetAll();
             if (posts != null)
             {
-                return Ok();
+                return Ok(posts);
             }
             else
                 return BadRequest(new { message = "no posted yet" });
