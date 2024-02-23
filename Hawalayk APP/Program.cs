@@ -26,6 +26,11 @@ namespace Hawalayk_APP
             builder.Services.AddTransient<ISMSService,SMSService>();
 
 
+
+            builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
+
+
+ 
             builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
 
 

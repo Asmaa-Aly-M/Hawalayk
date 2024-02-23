@@ -6,6 +6,7 @@ using static System.Net.Mime.MediaTypeNames;
 using Image = Hawalayk_APP.Models.Image;
 
 
+
 namespace Hawalayk_APP.Controllers
 {
     [Route("api/[controller]")]
@@ -65,6 +66,27 @@ namespace Hawalayk_APP.Controllers
 //            return Ok(images);
 //        }
 
+//namespace Hawalayk_APP.Controllers
+//{
+//    [Route("api/[controller]")]
+//    [ApiController]
+//    public class ImageController : ControllerBase
+//    {
+//        ImageRepository imageRepository;
+
+//        public ImageController(ImageRepository _imageRepository)
+//        {
+//            imageRepository = _imageRepository;
+//        }
+
+//        [HttpGet]
+//        public ActionResult<List<Image>> GetAllImages()
+//        {
+//            var images = imageRepository.GetAll();
+//            return Ok(images);
+//        }
+
+
 //        [HttpGet("{id}")]
 //        public ActionResult<Image> GetImageById(int id)
 //        {
@@ -83,4 +105,3 @@ namespace Hawalayk_APP.Controllers
 //        }
 //    }
 //}
-
