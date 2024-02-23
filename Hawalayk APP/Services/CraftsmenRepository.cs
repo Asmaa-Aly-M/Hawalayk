@@ -15,12 +15,12 @@ namespace Hawalayk_APP.Services
 
 
 
-        public Craftsmen GetById(string id)
+        public Craftsman GetById(string id)
         {
-            Craftsmen Craftman = Context.Craftsmen.FirstOrDefault(s => s.Id == id);
+            Craftsman Craftman = Context.Craftsmen.FirstOrDefault(s => s.Id == id);
             return Craftman;
         }
-        public List<Craftsmen> GetAll()
+        public List<Craftsman> GetAll()
         {
             return Context.Craftsmen.ToList();
         }

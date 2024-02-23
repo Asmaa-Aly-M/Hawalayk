@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Hawalayk_APP.Models
+namespace Hawalayk_APP.DataTransferObject
 {
-    public class RegisterCustomerModel
+    public class RegisterCraftsmanModel
     {
         [Required, StringLength(50)]
         public string FirstName { get; set; }
@@ -18,9 +18,5 @@ namespace Hawalayk_APP.Models
 
         [Required, StringLength(50)]
         public string Password { get; set; }
-
-        public DateTime BirthDate { get; set; }
-
-
     }
 }

@@ -9,13 +9,13 @@ namespace Hawalayk_APP.Models
         public int Id { get; set; }
        
         [ForeignKey("Image")]
-        public int ImageId { get; set; }
-        public Image Image { get; set; }
+        public int? ImageId { get; set; }
+        public Image? Image { get; set; }
 
         
         [ForeignKey("Craftsman")]
         public string CraftsmanId { get; set; }
-        public Craftsmen Craftsman { get; set; }
+        public Craftsman Craftsman { get; set; }
         public string? Content { get; set; }
     }
 }

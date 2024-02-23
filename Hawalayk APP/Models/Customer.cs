@@ -1,10 +1,14 @@
-﻿namespace Hawalayk_APP.Models
-{
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-    public class Customer:ApplicationUser
+namespace Hawalayk_APP.Models
+{
+     
+
+
+    public class Customer :ApplicationUser
     {
 
-        public ICollection<ServiceRequest> ServiceRequests;
+       public ICollection<ServiceRequest> ServiceRequests;
 
         public ICollection<Review> Reviews;
 

@@ -11,7 +11,7 @@ namespace Hawalayk_APP.Models
         
         public string Content { get; set; }
         [ForeignKey("Image")]
-        public int ImageId { get; set; }
+        public int? ImageId { get; set; }
         public Image? Image { get; set; }
      
         [ForeignKey("Customer")]

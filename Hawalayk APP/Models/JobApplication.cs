@@ -13,7 +13,7 @@ namespace Hawalayk_APP.Models
         public ResponseStatus ResponseStatus { get; set; }
         [ForeignKey("Craftsman")]
         public string CraftsmanId { get; set; }
-        public Craftsmen Craftsman { get; set; }
+        public Craftsman Craftsman { get; set; }
         public DateTime DatePosted { get; set; } 
 }
 }

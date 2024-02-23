@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.Enums;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Hawalayk_APP.Models
@@ -13,11 +14,15 @@ namespace Hawalayk_APP.Models
         public string LastName { get; set; }
         
         public Gender Gender { get; set; }
+       // [ForeignKey("Address")]
+        //public int? AddressId { get; set; }
         public Address Address { get; set; }
 
         public DateTime BirthDate { get; set; }
+        [ForeignKey("ProfilePicture")]
+        public int? ProfilePictureId { get; set; }
 
-        public Image ProfilePicture { get; set; }
+        public Image? ProfilePicture { get; set; }
 
        
     }

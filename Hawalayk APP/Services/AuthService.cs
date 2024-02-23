@@ -1,7 +1,6 @@
 ﻿using Hawalayk_APP.Models;
 using Microsoft.AspNetCore.Identity;
 using Hawalayk_APP.Context;
-using Hawalayk_APP.Migrations;
 using Microsoft.EntityFrameworkCore;
 using Hawalayk_APP.Helpers;
 using Microsoft.Extensions.Options;
@@ -9,6 +8,8 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
+using Hawalayk_APP.DataTransferObject;
+
 namespace Hawalayk_APP.Services
 {
     public class AuthService : IAuthService
@@ -24,22 +25,24 @@ namespace Hawalayk_APP.Services
         }
         public async Task<AuthModel> RegisterCustomerAsync(RegisterCustomerModel model)
         {
-            if (await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber) is not null)
+            if (await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber) != null)
                 return new AuthModel { Message = "Phone number is already registered!" };
 
-            if (await _userManager.FindByNameAsync(model.Username) is not null)
-                return new AuthModel { Message = "Username is already registered!" };
+            if (await _userManager.FindByNameAsync(model.UserName) != null)
+                return new AuthModel { Message = "UserName is already registered!" };
 
-            var user = new ApplicationUser
+            var customer = new Customer
             {
-                UserName = model.Username,
+                UserName = model.UserName,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
+                Gender = model.Gender,
+                Address = model.Address
             };
 
-            var result = await _userManager.CreateAsync(user, model.Password);
-            if (!result.Succeeded) 
+            var result = await _userManager.CreateAsync(customer, model.Password);
+            if (!result.Succeeded)
             {
                 var errors = string.Empty;
                 foreach (var error in result.Errors)
@@ -49,18 +52,21 @@ namespace Hawalayk_APP.Services
                 return new AuthModel { Message = errors };
             }
 
-            await _userManager.AddToRoleAsync(user, "Customer");
+            await _userManager.AddToRoleAsync(customer, "Customer");
 
-            var jwtSecurityToken = await CreateJwtToken(user);
+
+            var jwtSecurityToken = await CreateJwtToken(customer);
 
             return new AuthModel
             {
-                PhoneNumber = user.PhoneNumber,
+                UserName = customer.UserName,
+                Gender = customer.Gender,
+                PhoneNumber = customer.PhoneNumber,
                 ExpiresOn = jwtSecurityToken.ValidTo,
                 IsAuthenticated = true,
                 Roles = new List<string> { "Customer" },
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                Username = user.UserName
+                Address = customer.Address,
             };
 
         }
@@ -79,19 +85,19 @@ namespace Hawalayk_APP.Services
             var roleClaims = new List<Claim>();
 
             foreach (var role in roles)
-                roleClaims.Add(new Claim("roles", role));
+                roleClaims.Add(new Claim(ClaimTypes.Role, role));
 
             var claims = new[]
             {
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+
                 new Claim("uid", user.Id)
             }
             .Union(userClaims)
             .Union(roleClaims);
 
-            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.Key));
+            var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.key));
             var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
             var jwtSecurityToken = new JwtSecurityToken(
@@ -102,6 +108,36 @@ namespace Hawalayk_APP.Services
                 signingCredentials: signingCredentials);
 
             return jwtSecurityToken;
+        }
+
+
+
+
+
+
+        public async Task<AuthModel> GetTokenAsync(TokenRequestModel model)
+        {
+
+            var authModel = new AuthModel();
+            var user = await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber);
+
+            if(user==null || !await _userManager.CheckPasswordAsync(user, model.Password))
+            {
+                authModel.Message = " The PhoneNumber Or Password Is Not Correct ";
+                return authModel;
+            }
+            var jwtSecurityToken = await CreateJwtToken(user);
+            var Roles = await _userManager.GetRolesAsync(user);
+            authModel.IsAuthenticated = true;
+            authModel.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            authModel.PhoneNumber = user.PhoneNumber;
+            authModel.UserName = user.UserName;
+            authModel.ExpiresOn = jwtSecurityToken.ValidTo;
+
+            authModel.Roles = Roles.ToList();
+            return authModel;
+   
+                
         }
     }
 }

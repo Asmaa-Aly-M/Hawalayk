@@ -7,7 +7,7 @@ namespace Hawalayk_APP.Models
          
         public int Id { get; set; }
         
-        public ApplicationUser Reporter { get; set; }
+        public ApplicationUser? Reporter { get; set; }
         
         public ApplicationUser ReportedUser { get; set; }
         
