@@ -48,7 +48,8 @@ namespace Hawalayk_APP
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
                     };
                 });
-
+            ////  Controller ?????? ? ?? //////////
+            builder.Services.AddScoped<IPostRepository,PostRepository >();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
