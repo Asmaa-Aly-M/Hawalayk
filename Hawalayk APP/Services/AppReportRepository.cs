@@ -36,9 +36,9 @@ namespace Hawalayk_APP.Services
         public int Update(int id, AppReport appreport)
         {
             AppReport Oldappreport = _context.AppReports.SingleOrDefault(c => c.Id == id);
-            Oldappreport.Id = appreport.Id;
+           // Oldappreport.Id = appreport.Id;
             Oldappreport.Reporter = appreport.Reporter;
-            Oldappreport.ReporerId = appreport.ReporerId;
+           // Oldappreport.ReporerId = appreport.ReporerId;
             Oldappreport.ReportedIssue = appreport.ReportedIssue;
             Oldappreport.DatePosted = appreport.DatePosted;
             Oldappreport.Description = appreport.Description;
@@ -46,9 +46,9 @@ namespace Hawalayk_APP.Services
             int row = _context.SaveChanges();
             return row;
         }
-        public int Delete(Customer customer)
+        public int Delete(AppReport appreport)
         {
-            _context.Customers.Remove(customer);
+            _context.AppReports.Remove(appreport);
             int row = _context.SaveChanges();
             return row;
         }
