@@ -22,8 +22,8 @@
         blacksmith,//////////حداد
         HVACTechnician,//////Heating, Ventilation, and Air Conditioning/////فنى تكيف وتبريد
         artisans,  //صناعي الونتال/// 
-        reinforcementIronworker///نجار مسلح
-        delivery/////// اكيد؟
+        reinforcementIronworker,///نجار مسلح
+        delivery,/////// اكيد؟
         photography//////// اكيد؟
 
 

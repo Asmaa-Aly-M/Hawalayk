@@ -19,8 +19,14 @@ namespace Hawalayk_APP
 
             // Add services to the container.
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+            builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
+           
+            
+            builder.Services.AddTransient<ISMSService,SMSService>();
 
-            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
+                .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -62,7 +68,6 @@ namespace Hawalayk_APP
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            app.UseAuthentication();
 
             app.UseAuthentication();
             app.UseAuthorization();

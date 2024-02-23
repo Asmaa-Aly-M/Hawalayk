@@ -16,7 +16,7 @@ namespace Hawalayk_APP.Context
         }
         
         public virtual DbSet<ApplicationUser>ApplicationUsers { get; set; }
-        public virtual DbSet<Craftsmen> Craftsmen { get; set; }
+        public virtual DbSet<Craftsman> Craftsmen { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Admin> Admins { get; set; }
         public virtual DbSet<Address>Addresses { get; set; }
@@ -33,6 +33,10 @@ namespace Hawalayk_APP.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Customer>().ToTable("Customer");
+            modelBuilder.Entity<Craftsman>().ToTable("CraftsMan");
+            modelBuilder.Entity<Admin>().ToTable("Admin");
+            
             modelBuilder.Entity<ApplicationUser>()
                 .Property(u => u.Gender)
                 .HasConversion<string>();
@@ -50,8 +54,8 @@ namespace Hawalayk_APP.Context
                 .HasConversion<string>();
 
 
-
-
+              
+             
            
             base.OnModelCreating(modelBuilder);
         }
