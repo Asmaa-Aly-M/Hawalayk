@@ -14,8 +14,8 @@ namespace Hawalayk_APP.Controllers
         {
             _authService = authService;
         }
-        [HttpPost("register")]
-        public async Task<IActionResult>RegisterAsync([FromBody] RegisterCustomerModel model)
+        [HttpPost("RegisterCustomer")]
+        public async Task<IActionResult>RegisterCustomerAsync([FromBody] RegisterCustomerModel model)
         {
             if(!ModelState.IsValid)
             {
@@ -28,6 +28,24 @@ namespace Hawalayk_APP.Controllers
             }
             return Ok(result);
         }
+
+        [HttpPost("RegisterCraftsman")]
+        public async Task<IActionResult> RegisterCraftsmanAsync([FromBody] RegisterCraftsmanModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _authService.RegisterCraftsmanAsync(model);
+            if (!result.IsAuthenticated)
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
+        }
+
+
+
         [HttpPost("GetToken")]
         public async Task<IActionResult>GetTokenAsync([FromBody] TokenRequestModel model)
         {

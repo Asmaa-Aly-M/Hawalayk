@@ -4,6 +4,7 @@ using Hawalayk_APP.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hawalayk_APP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240223162759_InitialCreate3")]
+    partial class InitialCreate3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,7 +46,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Addresses", (string)null);
+                    b.ToTable("Addresses");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Advertisement", b =>
@@ -89,7 +91,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("Advertisements", (string)null);
+                    b.ToTable("Advertisements");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.ApplicationUser", b =>
@@ -203,7 +205,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ReporerId");
 
-                    b.ToTable("AppReports", (string)null);
+                    b.ToTable("AppReports");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Craft", b =>
@@ -220,7 +222,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Crafts", (string)null);
+                    b.ToTable("Crafts");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Image", b =>
@@ -244,7 +246,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images", (string)null);
+                    b.ToTable("Images");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.JobApplication", b =>
@@ -276,7 +278,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("CraftsmanId");
 
-                    b.ToTable("JobApplications", (string)null);
+                    b.ToTable("JobApplications");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Post", b =>
@@ -308,7 +310,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("Posts", (string)null);
+                    b.ToTable("Posts");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Review", b =>
@@ -346,7 +348,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("CraftsmanId");
 
-                    b.ToTable("Reviews", (string)null);
+                    b.ToTable("Reviews");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.ServiceRequest", b =>
@@ -377,7 +379,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ImageId");
 
-                    b.ToTable("ServiceRequests", (string)null);
+                    b.ToTable("ServiceRequests");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.UserReport", b =>
@@ -408,7 +410,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("ReporterId");
 
-                    b.ToTable("UserReports", (string)null);
+                    b.ToTable("UserReports");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

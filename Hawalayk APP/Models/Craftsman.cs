@@ -16,8 +16,8 @@ namespace Hawalayk_APP.Models
         public Image? NationalIDImage { get; set; }
 
         [ForeignKey("Craft")]
-        public int CraftId { get; set; }
-        public Craft Craft { get; set; }
+        public int? CraftId { get; set; }
+        public Craft? Craft { get; set; }
 
         public double Rating { get; set; }
         public ICollection<Post> Portfolio { get; set; }

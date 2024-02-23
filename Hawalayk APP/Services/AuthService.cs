@@ -37,8 +37,9 @@ namespace Hawalayk_APP.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
-                Gender = model.Gender,
-                Address = model.Address
+                //Gender = model.Gender,
+                //Address = model.Address,
+                BirthDate = model.BirthDate
             };
 
             var result = await _userManager.CreateAsync(customer, model.Password);
@@ -66,14 +67,61 @@ namespace Hawalayk_APP.Services
                 IsAuthenticated = true,
                 Roles = new List<string> { "Customer" },
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                Address = customer.Address,
+                //Address = customer.Address,
             };
 
         }
 
         public async Task<AuthModel> RegisterCraftsmanAsync(RegisterCraftsmanModel model)
         {
-            throw new NotImplementedException();
+            if (await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber) != null)
+                return new AuthModel { Message = "Phone number is already registered!" };
+
+            if (await _userManager.FindByNameAsync(model.UserName) != null)
+                return new AuthModel { Message = "UserName is already registered!" };
+
+            var craftsman = new Craftsman
+            {
+                UserName = model.UserName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber,
+                Gender = model.Gender,
+                //Address = model.Address,
+                //PersonalImage = model.PersonalImage,
+                //NationalIDImage = model.NationalIdImage,
+                BirthDate = model.BirthDate,
+                //Craft = _applicationDbContext.Crafts.FirstOrDefault(c => c.Name == model.CraftName),
+                //CraftId = ?
+            };
+
+            var result = await _userManager.CreateAsync(craftsman, model.Password);
+            if (!result.Succeeded)
+            {
+                var errors = string.Empty;
+                foreach (var error in result.Errors)
+                {
+                    errors += $"{error.Description},";
+                }
+                return new AuthModel { Message = errors };
+            }
+
+            await _userManager.AddToRoleAsync(craftsman, "Craftsman");
+
+
+            var jwtSecurityToken = await CreateJwtToken(craftsman);
+
+            return new AuthModel
+            {
+                UserName = craftsman.UserName,
+                Gender = craftsman.Gender,
+                PhoneNumber = craftsman.PhoneNumber,
+                ExpiresOn = jwtSecurityToken.ValidTo,
+                IsAuthenticated = true,
+                Roles = new List<string> { "Craftsman" },
+                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+                //Address = craftsman.Address,
+            };
 
         }
 

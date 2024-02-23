@@ -16,7 +16,7 @@ namespace Hawalayk_APP.DataTransferObject
         public string UserName { get; set; }
 
         [Required]
-        public Gender Gender  { get; set; }
+        public Gender Gender { get; set; }
         [Required, RegularExpression(@"^(010|011|012|015)\d{8}$", ErrorMessage = "Invalid phone number format.")]
          public string PhoneNumber { get; set; }
 
@@ -24,8 +24,9 @@ namespace Hawalayk_APP.DataTransferObject
         public string Password { get; set; }
         [Compare("Password")]
         public string PasswordConfirmed { get; set; }
-        public Image ProfilePic { get; set; }
-        public Address Address { get; set; }
+        //مش لازم يحطها في التسجيل عادي تتساب فاضية ويحطها بعدين او منطلبهاش منه اصلا
+        //public Image ProfilePic { get; set; }
+        //public Address Address { get; set; }
         public DateTime BirthDate { get; set; }
 
 

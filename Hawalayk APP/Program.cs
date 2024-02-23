@@ -20,14 +20,24 @@ namespace Hawalayk_APP
             // Add services to the container.
 
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
-<<<<<<< HEAD
+
             builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
            
             
             builder.Services.AddTransient<ISMSService,SMSService>();
-=======
+
+
+
             builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
->>>>>>> 1fe8cb157e4920ca642f5eb3aed8011c8ebdf592
+
+
+ 
+            builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
+
+
+ 
+            builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
+
 
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
