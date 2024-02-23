@@ -16,7 +16,7 @@ namespace Hawalayk_APP.Models
         public Gender Gender { get; set; }
        // [ForeignKey("Address")]
         //public int? AddressId { get; set; }
-        public Address Address { get; set; }
+        //public Address Address { get; set; }
 
         public DateTime BirthDate { get; set; }
         [ForeignKey("ProfilePicture")]

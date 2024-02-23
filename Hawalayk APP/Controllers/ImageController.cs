@@ -11,9 +11,9 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class ImageController : ControllerBase
     {
-        ImageRepository imageRepository;
+        private readonly IImageRepository _imageRepository;
 
-        public ImageController(ImageRepository _imageRepository)
+        public ImageController(IImageRepository imageRepository)
         {
             imageRepository = _imageRepository;
         }
@@ -21,14 +21,14 @@ namespace Hawalayk_APP.Controllers
         [HttpGet]
         public ActionResult<List<Image>> GetAllImages()
         {
-            var images = imageRepository.GetAll();
+            var images = _imageRepository.GetAll();
             return Ok(images);
         }
 
         [HttpGet("{id}")]
         public ActionResult<Image> GetImageById(int id)
         {
-            var image = imageRepository.GetById(id);
+            var image = _imageRepository.GetById(id);
             if (image == null)
             {
                 return NotFound();
@@ -38,7 +38,7 @@ namespace Hawalayk_APP.Controllers
         [HttpPost]
         public IActionResult Create(Image image)
         {
-            imageRepository.Create(image);
+            _imageRepository.Create(image);
             return CreatedAtRoute("GetAdvertisement", new { id = image.Id }, image);
         }
     }
