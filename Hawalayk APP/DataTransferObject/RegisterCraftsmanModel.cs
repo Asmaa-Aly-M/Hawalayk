@@ -23,7 +23,7 @@ namespace Hawalayk_APP.DataTransferObject
         [Compare("Password")]
         public string PasswordConfirmed { get; set; }
 
-        public CraftName CraftName { get; set; }
+        public string CraftName { get; set; }
         //[Required]
         //public Image PersonalImage { get; set; }
         //[Required]

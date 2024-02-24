@@ -1,5 +1,8 @@
 ﻿using Hawalayk_APP.Context;
+using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
@@ -11,6 +14,47 @@ namespace Hawalayk_APP.Services
             Context = _Context;
         }
 
+        public async Task<Craft> GetOrCreateCraftAsync(string  craftName)
+        {
+
+            CraftName craft_Name;
+            Craft existingCraft = null;
+            if (Enum.TryParse(craftName, out craft_Name))
+            {
+                existingCraft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == craft_Name);
+
+            }//parsing : enum 
+
+            if (existingCraft != null)
+            {
+                return existingCraft;
+            }
+
+            var newCraft = new Craft { Name = craft_Name };
+            Context.Crafts.Add(newCraft);
+            await Context.SaveChangesAsync();
+
+            return newCraft;
+        }
+
+
+        public List<Craft> GetAll()
+        {
+            return Context.Crafts.ToList();
+        }
+        public Task<List<string>> GetAllCraftsNamesAsync()
+        {
+            var craftNames = Enum.GetNames(typeof(CraftName)).ToList();
+            return Task.FromResult(craftNames);
+        }
+
+       
+
+
+
+
+
+
 
 
 
@@ -19,11 +63,7 @@ namespace Hawalayk_APP.Services
             Craft craft = Context.Crafts.FirstOrDefault(s => s.Id == id);
             return craft;
         }
-        public List<Craft> GetAll()
-        {
-            return Context.Crafts.ToList();
-        }
-
+      
         public int Create(Craft newCraft)
         {
             Context.Crafts.Add(newCraft);

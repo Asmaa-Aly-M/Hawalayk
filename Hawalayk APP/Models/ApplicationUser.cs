@@ -19,10 +19,8 @@ namespace Hawalayk_APP.Models
         //public Address Address { get; set; }
 
         public DateTime BirthDate { get; set; }
-        [ForeignKey("ProfilePicture")]
-        public int? ProfilePictureId { get; set; }
-
-        public Image? ProfilePicture { get; set; }
+      
+        public string ProfilePicture  { get; set; }
 
        
     }

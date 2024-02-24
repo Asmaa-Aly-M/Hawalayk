@@ -31,15 +31,7 @@ namespace Hawalayk_APP.Services
             int row = Context.SaveChanges();
             return row;
         }
-        public int Update(int id, Post newPost)
-        {
-            Post OldPost = Context.Posts.FirstOrDefault(s => s.Id == id);
-            OldPost.Content = newPost.Content;
-            OldPost.Image = newPost.Image;
-
-            int row = Context.SaveChanges();
-            return row;
-        }
+     
         public int Delete(int id)
         {
             Post OldPost = Context.Posts.FirstOrDefault(s => s.Id == id);
