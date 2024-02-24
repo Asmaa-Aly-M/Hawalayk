@@ -27,6 +27,7 @@ namespace Hawalayk_APP.Services
         public int Create(Post newPost)
         {
             Context.Posts.Add(newPost);
+           
             int row = Context.SaveChanges();
             return row;
         }
