@@ -30,16 +30,7 @@ namespace Hawalayk_APP.Services
             int row = Context.SaveChanges();
             return row;
         }
-        public int Update(int id, ServiceRequest newservice)////////هل محتاجينها؟؟؟
-        {
-            ServiceRequest Oldservice = Context.ServiceRequests.FirstOrDefault(s => s.Id == id);
-            Oldservice.Content = newservice.Content;
-            Oldservice.Image = newservice.Image;
-            Oldservice.DatePosted = newservice.DatePosted;
-
-            int row = Context.SaveChanges();
-            return row;
-        }
+      
         public int Delete(int id)
         {
             ServiceRequest Oldservice = Context.ServiceRequests.FirstOrDefault(s => s.Id == id);

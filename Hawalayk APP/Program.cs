@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace Hawalayk_APP
@@ -27,15 +28,12 @@ namespace Hawalayk_APP
 
 
 
+
+            builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
-
-
- 
-            builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
-
-
- 
-            builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ICraftRepository, CraftRepository>();
+            builder.Services.AddScoped<ICraftsmenRepository, CraftsmenRepository>();
 
 
 
@@ -45,7 +43,6 @@ namespace Hawalayk_APP
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
 
             builder.Services.AddAuthentication(options =>
             {
@@ -68,13 +65,13 @@ namespace Hawalayk_APP
                     };
                 });
             ////  Controller الخاصة ب ال //////////
-            builder.Services.AddScoped<IPostRepository,PostRepository >();
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+         
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -9,6 +9,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Text;
 using Hawalayk_APP.DataTransferObject;
+using Microsoft.AspNetCore.Http;
 
 namespace Hawalayk_APP.Services
 {
@@ -16,11 +17,13 @@ namespace Hawalayk_APP.Services
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _applicationDbContext;
+        private readonly ICraftRepository _craftsService;
         private readonly JWT _jwt;
-        public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, IOptions<JWT> jwt)
+        public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, ICraftRepository craftsService, IOptions<JWT> jwt)
         {
             _userManager = userManager;
             _applicationDbContext = applicationDbContext;
+            _craftsService = craftsService;
             _jwt = jwt.Value;
         }
         public async Task<AuthModel> RegisterCustomerAsync(RegisterCustomerModel model)
@@ -80,6 +83,9 @@ namespace Hawalayk_APP.Services
             if (await _userManager.FindByNameAsync(model.UserName) != null)
                 return new AuthModel { Message = "UserName is already registered!" };
 
+
+            var craft = await _craftsService.GetOrCreateCraftAsync(model.CraftName);
+
             var craftsman = new Craftsman
             {
                 UserName = model.UserName,
@@ -87,6 +93,7 @@ namespace Hawalayk_APP.Services
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
                 Gender = model.Gender,
+                Craft = craft,
                 //Address = model.Address,
                 //PersonalImage = model.PersonalImage,
                 //NationalIDImage = model.NationalIdImage,
@@ -135,25 +142,31 @@ namespace Hawalayk_APP.Services
             foreach (var role in roles)
                 roleClaims.Add(new Claim(ClaimTypes.Role, role));
 
-            var claims = new[]
+
+
+            var claims = new List<Claim>
             {
+                new Claim(ClaimTypes.Name,user.UserName ),
+                new Claim("UserId",user.Id),
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+               new Claim(ClaimTypes.NameIdentifier, user.Id),
 
-                new Claim("uid", user.Id)
+
             }
             .Union(userClaims)
             .Union(roleClaims);
 
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.key));
-            var signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+            
+
 
             var jwtSecurityToken = new JwtSecurityToken(
                 issuer: _jwt.Issuer,
                 audience: _jwt.Audience,
                 claims: claims,
                 expires: DateTime.Now.AddDays(_jwt.DurationInDays),
-                signingCredentials: signingCredentials);
+                signingCredentials: new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256));
 
             return jwtSecurityToken;
         }
@@ -169,7 +182,7 @@ namespace Hawalayk_APP.Services
             var authModel = new AuthModel();
             var user = await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber);
 
-            if(user==null || !await _userManager.CheckPasswordAsync(user, model.Password))
+            if (user == null || !await _userManager.CheckPasswordAsync(user, model.Password))
             {
                 authModel.Message = " The PhoneNumber Or Password Is Not Correct ";
                 return authModel;
@@ -184,8 +197,14 @@ namespace Hawalayk_APP.Services
 
             authModel.Roles = Roles.ToList();
             return authModel;
-   
-                
+
+
+        }
+
+
+        public async Task<ApplicationUser> FindTheCurrentUserAsync(string Id)
+        {
+            return await _applicationDbContext.Craftsmen.FirstOrDefaultAsync(u => u.Id == Id);
         }
     }
 }

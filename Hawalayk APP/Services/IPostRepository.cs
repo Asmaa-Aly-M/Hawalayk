@@ -8,6 +8,6 @@ namespace Hawalayk_APP.Services
         int Delete(int id);
         List<Post> GetAll();
         Post GetById(int id);
-        int Update(int id, Post newPost);
+       
     }
 }
