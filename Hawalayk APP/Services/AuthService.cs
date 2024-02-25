@@ -40,6 +40,8 @@ namespace Hawalayk_APP.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
+                ProfilePicture = "s",
+
                 //Gender = model.Gender,
                 //Address = model.Address,
                 BirthDate = model.BirthDate
@@ -94,6 +96,9 @@ namespace Hawalayk_APP.Services
                 PhoneNumber = model.PhoneNumber,
                 Gender = model.Gender,
                 Craft = craft,
+                ProfilePicture = "s",
+                NationalIDImage = "s",
+                PersonalImage = "s",
                 //Address = model.Address,
                 //PersonalImage = model.PersonalImage,
                 //NationalIDImage = model.NationalIdImage,
@@ -135,40 +140,30 @@ namespace Hawalayk_APP.Services
 
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
         {
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            var roles = await _userManager.GetRolesAsync(user);
-            var roleClaims = new List<Claim>();
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Name, user.UserName));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id));
+            claims.Add(new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()));
 
-            foreach (var role in roles)
-                roleClaims.Add(new Claim(ClaimTypes.Role, role));
-
-
-
-            var claims = new List<Claim>
+            var Roles = await _userManager.GetRolesAsync(user);
+            foreach (var role in Roles)
             {
-                new Claim(ClaimTypes.Name,user.UserName ),
-                new Claim("UserId",user.Id),
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-               new Claim(ClaimTypes.NameIdentifier, user.Id),
-
-
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
-            .Union(userClaims)
-            .Union(roleClaims);
 
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwt.key));
-            
 
-
-            var jwtSecurityToken = new JwtSecurityToken(
+            JwtSecurityToken token = new JwtSecurityToken(
                 issuer: _jwt.Issuer,
                 audience: _jwt.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddDays(_jwt.DurationInDays),
-                signingCredentials: new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256));
 
-            return jwtSecurityToken;
+                expires: DateTime.Now.AddDays(_jwt.DurationInDays),
+                signingCredentials: new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
+                );
+       
+      
+            return token;
         }
 
 
@@ -202,9 +197,6 @@ namespace Hawalayk_APP.Services
         }
 
 
-        public async Task<ApplicationUser> FindTheCurrentUserAsync(string Id)
-        {
-            return await _applicationDbContext.Craftsmen.FirstOrDefaultAsync(u => u.Id == Id);
-        }
+      
     }
 }

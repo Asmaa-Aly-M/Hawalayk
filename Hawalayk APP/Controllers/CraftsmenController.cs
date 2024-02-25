@@ -5,11 +5,12 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Security.Claims;
 
 namespace Hawalayk_APP.Controllers
 {
-    [Authorize]
+    [Authorize(Roles ="Craftsman")]
     [Route("api/[controller]")]
     [ApiController]
     public class CraftsmenController : ControllerBase
@@ -27,12 +28,7 @@ namespace Hawalayk_APP.Controllers
             _crafsmenRepository= crafsmenRepository;
         }
 
-        [HttpPost]
-        public IActionResult addPost (Post newPost )
-        {
-            postRepo.Create(newPost);
-            return Ok(new { message = "post is added" });
-        }
+       
 
         [HttpGet]
         public IActionResult displayPosts() 
@@ -53,6 +49,16 @@ namespace Hawalayk_APP.Controllers
         {
             return  await _crafRepository.GetAllCraftsNamesAsync();
         }
+        [HttpPost("AddPostToGallary")]
+        public async Task<Post> AddPostToGallary([FromBody]PostDTO post) 
+        {
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            return await _crafsmenRepository.AddPostToGallaryAsync(userId, post);
+
+        }
+      
 
     }
 }
