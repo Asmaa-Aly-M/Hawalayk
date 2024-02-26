@@ -14,12 +14,14 @@ namespace Hawalayk_APP.Controllers
         {
             review = _review;
         }
+        [Route("view")]
         [HttpPost]
         public IActionResult writeReview(Review newreview) /////هل محتاجين يرجع حاجة معينة
         {
             review.Create(newreview);
             return Ok();
         }
+        [Route("like")]
         [HttpPost]
         public IActionResult like(int reviewId)   
         {
@@ -28,6 +30,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(newPositiveReacts);///// هل محتاجين يرجع حاجة
         }
         /*
+         [Route("removeLike")]
         [HttpPost]
         public IActionResult Removelike(int reviewId)///////////////////function جديدة
         {
@@ -35,7 +38,7 @@ namespace Hawalayk_APP.Controllers
             int newPositiveReacts = theReview.PositiveReacts - 1;
             return Ok(newPositiveReacts);///// هل محتاجين يرجع حاجة
         }*/
-
+        [Route("disLike")]
         [HttpPost]
         public IActionResult disLike(int reviewId)
         {
@@ -45,6 +48,7 @@ namespace Hawalayk_APP.Controllers
         }
 
         /*
+         [Route("removeDisLike")]
         [HttpPost]
         public IActionResult removeDisLike(int reviewId) ///function جديدة
         {
