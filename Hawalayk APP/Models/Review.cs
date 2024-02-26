@@ -8,7 +8,6 @@ namespace Hawalayk_APP.Models
         public int Id { get; set; }
         
         public int Rating { get; set; }
-        public string Headline { get; set; }
         public string Content { get; set; }
         public int PositiveReacts { get; set; }
         public int NegativeReacts { get; set; }

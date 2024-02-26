@@ -35,6 +35,10 @@ namespace Hawalayk_APP
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ICraftRepository, CraftRepository>();
             builder.Services.AddScoped<ICraftsmenRepository, CraftsmenRepository>();
+            builder.Services.AddScoped<IAppReportRepository, AppReportRepository>();/////
+            builder.Services.AddScoped<IReviewRepository,ReviewRepository>();
+            builder.Services.AddScoped <IUserReportRepository,UserReportRepository> ();
+            builder.Services.AddScoped <IServiceRequestRepository, ServiceRequestRepository> ();
 
 
 
@@ -65,7 +69,7 @@ namespace Hawalayk_APP
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
                     };
                 });
-            ////  Controller الخاصة ب ال //////////
+       
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
