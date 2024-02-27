@@ -11,9 +11,7 @@ namespace Hawalayk_APP.Models
         
         public string Title { get; set; }
 
-        [ForeignKey("Image")]
-        public int ImageId { get; set; }
-        public Image Image { get; set; }
+        public string Image { get; set; }
       
         public string ClickUrl { get; set; }
          

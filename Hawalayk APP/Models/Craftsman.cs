@@ -7,13 +7,8 @@ namespace Hawalayk_APP.Models
     public class Craftsman:ApplicationUser 
     { 
      
-        [ForeignKey("PersonalImage")]
-        public int? PersonalImageId { get; set; }
-        public Image? PersonalImage { get; set; }
-
-        [ForeignKey("NationalIDImage")]
-        public int?NationalIDImageId { get; set; }
-        public Image? NationalIDImage { get; set; }
+        public string PersonalImage  { get; set; }
+        public string  NationalIDImage { get; set; }
 
         [ForeignKey("Craft")]
         public int? CraftId { get; set; }

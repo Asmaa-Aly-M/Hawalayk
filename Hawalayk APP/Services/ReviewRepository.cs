@@ -38,7 +38,6 @@ namespace Hawalayk_APP.Services
             OldReview.PositiveReacts = newReview.PositiveReacts;
             OldReview.NegativeReacts = newReview.NegativeReacts;
             OldReview.DatePosted = newReview.DatePosted;
-            OldReview.Headline = newReview.Headline;
             int row = Context.SaveChanges();
             return row;
         }

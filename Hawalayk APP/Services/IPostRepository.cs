@@ -1,13 +1,17 @@
-﻿using Hawalayk_APP.Models;
+﻿using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Models;
 
 namespace Hawalayk_APP.Services
 {
     public interface IPostRepository
     {
-        int Create(Post newPost);
+        Task<List<PostDTO>> GetCraftGallary(int craftId);
+
+
+        Task<Post> CreatNewPostAsync(Craftsman craftsman, PostDTO newPost);
         int Delete(int id);
         List<Post> GetAll();
         Post GetById(int id);
-        int Update(int id, Post newPost);
+       
     }
 }

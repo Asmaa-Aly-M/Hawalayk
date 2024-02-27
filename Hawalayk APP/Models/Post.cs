@@ -8,14 +8,18 @@ namespace Hawalayk_APP.Models
     {
         public int Id { get; set; }
        
-        [ForeignKey("Image")]
-        public int? ImageId { get; set; }
-        public Image? Image { get; set; }
+       
+        public string ImageURL { get; set; }
 
         
         [ForeignKey("Craftsman")]
-        public string CraftsmanId { get; set; }
-        public Craftsman Craftsman { get; set; }
+        public string? CraftsmanId { get; set; }
+        public Craftsman? Craftsman { get; set; }
+
+        [ForeignKey("craft")]
+        public int? CraftId { get; set; }
+        public Craft? craft { get; set; }
+
         public string? Content { get; set; }
     }
 }

@@ -8,6 +8,6 @@ namespace Hawalayk_APP.Services
         int Delete(int id);
         List<ServiceRequest> GetAll();
         ServiceRequest GetById(int id);
-        int Update(int id, ServiceRequest newservice);
+        
     }
 }

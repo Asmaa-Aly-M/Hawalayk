@@ -46,7 +46,7 @@ namespace Hawalayk_APP.Controllers
 
 
 
-        [HttpPost("GetToken")]
+        [HttpPost("Login")]
         public async Task<IActionResult>GetTokenAsync([FromBody] TokenRequestModel model)
         {
             if(!ModelState.IsValid)

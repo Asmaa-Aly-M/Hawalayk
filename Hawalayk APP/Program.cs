@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 
 namespace Hawalayk_APP
@@ -18,6 +19,7 @@ namespace Hawalayk_APP
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
             builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
@@ -27,15 +29,16 @@ namespace Hawalayk_APP
 
 
 
+
+            builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
-
-
- 
-            builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
-
-
- 
-            builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<ICraftRepository, CraftRepository>();
+            builder.Services.AddScoped<ICraftsmenRepository, CraftsmenRepository>();
+            builder.Services.AddScoped<IAppReportRepository, AppReportRepository>();/////
+            builder.Services.AddScoped<IReviewRepository,ReviewRepository>();
+            builder.Services.AddScoped <IUserReportRepository,UserReportRepository> ();
+            builder.Services.AddScoped <IServiceRequestRepository, ServiceRequestRepository> ();
 
 
 
@@ -45,7 +48,6 @@ namespace Hawalayk_APP
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            builder.Services.AddScoped<IAuthService, AuthService>();
 
             builder.Services.AddAuthentication(options =>
             {
@@ -67,14 +69,14 @@ namespace Hawalayk_APP
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
                     };
                 });
-            ////  Controller الخاصة ب ال //////////
-            builder.Services.AddScoped<IPostRepository,PostRepository >();
+       
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
 
+         
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
