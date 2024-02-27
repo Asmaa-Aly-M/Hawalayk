@@ -1,14 +1,14 @@
-﻿using Hawalayk_APP.Models;
-using Microsoft.AspNetCore.Identity;
-using Hawalayk_APP.Context;
-using Microsoft.EntityFrameworkCore;
+﻿using Hawalayk_APP.Context;
+using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Helpers;
+using Hawalayk_APP.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
-using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Hawalayk_APP.DataTransferObject;
 
 namespace Hawalayk_APP.Services
 {
@@ -17,11 +17,13 @@ namespace Hawalayk_APP.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly JWT _jwt;
-        public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, IOptions<JWT> jwt)
+        private readonly ISMSService _smsService;
+        public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, IOptions<JWT> jwt, ISMSService smsService)
         {
             _userManager = userManager;
             _applicationDbContext = applicationDbContext;
             _jwt = jwt.Value;
+            _smsService = smsService;
         }
         public async Task<AuthModel> RegisterCustomerAsync(RegisterCustomerModel model)
         {
@@ -58,17 +60,42 @@ namespace Hawalayk_APP.Services
 
             var jwtSecurityToken = await CreateJwtToken(customer);
 
-            return new AuthModel
+            var otpToken = Guid.NewGuid().ToString(); // Generate a unique OTP token
+
+            // Send OTP via SMS
+            var smsResult = _smsService.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
+
+            if (String.IsNullOrEmpty(smsResult.ErrorMessage))
             {
-                UserName = customer.UserName,
-                Gender = customer.Gender,
-                PhoneNumber = customer.PhoneNumber,
-                ExpiresOn = jwtSecurityToken.ValidTo,
-                IsAuthenticated = true,
-                Roles = new List<string> { "Customer" },
-                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
-                //Address = customer.Address,
-            };
+                var otpEntity = new OTPToken
+                {
+                    UserId = customer.Id,
+                    PhoneNumber = model.PhoneNumber,
+                    Token = otpToken,
+                    ExpirationTime = DateTime.UtcNow.AddMinutes(5) // Set an expiration time (e.g., 5 minutes)
+                };
+
+                _applicationDbContext.OTPTokens.Add(otpEntity);
+                await _applicationDbContext.SaveChangesAsync();
+
+                return new AuthModel
+                {
+                    UserName = customer.UserName,
+                    Gender = customer.Gender,
+                    PhoneNumber = customer.PhoneNumber,
+                    ExpiresOn = jwtSecurityToken.ValidTo,
+                    IsAuthenticated = true,
+                    Roles = new List<string> { "Customer" },
+                    Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+                    //Address = customer.Address,
+                };
+            }
+            else
+            {
+                // Handle SMS sending failure
+                // For example, throw an exception or return an error message
+                return new AuthModel { Message = smsResult.ErrorMessage};
+            }
 
         }
 
@@ -123,6 +150,35 @@ namespace Hawalayk_APP.Services
                 //Address = craftsman.Address,
             };
 
+        }
+
+
+        public async Task<AuthModel> VerifyOTPAsync(string phoneNumber, string otp)
+        {
+            var otpEntity = await _applicationDbContext.OTPTokens.FirstOrDefaultAsync(t => t.PhoneNumber == phoneNumber && t.Token == otp && t.ExpirationTime > DateTime.UtcNow);
+            if (otpEntity == null)
+                return new AuthModel { Message = "Invalid OTP!" };
+
+            var customer = await _userManager.FindByIdAsync(otpEntity.UserId);
+            if (customer == null)
+                return new AuthModel { Message = "Customer not found!" };
+
+            // OTP is verified successfully
+            _applicationDbContext.OTPTokens.Remove(otpEntity);
+            await _applicationDbContext.SaveChangesAsync();
+
+            var jwtSecurityToken = await CreateJwtToken(customer);
+
+            return new AuthModel
+            {
+                UserName = customer.UserName,
+                Gender = customer.Gender,
+                PhoneNumber = customer.PhoneNumber,
+                ExpiresOn = jwtSecurityToken.ValidTo,
+                IsAuthenticated = true,
+                Roles = new List<string> { "Customer" },
+                Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
+            };
         }
 
 

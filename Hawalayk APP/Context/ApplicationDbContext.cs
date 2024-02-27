@@ -29,6 +29,7 @@ namespace Hawalayk_APP.Context
         public virtual DbSet<Image> Images { get; set; }
         public virtual DbSet<ServiceRequest> ServiceRequests { get; set; }
         public virtual DbSet<UserReport>UserReports{ get; set; }
+        public virtual DbSet<OTPToken> OTPTokens { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

@@ -24,6 +24,5 @@ namespace Hawalayk_APP.Models
 
         public Image? ProfilePicture { get; set; }
 
-       
     }
 }

@@ -60,6 +60,25 @@ namespace Hawalayk_APP.Controllers
             }
             return Ok(result);
         }
-    
+
+
+        [HttpPost("VerifyOTP")]
+        public async Task<IActionResult> VerifyOTPAsync([FromBody] VerifyOTPModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _authService.VerifyOTPAsync(model.PhoneNumber, model.OTP);
+
+            if (!result.IsAuthenticated)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
+        }
+
     }
 }
