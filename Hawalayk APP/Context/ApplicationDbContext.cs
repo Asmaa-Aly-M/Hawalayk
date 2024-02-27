@@ -29,6 +29,8 @@ namespace Hawalayk_APP.Context
         public virtual DbSet<ServiceRequest> ServiceRequests { get; set; }
         public virtual DbSet<UserReport>UserReports{ get; set; }
         public virtual DbSet<OTPToken> OTPTokens { get; set; }
+        public virtual DbSet<Governorate> Governorates { get; set; }
+        public virtual DbSet<City> Cities { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

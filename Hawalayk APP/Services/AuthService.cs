@@ -72,9 +72,9 @@ namespace Hawalayk_APP.Services
 
             var jwtSecurityToken = await CreateJwtToken(customer);
 
-            var otpToken = Guid.NewGuid().ToString(); // Generate a unique OTP token
+            var otpToken = Guid.NewGuid().ToString(); 
 
-            // Send OTP via SMS
+         
             var smsResult = _smsService.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
 
             if (String.IsNullOrEmpty(smsResult.ErrorMessage))
@@ -84,7 +84,7 @@ namespace Hawalayk_APP.Services
                     UserId = customer.Id,
                     PhoneNumber = model.PhoneNumber,
                     Token = otpToken,
-                    ExpirationTime = DateTime.UtcNow.AddMinutes(5) // Set an expiration time (e.g., 5 minutes)
+                    ExpirationTime = DateTime.UtcNow.AddMinutes(5) 
                 };
 
                 _applicationDbContext.OTPTokens.Add(otpEntity);
@@ -104,8 +104,6 @@ namespace Hawalayk_APP.Services
             }
             else
             {
-                // Handle SMS sending failure
-                // For example, throw an exception or return an error message
                 return new AuthModel { Message = smsResult.ErrorMessage};
             }
 
@@ -182,7 +180,6 @@ namespace Hawalayk_APP.Services
             if (customer == null)
                 return new AuthModel { Message = "Customer not found!" };
 
-            // OTP is verified successfully
             _applicationDbContext.OTPTokens.Remove(otpEntity);
             await _applicationDbContext.SaveChangesAsync();
 
