@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Hawalayk_APP.Migrations
 {
-    public partial class initialCreat : Migration
+    public partial class initialCreate : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -85,6 +85,35 @@ namespace Hawalayk_APP.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Crafts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "governorates",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false),
+                    governorate_name_ar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    governorate_name_en = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_governorates", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OTPTokens",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ExpirationTime = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OTPTokens", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -300,6 +329,25 @@ namespace Hawalayk_APP.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "cities",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false),
+                    city_name_ar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    city_name_en = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    governorate_id = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_cities", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_cities_governorates_governorate_id",
+                        column: x => x.governorate_id,
+                        principalTable: "governorates",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ServiceRequests",
                 columns: table => new
                 {
@@ -351,9 +399,9 @@ namespace Hawalayk_APP.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CraftsmanId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    CraftId = table.Column<int>(type: "int", nullable: true)
+                    CraftsmanId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    CraftId = table.Column<int>(type: "int", nullable: true),
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -367,8 +415,7 @@ namespace Hawalayk_APP.Migrations
                         name: "FK_Posts_CraftsMan_CraftsmanId",
                         column: x => x.CraftsmanId,
                         principalTable: "CraftsMan",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -378,7 +425,6 @@ namespace Hawalayk_APP.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Rating = table.Column<int>(type: "int", nullable: false),
-                    Headline = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PositiveReacts = table.Column<int>(type: "int", nullable: false),
                     NegativeReacts = table.Column<int>(type: "int", nullable: false),
@@ -394,6 +440,43 @@ namespace Hawalayk_APP.Migrations
                         principalTable: "CraftsMan",
                         principalColumn: "Id");
                 });
+
+            migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GovernorateId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    StreetName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "cities",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Addresses_governorates_GovernorateId",
+                        column: x => x.GovernorateId,
+                        principalTable: "governorates",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_CityId",
+                table: "Addresses",
+                column: "CityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Addresses_GovernorateId",
+                table: "Addresses",
+                column: "GovernorateId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AppReports_ReporerId",
@@ -440,6 +523,11 @@ namespace Hawalayk_APP.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_cities_governorate_id",
+                table: "cities",
+                column: "governorate_id");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_CraftsMan_CraftId",
                 table: "CraftsMan",
                 column: "CraftId");
@@ -483,6 +571,9 @@ namespace Hawalayk_APP.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Addresses");
+
+            migrationBuilder.DropTable(
                 name: "Admin");
 
             migrationBuilder.DropTable(
@@ -510,6 +601,9 @@ namespace Hawalayk_APP.Migrations
                 name: "JobApplications");
 
             migrationBuilder.DropTable(
+                name: "OTPTokens");
+
+            migrationBuilder.DropTable(
                 name: "Posts");
 
             migrationBuilder.DropTable(
@@ -522,6 +616,9 @@ namespace Hawalayk_APP.Migrations
                 name: "UserReports");
 
             migrationBuilder.DropTable(
+                name: "cities");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -529,6 +626,9 @@ namespace Hawalayk_APP.Migrations
 
             migrationBuilder.DropTable(
                 name: "Customer");
+
+            migrationBuilder.DropTable(
+                name: "governorates");
 
             migrationBuilder.DropTable(
                 name: "Crafts");
