@@ -19,7 +19,7 @@ namespace Hawalayk_APP.Context
         public virtual DbSet<Craftsman> Craftsmen { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
         public virtual DbSet<Admin> Admins { get; set; }
-       // public virtual DbSet<Address>Addresses { get; set; }
+        public virtual DbSet<Address> Addresses { get; set; }
         public virtual DbSet<Advertisement> Advertisements { get; set; }
         public virtual DbSet<AppReport> AppReports { get; set; }
         public virtual DbSet<Craft> Crafts { get; set; }
@@ -29,8 +29,8 @@ namespace Hawalayk_APP.Context
         public virtual DbSet<ServiceRequest> ServiceRequests { get; set; }
         public virtual DbSet<UserReport>UserReports{ get; set; }
         public virtual DbSet<OTPToken> OTPTokens { get; set; }
-        public virtual DbSet<Governorate> Governorates { get; set; }
-        public virtual DbSet<City> Cities { get; set; }
+        public virtual DbSet<Governorate> governorates { get; set; }
+        public virtual DbSet<City> cities { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
