@@ -8,6 +8,8 @@ namespace Hawalayk_APP.Services
     {
         Task<List<string>> GetAllCraftsNamesAsync();
         Task<Craft> GetOrCreateCraftAsync(string craftName);
+        Task<List<CraftsmanDTO>> GetCraftsmenOfACraft(CraftName craftName);
+
         int Create(Craft newCraft);
         int Delete(int id);
         List<Craft> GetAll();

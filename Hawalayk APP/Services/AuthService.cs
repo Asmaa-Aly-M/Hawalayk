@@ -72,9 +72,9 @@ namespace Hawalayk_APP.Services
 
             var jwtSecurityToken = await CreateJwtToken(customer);
 
-            var otpToken = Guid.NewGuid().ToString(); 
+            var otpToken = Guid.NewGuid().ToString();
 
-         
+
             var smsResult = _smsService.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
 
             if (String.IsNullOrEmpty(smsResult.ErrorMessage))
@@ -84,7 +84,7 @@ namespace Hawalayk_APP.Services
                     UserId = customer.Id,
                     PhoneNumber = model.PhoneNumber,
                     Token = otpToken,
-                    ExpirationTime = DateTime.UtcNow.AddMinutes(5) 
+                    ExpirationTime = DateTime.UtcNow.AddMinutes(5)
                 };
 
                 _applicationDbContext.OTPTokens.Add(otpEntity);
@@ -104,7 +104,7 @@ namespace Hawalayk_APP.Services
             }
             else
             {
-                return new AuthModel { Message = smsResult.ErrorMessage};
+                return new AuthModel { Message = smsResult.ErrorMessage };
             }
 
         }
@@ -221,8 +221,8 @@ namespace Hawalayk_APP.Services
                 expires: DateTime.Now.AddDays(_jwt.DurationInDays),
                 signingCredentials: new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256)
                 );
-       
-      
+
+
             return token;
         }
 
@@ -257,6 +257,41 @@ namespace Hawalayk_APP.Services
         }
 
 
-      
+        public async Task<DeleteUserDTO> DeleteUserAsync(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new DeleteUserDTO
+                {
+                    isDeleted = false,
+                    Message = "This User Not Found : "
+                };
+            }
+
+            var result = await _userManager.DeleteAsync(user);
+            if (!result.Succeeded)
+            {
+                return new DeleteUserDTO
+                {
+                    isDeleted = false,
+                    Message = "Failed To Delete This User : "
+                };
+            }
+
+            return new DeleteUserDTO
+            {
+                isDeleted = true,
+                Message = "The User Deleted Successfully : "
+            };
+        }
+
+   
+
+
+
+
+
     }
 }
+

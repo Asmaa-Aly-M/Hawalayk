@@ -1,7 +1,10 @@
 ﻿using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Hawalayk_APP.Controllers
 {
@@ -79,6 +82,26 @@ namespace Hawalayk_APP.Controllers
 
             return Ok(result);
         }
+        [Authorize]
+        [HttpDelete("DeleteMyAccount")]
+        public async Task<IActionResult> DeleteCurrentUser()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return NotFound("This Token Not Valid : ");
+            }
+            var result =  await _authService.DeleteUserAsync(userId);
+            if(result.isDeleted == false) 
+            {
+                return BadRequest(result.Message);
+            }
+            return Ok(result);
 
+
+        }
+
+        //[HttpPut("UpdateAccount")]
+      
     }
 }

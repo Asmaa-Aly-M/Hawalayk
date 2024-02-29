@@ -3,6 +3,7 @@ using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Microsoft.EntityFrameworkCore;
+using System;
 
 namespace Hawalayk_APP.Services
 {
@@ -47,8 +48,21 @@ namespace Hawalayk_APP.Services
             var craftNames = Enum.GetNames(typeof(CraftName)).ToList();
             return Task.FromResult(craftNames);
         }
+        public async Task<List<CraftsmanDTO>> GetCraftsmenOfACraft(CraftName craftName)
+        {
+            var craftsmen= await Context.Craftsmen.Include(c => c.Craft).Where(c => c.Craft.Name == craftName).ToListAsync();
+            return craftsmen.Select(c => new CraftsmanDTO
+            {
+                CraftName = Enum.GetName(typeof(CraftName), craftName),
+                UserName =c.UserName,
+                FirstName=c.FirstName,
+                LastName=c.LastName,
+                Rating=c.Rating,
 
-       
+
+            }).ToList();
+
+        }
 
 
 
