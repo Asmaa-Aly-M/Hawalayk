@@ -77,8 +77,6 @@ namespace Hawalayk_APP.Services
 
             var otpToken = _smsService.GenerateOTP(false, 4);
 
-            var otpToken = Guid.NewGuid().ToString();
-
 
             var smsResult = _smsService.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
 
