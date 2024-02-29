@@ -43,8 +43,40 @@ namespace Hawalayk_APP.Controllers
             }
             return Ok(result);
         }
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPasswordAsync([FromBody] string phoneNumber)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var result = await _authService.ForgotPasswordAsync(phoneNumber);
 
+            if (!result.ActionSucceeded)
+            {
+                return BadRequest(result.Message);
+            }
 
+            return Ok(result);
+        }
+
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _authService.ResetPasswordAsync(model);
+
+            if (!result.IsAuthenticated)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
+        }
 
         [HttpPost("Login")]
         public async Task<IActionResult>GetTokenAsync([FromBody] TokenRequestModel model)
@@ -60,7 +92,6 @@ namespace Hawalayk_APP.Controllers
             }
             return Ok(result);
         }
-
 
         [HttpPost("VerifyOTP")]
         public async Task<IActionResult> VerifyOTPAsync([FromBody] VerifyOTPModel model)
