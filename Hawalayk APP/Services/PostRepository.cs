@@ -55,6 +55,14 @@ namespace Hawalayk_APP.Services
            .ToListAsync();
             return  posts.Select(p => new PostDTO { Content = p.Content, Image = p.ImageURL }).ToList();
         }
+        public int Update(int id, Post newPost)
+        {
+            Post OldPost = Context.Posts.FirstOrDefault(s => s.Id == id);
+            OldPost.ImageURL = newPost.ImageURL;
+            OldPost.Content = newPost.Content;
+            int row = Context.SaveChanges();
+            return row;
+        }
         public int Delete(int id)
         {
             Post OldPost = Context.Posts.FirstOrDefault(s => s.Id == id);

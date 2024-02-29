@@ -22,7 +22,6 @@ namespace Hawalayk_APP.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-
             modelBuilder.Entity("Hawalayk_APP.Models.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -31,23 +30,24 @@ namespace Hawalayk_APP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("GovernorateId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Street")
+                    b.Property<string>("StreetName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("GovernorateId");
+
                     b.ToTable("Addresses");
                 });
-
 
             modelBuilder.Entity("Hawalayk_APP.Models.Advertisement", b =>
                 {
@@ -89,10 +89,6 @@ namespace Hawalayk_APP.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-
-                    b.HasIndex("ImageId");
-
 
                     b.ToTable("Advertisements");
                 });
@@ -210,6 +206,33 @@ namespace Hawalayk_APP.Migrations
                     b.ToTable("AppReports");
                 });
 
+            modelBuilder.Entity("Hawalayk_APP.Models.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<string>("CityNameAR")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("city_name_ar");
+
+                    b.Property<string>("CityNameEN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("city_name_en");
+
+                    b.Property<int?>("GovernorateId")
+                        .HasColumnType("int")
+                        .HasColumnName("governorate_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GovernorateId");
+
+                    b.ToTable("cities");
+                });
+
             modelBuilder.Entity("Hawalayk_APP.Models.Craft", b =>
                 {
                     b.Property<int>("Id")
@@ -225,32 +248,27 @@ namespace Hawalayk_APP.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Crafts");
-
                 });
 
-            modelBuilder.Entity("Hawalayk_APP.Models.Image", b =>
+            modelBuilder.Entity("Hawalayk_APP.Models.Governorate", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("DatePosted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("GovernorateNameAR")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("governorate_name_ar");
 
-                    b.Property<string>("Path")
+                    b.Property<string>("GovernorateNameEN")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("governorate_name_en");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
-
+                    b.ToTable("governorates");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.JobApplication", b =>
@@ -283,7 +301,6 @@ namespace Hawalayk_APP.Migrations
                     b.HasIndex("CraftsmanId");
 
                     b.ToTable("JobApplications");
-
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.OTPToken", b =>
@@ -312,7 +329,6 @@ namespace Hawalayk_APP.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OTPTokens");
-
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Post", b =>
@@ -342,10 +358,6 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasIndex("CraftsmanId");
 
-
-                    b.HasIndex("ImageId");
-
-
                     b.ToTable("Posts");
                 });
 
@@ -366,10 +378,6 @@ namespace Hawalayk_APP.Migrations
 
                     b.Property<DateTime>("DatePosted")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Headline")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NegativeReacts")
                         .HasColumnType("int");
@@ -413,10 +421,6 @@ namespace Hawalayk_APP.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
-
-
-                    b.HasIndex("ImageId");
-
 
                     b.ToTable("ServiceRequests");
                 });
@@ -622,6 +626,25 @@ namespace Hawalayk_APP.Migrations
                     b.ToTable("Customer", (string)null);
                 });
 
+            modelBuilder.Entity("Hawalayk_APP.Models.Address", b =>
+                {
+                    b.HasOne("Hawalayk_APP.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hawalayk_APP.Models.Governorate", "Governorate")
+                        .WithMany()
+                        .HasForeignKey("GovernorateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("Governorate");
+                });
+
             modelBuilder.Entity("Hawalayk_APP.Models.AppReport", b =>
                 {
                     b.HasOne("Hawalayk_APP.Models.ApplicationUser", "Reporter")
@@ -631,6 +654,15 @@ namespace Hawalayk_APP.Migrations
                         .IsRequired();
 
                     b.Navigation("Reporter");
+                });
+
+            modelBuilder.Entity("Hawalayk_APP.Models.City", b =>
+                {
+                    b.HasOne("Hawalayk_APP.Models.Governorate", "Governorate")
+                        .WithMany("Cities")
+                        .HasForeignKey("GovernorateId");
+
+                    b.Navigation("Governorate");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.JobApplication", b =>
@@ -783,6 +815,11 @@ namespace Hawalayk_APP.Migrations
                     b.Navigation("Craftsmen");
 
                     b.Navigation("Gallery");
+                });
+
+            modelBuilder.Entity("Hawalayk_APP.Models.Governorate", b =>
+                {
+                    b.Navigation("Cities");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Craftsman", b =>

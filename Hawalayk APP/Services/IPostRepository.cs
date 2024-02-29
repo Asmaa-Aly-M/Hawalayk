@@ -10,6 +10,7 @@ namespace Hawalayk_APP.Services
 
         Task<Post> CreatNewPostAsync(Craftsman craftsman, PostDTO newPost);
         int Delete(int id);
+        int Update(int id, Post newPost);
         List<Post> GetAll();
         Post GetById(int id);
        
