@@ -37,35 +37,41 @@ namespace Hawalayk_APP.Controllers
             {
                 return NotFound("This Token Is Not Found : ");
             }
-            var craftssman = await _crafsmenRepository.GetById(userId);
-            if (craftssman == null)
+            var craftsman = await _crafsmenRepository.GetById(userId);
+            if (craftsman == null)
             {
                 return BadRequest("Not Allowed :");
             }
-            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(craftssman);
+            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(craftsman);
             return Ok(result);
         }
-        //[HttpPut("UpdateCraftsmanAccount")]
-        //public async Task<IActionResult> UpdateCraftsmanAccountAsync(CraftsmanAccountDTO craftmanAccount)
-        //{
-        //    if (!ModelState.IsValid)
-        //    {
-        //        return BadRequest(ModelState);
-        //    }
-        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        //    if (userId == null)
-        //    {
-        //        return NotFound("This Token Is Not Found : ");
-        //    }
-        //    var craftssman = await _crafsmenRepository.GetById(userId);
-        //    if (craftssman == null)
-        //    {
-        //        return BadRequest("Not Allowed :");
-        //    }
-        //    var result = await _crafsmenRepository.UpdateCraftsmanAccountAsync(craftssman, craftmanAccount);
-        //    return Ok(result);
+        [HttpPut("UpdateCraftsmanAccount")]
+        public async Task<IActionResult> UpdateCraftsmanAccountAsync(CraftsmanAccountDTO craftmanAccount)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return NotFound("This Token Is Not Found : ");
+            }
 
-        //}
+
+            var result = await _crafsmenRepository.UpdateCraftsmanAccountAsync(userId, craftmanAccount);
+
+            if (!result.IsUpdated)
+            {
+                return BadRequest(result.Message);
+            } 
+            
+            return Ok(result);
+
+
+
+
+        }
 
 
 

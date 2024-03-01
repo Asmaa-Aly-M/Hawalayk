@@ -2,7 +2,9 @@
 using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace Hawalayk_APP.Services
 {
@@ -10,11 +12,18 @@ namespace Hawalayk_APP.Services
     {
 
         ApplicationDbContext Context;
+        private readonly CraftRepository _craftService;
         private readonly IPostRepository _postRepository;
-        public CraftsmenRepository(ApplicationDbContext _Context, IPostRepository postRepository)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+    
+
+        public CraftsmenRepository(ApplicationDbContext _Context, CraftRepository craftService,IPostRepository postRepository, UserManager<ApplicationUser> userManager)
         {
             Context = _Context;
             _postRepository = postRepository;
+            _userManager = userManager;
+            _craftService = craftService;
         }
 
 
@@ -50,17 +59,50 @@ namespace Hawalayk_APP.Services
                 CraftName = Enum.GetName(typeof(CraftName), craftsman.Craft.Name)
 
             };
-            
+
         }
-        //async Task<CraftsmanAccountDTO> UpdateCraftsmanAccountAsync(Craftsman craftsman, CraftsmanAccountDTO craftsmanAccount)
-        //{
-        //    craftsman.FirstName = craftsmanAccount.FirstName;
-        //    craftsman.LastName = craftsmanAccount.LastName;         
-        //    craftsman.UserName = craftsmanAccount.UserName;
-        //    craftsman.Craft 
-        //}
+        public async Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId, CraftsmanAccountDTO craftsmanAccount)
+
+        {
+
+            var craftsman = await GetById(craftsmanId);
+            if(craftsman == null)
+            {
+                return new UpdateUserDTO { IsUpdated=false,Message="Not Found : " };
+
+            }
 
 
+            var user = await _userManager.FindByNameAsync(craftsmanAccount.UserName);
+            if (user != null && user.Id != craftsmanId)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "UserName is already Token : " };
+            }
 
+            var craft = await _craftService.GetOrCreateCraftAsync(craftsmanAccount.CraftName.ToString());
+
+            craftsman.FirstName = craftsmanAccount.FirstName;
+            craftsman.LastName = craftsmanAccount.LastName;
+            craftsman.UserName = craftsmanAccount.UserName;
+            craftsman.ProfilePicture = craftsmanAccount.ProfilePic;
+            craftsman.Craft = craft;
+            craftsman.BirthDate = craftsmanAccount.BirthDate;
+
+
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return new UpdateUserDTO
+                {
+                    IsUpdated = false,
+                    Message = "Failed to update"
+                };
+            }
+            return new UpdateUserDTO { IsUpdated = true, Message = "The Account Updated Successfully :" };
+
+
+        }
+
+      
     }
 }
