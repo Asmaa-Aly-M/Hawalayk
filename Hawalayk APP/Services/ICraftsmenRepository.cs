@@ -9,7 +9,7 @@ namespace Hawalayk_APP.Services
         Task<Craftsman> GetById(string id);
         Task<Post> AddPostToGallaryAsync(string craftsmanId, PostDTO post);
         Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(Craftsman craftsman);
-        Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId ,CraftsmanAccountDTO craftsmanAccount);
+       // Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId ,CraftsmanAccountDTO craftsmanAccount);
 
 
     }

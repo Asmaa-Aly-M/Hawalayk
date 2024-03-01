@@ -45,33 +45,33 @@ namespace Hawalayk_APP.Controllers
             var result = await _crafsmenRepository.GetCraftsmanAccountAsync(craftsman);
             return Ok(result);
         }
-        [HttpPut("UpdateCraftsmanAccount")]
-        public async Task<IActionResult> UpdateCraftsmanAccountAsync(CraftsmanAccountDTO craftmanAccount)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null)
-            {
-                return NotFound("This Token Is Not Found : ");
-            }
+        //[HttpPut("UpdateCraftsmanAccount")]
+        //public async Task<IActionResult> UpdateCraftsmanAccountAsync(CraftsmanAccountDTO craftmanAccount)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //    if (userId == null)
+        //    {
+        //        return NotFound("This Token Is Not Found : ");
+        //    }
 
 
-            var result = await _crafsmenRepository.UpdateCraftsmanAccountAsync(userId, craftmanAccount);
+        //    var result = await _crafsmenRepository.UpdateCraftsmanAccountAsync(userId, craftmanAccount);
 
-            if (!result.IsUpdated)
-            {
-                return BadRequest(result.Message);
-            } 
+        //    if (!result.IsUpdated)
+        //    {
+        //        return BadRequest(result.Message);
+        //    } 
             
-            return Ok(result);
+        //    return Ok(result);
 
 
 
 
-        }
+        //}
 
 
 

@@ -29,12 +29,11 @@ namespace Hawalayk_APP
 
 
 
-
-            builder.Services.AddScoped<IPostRepository, PostRepository>();
-            builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
-            builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<ICraftRepository, CraftRepository>();
             builder.Services.AddScoped<ICraftsmenRepository, CraftsmenRepository>();
+            builder.Services.AddScoped<IAuthService, AuthService>();
+            builder.Services.AddScoped<IPostRepository, PostRepository>();
+            builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();
             builder.Services.AddScoped<IAppReportRepository, AppReportRepository>();/////
             builder.Services.AddScoped<IReviewRepository,ReviewRepository>();
             builder.Services.AddScoped <IUserReportRepository,UserReportRepository> ();
