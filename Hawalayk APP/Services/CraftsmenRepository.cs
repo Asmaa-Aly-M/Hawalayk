@@ -11,19 +11,20 @@ namespace Hawalayk_APP.Services
     public class CraftsmenRepository : ICraftsmenRepository
     {
 
-        ApplicationDbContext Context;
-       // private readonly CraftRepository _craftService;
-        private readonly IPostRepository _postRepository;
-        private readonly UserManager<ApplicationUser> _userManager;
+          ApplicationDbContext Context;
+          private readonly ICraftRepository _craftService;
+          private readonly IPostRepository _postRepository;
+          private readonly UserManager<ApplicationUser> _userManager;
 
     
 
-        public CraftsmenRepository(ApplicationDbContext _Context,IPostRepository postRepository, UserManager<ApplicationUser> userManager)
+        public CraftsmenRepository(ICraftRepository craftService,ApplicationDbContext _Context,IPostRepository postRepository, UserManager<ApplicationUser> userManager)
         {
-            Context = _Context;
-            _postRepository = postRepository;
-            _userManager = userManager;
-           // _craftService = craftService;
+              Context = _Context;
+             _postRepository = postRepository;
+             _userManager = userManager;
+             _craftService = craftService;
+            
         }
 
 
@@ -61,48 +62,48 @@ namespace Hawalayk_APP.Services
             };
 
         }
-        //public async Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId, CraftsmanAccountDTO craftsmanAccount)
+        public async Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId, CraftsmanAccountDTO craftsmanAccount)
 
-        //{
+        {
 
-        //    var craftsman = await GetById(craftsmanId);
-        //    if(craftsman == null)
-        //    {
-        //        return new UpdateUserDTO { IsUpdated=false,Message="Not Found : " };
+            var craftsman = await GetById(craftsmanId);
+            if (craftsman == null)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "Not Found : " };
 
-        //    }
-
-
-        //    var user = await _userManager.FindByNameAsync(craftsmanAccount.UserName);
-        //    if (user != null && user.Id != craftsmanId)
-        //    {
-        //        return new UpdateUserDTO { IsUpdated = false, Message = "UserName is already Token : " };
-        //    }
-
-        //    var craft = await _craftService.GetOrCreateCraftAsync(craftsmanAccount.CraftName.ToString());
-
-        //    craftsman.FirstName = craftsmanAccount.FirstName;
-        //    craftsman.LastName = craftsmanAccount.LastName;
-        //    craftsman.UserName = craftsmanAccount.UserName;
-        //    craftsman.ProfilePicture = craftsmanAccount.ProfilePic;
-        //    craftsman.Craft = craft;
-        //    craftsman.BirthDate = craftsmanAccount.BirthDate;
+            }
 
 
-        //    var result = await _userManager.UpdateAsync(user);
-        //    if (!result.Succeeded)
-        //    {
-        //        return new UpdateUserDTO
-        //        {
-        //            IsUpdated = false,
-        //            Message = "Failed to update"
-        //        };
-        //    }
-        //    return new UpdateUserDTO { IsUpdated = true, Message = "The Account Updated Successfully :" };
+            var user = await _userManager.FindByNameAsync(craftsmanAccount.UserName);
+            if (user != null && user.Id != craftsmanId)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "UserName is already Token : " };
+            }
+
+            var craft = await _craftService.GetOrCreateCraftAsync(craftsmanAccount.CraftName.ToString());
+
+            craftsman.FirstName = craftsmanAccount.FirstName;
+            craftsman.LastName = craftsmanAccount.LastName;
+            craftsman.UserName = craftsmanAccount.UserName;
+            craftsman.ProfilePicture = craftsmanAccount.ProfilePic;
+            craftsman.Craft = craft;
+            craftsman.BirthDate = craftsmanAccount.BirthDate;
 
 
-        //}
+            var result = await _userManager.UpdateAsync(craftsman);
+            if (!result.Succeeded)
+            {
+                return new UpdateUserDTO
+                {
+                    IsUpdated = false,
+                    Message = "Failed to update"
+                };
+            }
+            return new UpdateUserDTO { IsUpdated = true, Message = "The Account Updated Successfully :" };
 
-      
+
+        }
+
+
     }
 }
