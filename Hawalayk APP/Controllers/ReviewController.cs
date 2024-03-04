@@ -1,4 +1,5 @@
-﻿using Hawalayk_APP.Models;
+﻿using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -16,28 +17,30 @@ namespace Hawalayk_APP.Controllers
         }
         [Route("view")]
         [HttpPost]
-        public IActionResult writeReview(Review newreview) /////هل محتاجين يرجع حاجة معينة
+        public IActionResult writeReview(ReviewDTO newreview) 
         {
             review.Create(newreview);
             return Ok();
         }
+
         [Route("like")]
         [HttpPost]
         public IActionResult like(int reviewId)   
         {
             Review theReview = review.GetById(reviewId);
             int newPositiveReacts = theReview.PositiveReacts + 1;
-            return Ok(newPositiveReacts);///// هل محتاجين يرجع حاجة
+            return Ok(newPositiveReacts);
         }
-        /*
-         [Route("removeLike")]
+        
+        [Route("removeLike")]
         [HttpPost]
-        public IActionResult Removelike(int reviewId)///////////////////function جديدة
+        public IActionResult Removelike(int reviewId)
         {
             Review theReview = review.GetById(reviewId);
             int newPositiveReacts = theReview.PositiveReacts - 1;
-            return Ok(newPositiveReacts);///// هل محتاجين يرجع حاجة
-        }*/
+            return Ok(newPositiveReacts);
+        }
+
         [Route("disLike")]
         [HttpPost]
         public IActionResult disLike(int reviewId)
@@ -47,15 +50,15 @@ namespace Hawalayk_APP.Controllers
             return Ok(newNegativeReacts);///// هل محتاجين يرجع حاجة
         }
 
-        /*
-         [Route("removeDisLike")]
+       
+        [Route("removeDisLike")]
         [HttpPost]
-        public IActionResult removeDisLike(int reviewId) ///function جديدة
+        public IActionResult removeDisLike(int reviewId) 
         {
             Review theReview = review.GetById(reviewId);
             int newNegativeReacts = theReview.NegativeReacts - 1;
-            return Ok(newNegativeReacts);///// هل محتاجين يرجع حاجة
-        }*/
+            return Ok(newNegativeReacts);
+        }
 
 
     }

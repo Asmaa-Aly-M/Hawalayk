@@ -5,14 +5,12 @@ namespace Hawalayk_APP.Services
 {
     public interface IPostRepository
     {
-        Task<List<PostDTO>> GetCraftGallary(int craftId);
-
-
-        Task<Post> CreatNewPostAsync(Craftsman craftsman, PostDTO newPost);
+        int Create(string craftsmanId, PostDTO postDTO);
         int Delete(int id);
-        int Update(int id, Post newPost);
         List<Post> GetAll();
         Post GetById(int id);
-       
+        List<Post> GetGrafGallary(int craftId);
+        List<Post> GetGraftsmanPortfolio(string craftsmanId);
+        int Update(int id, Post newPost);
     }
 }

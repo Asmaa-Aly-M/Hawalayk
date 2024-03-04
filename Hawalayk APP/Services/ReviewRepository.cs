@@ -1,4 +1,5 @@
 ﻿using Hawalayk_APP.Context;
+using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
 
 namespace Hawalayk_APP.Services
@@ -11,9 +12,6 @@ namespace Hawalayk_APP.Services
             Context = _Context;
         }
 
-
-
-
         public Review GetById(int id)
         {
             Review review = Context.Reviews.FirstOrDefault(s => s.Id == id);
@@ -24,20 +22,23 @@ namespace Hawalayk_APP.Services
             return Context.Reviews.ToList();
         }
 
-        public int Create(Review newReview)
+        public int Create(ReviewDTO newReview)
         {
-            Context.Reviews.Add(newReview);
+            Review review = new Review
+            {
+                Id = newReview.Id,
+                Rating = newReview.Rating,
+                Content = newReview.Content,
+            };
+            Context.Reviews.Add(review);
             int row = Context.SaveChanges();
             return row;
         }
-        public int Update(int id, Review newReview)
+        public int Update(int id, ReviewDTO newReview)
         {
             Review OldReview = Context.Reviews.FirstOrDefault(s => s.Id == id);
             OldReview.Rating = newReview.Rating;
             OldReview.Content = newReview.Content;
-            OldReview.PositiveReacts = newReview.PositiveReacts;
-            OldReview.NegativeReacts = newReview.NegativeReacts;
-            OldReview.DatePosted = newReview.DatePosted;
             int row = Context.SaveChanges();
             return row;
         }

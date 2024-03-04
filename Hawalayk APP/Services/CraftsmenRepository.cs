@@ -11,52 +11,54 @@ namespace Hawalayk_APP.Services
     public class CraftsmenRepository : ICraftsmenRepository
     {
 
-          ApplicationDbContext Context;
-          private readonly ICraftRepository _craftService;
-          private readonly IPostRepository _postRepository;
-          private readonly UserManager<ApplicationUser> _userManager;
+        ApplicationDbContext Context;
+        private readonly ICraftRepository _craftService;
+        //private readonly IPostRepository _postRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-    
 
-        public CraftsmenRepository(ICraftRepository craftService,ApplicationDbContext _Context,IPostRepository postRepository, UserManager<ApplicationUser> userManager)
+
+        public CraftsmenRepository(ICraftRepository craftService, ApplicationDbContext _Context, UserManager<ApplicationUser> userManager)
         {
-              Context = _Context;
-             _postRepository = postRepository;
-             _userManager = userManager;
-             _craftService = craftService;
-            
+            Context = _Context;
+            // _postRepository = postRepository;
+            _userManager = userManager;
+            _craftService = craftService;
+
         }
 
 
 
 
-        public  async Task<Craftsman> GetById(string id)
+        public Craftsman GetById(string id)
         {
-            Craftsman Craftman = await Context.Craftsmen.Include(c=>c.Craft).FirstOrDefaultAsync(s => s.Id == id);
+            Craftsman Craftman = Context.Craftsmen.FirstOrDefault(s => s.Id == id);
             return Craftman;
         }
+
+        /* public async Task<Craftsman> GetById(string id)
+         {
+             Craftsman Craftman = await Context.Craftsmen.Include(c => c.Craft).FirstOrDefaultAsync(s => s.Id == id);
+             return Craftman;
+         }*/
+
         public List<Craftsman> GetAll()
         {
             return Context.Craftsmen.ToList();
         }
-        public async Task<Post> AddPostToGallaryAsync(string craftsmanId,PostDTO post)
-        {
-            var craftsman = await GetById(craftsmanId);
-            return await _postRepository.CreatNewPostAsync(craftsman,post);
 
-        }
 
         public async Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(Craftsman craftsman)
         {
-            
+
             return new CraftsmanAccountDTO
             {
                 FirstName = craftsman.FirstName,
                 LastName = craftsman.LastName,
                 UserName = craftsman.UserName,
-                ProfilePic= craftsman.ProfilePicture,
+                ProfilePic = craftsman.ProfilePicture,
                 BirthDate = craftsman.BirthDate,
-               // PhoneNumber = craftsman.PhoneNumber,
+                // PhoneNumber = craftsman.PhoneNumber,
                 CraftName = Enum.GetName(typeof(CraftName), craftsman.Craft.Name)
 
             };
@@ -66,7 +68,7 @@ namespace Hawalayk_APP.Services
 
         {
 
-            var craftsman = await GetById(craftsmanId);
+            var craftsman = GetById(craftsmanId);
             if (craftsman == null)
             {
                 return new UpdateUserDTO { IsUpdated = false, Message = "Not Found : " };
