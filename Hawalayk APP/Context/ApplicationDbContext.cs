@@ -31,6 +31,7 @@ namespace Hawalayk_APP.Context
         public virtual DbSet<OTPToken> OTPTokens { get; set; }
         public virtual DbSet<Governorate> governorates { get; set; }
         public virtual DbSet<City> cities { get; set; }
+        public virtual DbSet<Block> Blocks { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
