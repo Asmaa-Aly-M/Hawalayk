@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
-    public class BlockingService
+    public class BlockingService : IBlockingService
     {
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -30,7 +30,7 @@ namespace Hawalayk_APP.Services
             {
                 throw new KeyNotFoundException("User not found.");
             }
-                
+
             bool isBlocked = await IsUserBlockedAsync(blockingUserId, blockedUserId);
 
             if (isBlocked)
@@ -70,9 +70,9 @@ namespace Hawalayk_APP.Services
             var existingBlock = await _applicationDbContext.Blocks
                 .FirstOrDefaultAsync(b => b.BlockingUserId == blockingUserId && b.BlockedUserId == blockedUserId);
 
-            if(existingBlock  != null)
+            if (existingBlock != null)
                 return true;
-            else 
+            else
                 return false;
         }
 

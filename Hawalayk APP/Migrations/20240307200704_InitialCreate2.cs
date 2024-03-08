@@ -38,7 +38,7 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.BlockingUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(

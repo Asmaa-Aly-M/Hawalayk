@@ -14,7 +14,8 @@ namespace Hawalayk_APP.Context
         {
             
         }
-        
+
+        #region Tabels
         public virtual DbSet<ApplicationUser>ApplicationUsers { get; set; }
         public virtual DbSet<Craftsman> Craftsmen { get; set; }
         public virtual DbSet<Customer> Customers { get; set; }
@@ -32,10 +33,15 @@ namespace Hawalayk_APP.Context
         public virtual DbSet<Governorate> governorates { get; set; }
         public virtual DbSet<City> cities { get; set; }
         public virtual DbSet<Block> Blocks { get; set; }
+        #endregion
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
+          
+
+
             modelBuilder.Entity<Customer>().ToTable("Customer");
             modelBuilder.Entity<Craftsman>().ToTable("CraftsMan");
             modelBuilder.Entity<Admin>().ToTable("Admin");

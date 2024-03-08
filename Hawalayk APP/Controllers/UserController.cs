@@ -1,5 +1,4 @@
 ﻿using Hawalayk_APP.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -17,9 +16,12 @@ namespace Hawalayk_APP.Controllers
             _blockService = blockService;
         }
 
-        //[AuthorizeFilter(typeof(BlockingFilter))] add this attribute on top of actions you want executed only for unblocked users
+        //  [ServiceFilter(typeof(BlockingFilter))]
 
-        [HttpPost]
+
+        // add this attribute on top of actions you want executed only for unblocked users
+
+        [HttpPost("BlockUser")]
         public async Task<IActionResult> BlockUser(string blockedUserId)
         {
             if (string.IsNullOrEmpty(blockedUserId))
@@ -49,7 +51,7 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("UnBlockUser")]
         public async Task<IActionResult> UnblockUser(string blockedUserId)
         {
             if (string.IsNullOrEmpty(blockedUserId))

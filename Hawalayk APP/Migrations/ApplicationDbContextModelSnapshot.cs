@@ -175,6 +175,28 @@ namespace Hawalayk_APP.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "fa542aab-5326-4cdc-a1a0-b1a5ffd994f6",
+                            AccessFailedCount = 0,
+                            BirthDate = new DateTime(2024, 3, 8, 19, 42, 31, 959, DateTimeKind.Local).AddTicks(4272),
+                            ConcurrencyStamp = "1355045c-a7c6-45a1-b71a-773230d666ef",
+                            Email = "a@gmail.com",
+                            EmailConfirmed = false,
+                            FirstName = "User",
+                            Gender = "Male",
+                            LastName = "User",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEFQWxExeZzjODI7TVFPJl/OZmT/smQMZQwz/MeUVJHiJCXN5mke3AgyMYkhx+IJEdA==",
+                            PhoneNumber = "010000000000",
+                            PhoneNumberConfirmed = false,
+                            ProfilePicture = "j.jpg",
+                            SecurityStamp = "f76c0190-0a8b-4473-91f8-d9cc90f756fd",
+                            TwoFactorEnabled = false,
+                            UserName = "User"
+                        });
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.AppReport", b =>
