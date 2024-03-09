@@ -35,9 +35,9 @@ namespace Hawalayk_APP.Services
             Review OldReview = Context.Reviews.FirstOrDefault(s => s.Id == id);
             OldReview.Rating = newReview.Rating;
             OldReview.Content = newReview.Content;
-            OldReview.PositiveReacts = newReview.PositiveReacts;
-            OldReview.NegativeReacts = newReview.NegativeReacts;
-            OldReview.DatePosted = newReview.DatePosted;
+            //OldReview.PositiveReacts = newReview.PositiveReacts; //ازاي هعدل على عدد الريأكتات و التاريخ؟؟
+            //OldReview.NegativeReacts = newReview.NegativeReacts;
+            //OldReview.DatePosted = newReview.DatePosted;
             int row = Context.SaveChanges();
             return row;
         }

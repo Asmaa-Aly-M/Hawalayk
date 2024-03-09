@@ -1,4 +1,5 @@
-﻿using Hawalayk_APP.Models;
+﻿using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Models;
 
 namespace Hawalayk_APP.Services
 {
@@ -9,5 +10,6 @@ namespace Hawalayk_APP.Services
         List<Review> GetAll();
         Review GetById(int id);
         int Update(int id, Review newReview);
+        void UpdateById(int id, ReviewDTO updatedReview);
     }
 }
