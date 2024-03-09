@@ -13,7 +13,8 @@ namespace Hawalayk_APP.Models
         public string Token { get; set; }
         public string Email { get; set; }
         public Address Address { get; set; }
-        
+        public bool ActionSucceeded { get; set; }
+
         public DateTime ExpiresOn { get; set; }
     }
 }

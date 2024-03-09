@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Hawalayk_APP.Enums;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using static System.Net.Mime.MediaTypeNames;
 
@@ -21,5 +22,6 @@ namespace Hawalayk_APP.Models
         public Craft? craft { get; set; }
 
         public string? Content { get; set; }
+        public PostStatus Flag { get; set; }
     }
 }

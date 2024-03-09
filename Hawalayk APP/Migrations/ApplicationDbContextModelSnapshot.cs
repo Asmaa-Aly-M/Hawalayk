@@ -22,7 +22,6 @@ namespace Hawalayk_APP.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-
             modelBuilder.Entity("Hawalayk_APP.Models.Address", b =>
                 {
                     b.Property<int>("Id")
@@ -31,23 +30,24 @@ namespace Hawalayk_APP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("CityId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Country")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("GovernorateId")
+                        .HasColumnType("int");
 
-                    b.Property<string>("Street")
+                    b.Property<string>("StreetName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CityId");
+
+                    b.HasIndex("GovernorateId");
+
                     b.ToTable("Addresses");
                 });
-
 
             modelBuilder.Entity("Hawalayk_APP.Models.Advertisement", b =>
                 {
@@ -89,10 +89,6 @@ namespace Hawalayk_APP.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-
-                    b.HasIndex("ImageId");
-
 
                     b.ToTable("Advertisements");
                 });
@@ -179,6 +175,28 @@ namespace Hawalayk_APP.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "fa542aab-5326-4cdc-a1a0-b1a5ffd994f6",
+                            AccessFailedCount = 0,
+                            BirthDate = new DateTime(2024, 3, 8, 19, 42, 31, 959, DateTimeKind.Local).AddTicks(4272),
+                            ConcurrencyStamp = "1355045c-a7c6-45a1-b71a-773230d666ef",
+                            Email = "a@gmail.com",
+                            EmailConfirmed = false,
+                            FirstName = "User",
+                            Gender = "Male",
+                            LastName = "User",
+                            LockoutEnabled = false,
+                            PasswordHash = "AQAAAAEAACcQAAAAEFQWxExeZzjODI7TVFPJl/OZmT/smQMZQwz/MeUVJHiJCXN5mke3AgyMYkhx+IJEdA==",
+                            PhoneNumber = "010000000000",
+                            PhoneNumberConfirmed = false,
+                            ProfilePicture = "j.jpg",
+                            SecurityStamp = "f76c0190-0a8b-4473-91f8-d9cc90f756fd",
+                            TwoFactorEnabled = false,
+                            UserName = "User"
+                        });
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.AppReport", b =>
@@ -210,6 +228,58 @@ namespace Hawalayk_APP.Migrations
                     b.ToTable("AppReports");
                 });
 
+            modelBuilder.Entity("Hawalayk_APP.Models.Block", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("BlockedUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("BlockingUserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BlockedUserId");
+
+                    b.HasIndex("BlockingUserId");
+
+                    b.ToTable("Blocks");
+                });
+
+            modelBuilder.Entity("Hawalayk_APP.Models.City", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int")
+                        .HasColumnName("id");
+
+                    b.Property<string>("CityNameAR")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("city_name_ar");
+
+                    b.Property<string>("CityNameEN")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("city_name_en");
+
+                    b.Property<int?>("GovernorateId")
+                        .HasColumnType("int")
+                        .HasColumnName("governorate_id");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("GovernorateId");
+
+                    b.ToTable("cities");
+                });
+
             modelBuilder.Entity("Hawalayk_APP.Models.Craft", b =>
                 {
                     b.Property<int>("Id")
@@ -225,32 +295,27 @@ namespace Hawalayk_APP.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Crafts");
-
                 });
 
-            modelBuilder.Entity("Hawalayk_APP.Models.Image", b =>
+            modelBuilder.Entity("Hawalayk_APP.Models.Governorate", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("int")
+                        .HasColumnName("id");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<DateTime>("DatePosted")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
+                    b.Property<string>("GovernorateNameAR")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("governorate_name_ar");
 
-                    b.Property<string>("Path")
+                    b.Property<string>("GovernorateNameEN")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(max)")
+                        .HasColumnName("governorate_name_en");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Images");
-
+                    b.ToTable("governorates");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.JobApplication", b =>
@@ -283,7 +348,6 @@ namespace Hawalayk_APP.Migrations
                     b.HasIndex("CraftsmanId");
 
                     b.ToTable("JobApplications");
-
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.OTPToken", b =>
@@ -312,7 +376,6 @@ namespace Hawalayk_APP.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("OTPTokens");
-
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Post", b =>
@@ -332,6 +395,9 @@ namespace Hawalayk_APP.Migrations
                     b.Property<string>("CraftsmanId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<int>("Flag")
+                        .HasColumnType("int");
+
                     b.Property<string>("ImageURL")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -341,10 +407,6 @@ namespace Hawalayk_APP.Migrations
                     b.HasIndex("CraftId");
 
                     b.HasIndex("CraftsmanId");
-
-
-                    b.HasIndex("ImageId");
-
 
                     b.ToTable("Posts");
                 });
@@ -366,10 +428,6 @@ namespace Hawalayk_APP.Migrations
 
                     b.Property<DateTime>("DatePosted")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("Headline")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("NegativeReacts")
                         .HasColumnType("int");
@@ -413,10 +471,6 @@ namespace Hawalayk_APP.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
-
-
-                    b.HasIndex("ImageId");
-
 
                     b.ToTable("ServiceRequests");
                 });
@@ -622,6 +676,25 @@ namespace Hawalayk_APP.Migrations
                     b.ToTable("Customer", (string)null);
                 });
 
+            modelBuilder.Entity("Hawalayk_APP.Models.Address", b =>
+                {
+                    b.HasOne("Hawalayk_APP.Models.City", "City")
+                        .WithMany()
+                        .HasForeignKey("CityId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hawalayk_APP.Models.Governorate", "Governorate")
+                        .WithMany()
+                        .HasForeignKey("GovernorateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("City");
+
+                    b.Navigation("Governorate");
+                });
+
             modelBuilder.Entity("Hawalayk_APP.Models.AppReport", b =>
                 {
                     b.HasOne("Hawalayk_APP.Models.ApplicationUser", "Reporter")
@@ -631,6 +704,34 @@ namespace Hawalayk_APP.Migrations
                         .IsRequired();
 
                     b.Navigation("Reporter");
+                });
+
+            modelBuilder.Entity("Hawalayk_APP.Models.Block", b =>
+                {
+                    b.HasOne("Hawalayk_APP.Models.ApplicationUser", "BlockedUser")
+                        .WithMany()
+                        .HasForeignKey("BlockedUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Hawalayk_APP.Models.ApplicationUser", "BlockingUser")
+                        .WithMany()
+                        .HasForeignKey("BlockingUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BlockedUser");
+
+                    b.Navigation("BlockingUser");
+                });
+
+            modelBuilder.Entity("Hawalayk_APP.Models.City", b =>
+                {
+                    b.HasOne("Hawalayk_APP.Models.Governorate", "Governorate")
+                        .WithMany("Cities")
+                        .HasForeignKey("GovernorateId");
+
+                    b.Navigation("Governorate");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.JobApplication", b =>
@@ -783,6 +884,11 @@ namespace Hawalayk_APP.Migrations
                     b.Navigation("Craftsmen");
 
                     b.Navigation("Gallery");
+                });
+
+            modelBuilder.Entity("Hawalayk_APP.Models.Governorate", b =>
+                {
+                    b.Navigation("Cities");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Craftsman", b =>

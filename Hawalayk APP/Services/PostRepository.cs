@@ -9,14 +9,13 @@ namespace Hawalayk_APP.Services
     public class PostRepository : IPostRepository
     {
         ApplicationDbContext Context;
-        
-        public PostRepository(ApplicationDbContext _Context)
+        private readonly ICraftsmenRepository craftsmanRepo;
+
+        public PostRepository(ApplicationDbContext _Context, ICraftsmenRepository _craftsmanRepo)
         {
             Context = _Context;
+            craftsmanRepo = _craftsmanRepo;
         }
-
-
-
 
         public Post GetById(int id)
         {
@@ -28,32 +27,13 @@ namespace Hawalayk_APP.Services
             return Context.Posts.ToList();
         }
 
-        public async Task<Post> CreatNewPostAsync(Craftsman craftsman, PostDTO newPost)
+        public int Update(int id, Post newPost)
         {
-            var post = new Post
-            {
-                Content = newPost.Content,
-                ImageURL = newPost.Image,
-                CraftsmanId = craftsman.Id,
-                CraftId = craftsman.CraftId
-
-
-            };
-            Context.Posts.Add(post);
-           
-            Context.SaveChanges();
-            return new Post { Content = newPost.Content, ImageURL = newPost.Image };
-        }
-     
-
-
-        public async Task<List<PostDTO>> GetCraftGallary(int craftId)
-        {
-            var posts = await Context.Posts
-           .Include(p=>p.craft) 
-           .Where(p => p.craft.Id == craftId)  
-           .ToListAsync();
-            return  posts.Select(p => new PostDTO { Content = p.Content, Image = p.ImageURL }).ToList();
+            Post OldPost = Context.Posts.FirstOrDefault(s => s.Id == id);
+            OldPost.ImageURL = newPost.ImageURL;
+            OldPost.Content = newPost.Content;
+            int row = Context.SaveChanges();
+            return row;
         }
         public int Delete(int id)
         {
@@ -62,6 +42,37 @@ namespace Hawalayk_APP.Services
             int row = Context.SaveChanges();
             return row;
         }
-        
+        public int Create(string craftsmanId, PostDTO postDTO)
+        {
+            Craftsman craftsman = craftsmanRepo.GetById(craftsmanId);
+            Post post = new Post()
+            {
+                ImageURL = postDTO.ImageURL,
+                Content = postDTO.Content,
+                Flag = postDTO.Flag,
+                CraftsmanId = craftsmanId,
+                CraftId = craftsman.CraftId
+            };
+            Context.Posts.Add(post);
+            int row = Context.SaveChanges();
+            return row;
+
+
+        }
+
+        public List<Post> GetGrafGallary(int craftId) ////مش محتاج اسم الحرفة لكن محتاج الحرفى؟؟؟
+        {
+            List<Post> posts = Context.Posts.Where(s => s.CraftId == craftId && s.Flag == (Enums.PostStatus.gallery | Enums.PostStatus.both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
+            return posts;
+        }
+
+        public List<Post> GetGraftsmanPortfolio(string craftsmanId) ////مش محتاج اسم الحرفة لكن محتاج الحرفى؟؟؟
+        {
+            List<Post> posts = Context.Posts.Where(s => s.CraftsmanId == craftsmanId && s.Flag == (Enums.PostStatus.Portfolio | Enums.PostStatus.both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
+            return posts;
+        }
+
+
+
     }
 }

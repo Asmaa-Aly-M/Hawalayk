@@ -1,4 +1,6 @@
 ﻿using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Enums;
+using Hawalayk_APP.Filters;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -10,55 +12,85 @@ using System.Security.Claims;
 
 namespace Hawalayk_APP.Controllers
 {
-    [Authorize(Roles ="Craftsman")]
+    //[Authorize(Roles ="Craftsman")]
     [Route("api/[controller]")]
     [ApiController]
     public class CraftsmenController : ControllerBase
     {
-        IPostRepository postRepo;
-        private readonly ICraftRepository _crafRepository;
+        private readonly ICraftRepository _craftRepository;
         private readonly ICraftsmenRepository _crafsmenRepository;
         private readonly UserManager<ApplicationUser> _userManager;
-
-        public CraftsmenController(IPostRepository _postRepo, ICraftRepository crafRepository, ICraftsmenRepository crafsmenRepository, UserManager<ApplicationUser> userManager) 
+        // c s , oop csh , database , linq ,EF , MVc , 
+        public CraftsmenController(ICraftRepository craftRepository, ICraftsmenRepository crafsmenRepository, UserManager<ApplicationUser> userManager) 
         {
-            postRepo= _postRepo;
-            _crafRepository= crafRepository;
+            _craftRepository= craftRepository;
             _userManager= userManager;
             _crafsmenRepository= crafsmenRepository;
         }
 
-       
-
-        [HttpGet]
-        public IActionResult displayPosts() 
+        [HttpGet("ShowCraftsmanAccount")]
+        public async Task<IActionResult> GetCraftsmanAccount()
         {
-            List<Post> posts = postRepo.GetAll();
-            if (posts != null)
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
             {
-                return Ok(posts);
+                return NotFound("This Token Is Not Found : ");
             }
-            else
-                return BadRequest(new { message = "no posted yet" });
-           
+            var craftsman = _crafsmenRepository.GetById(userId);
+            if (craftsman == null)
+            {
+                return BadRequest("Not Allowed :");
+            }
+            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(craftsman);
+            return Ok(result);
         }
-      
-        // 
-        [HttpGet("CraftsNames")]
+
+
+        [HttpPut("UpdateCraftsmanAccount")]
+        public async Task<IActionResult> UpdateCraftsmanAccountAsync(CraftsmanAccountDTO craftmanAccount)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return NotFound("This Token Is Not Found : ");
+            }
+
+
+            var result = await _crafsmenRepository.UpdateCraftsmanAccountAsync(userId, craftmanAccount);
+
+            if (!result.IsUpdated)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
+
+
+        }
+
+       /* [HttpGet("CraftsNames")]
         public async Task<List<string>> GetCraftsNamesAsync()
         {
-            return  await _crafRepository.GetAllCraftsNamesAsync();
+            return  await _craftRepository.GetAllCraftsNamesAsync();
         }
-        [HttpPost("AddPostToGallary")]
-        public async Task<Post> AddPostToGallary([FromBody]PostDTO post) 
+       */
+
+        [HttpGet("CraftsmenOfAcraft")]
+        public async Task<ActionResult<List<CraftsmanDTO>>> GetCraftsmenOfACraft(string craftName)
         {
+            if (!Enum.TryParse<CraftName>(craftName, out var craftNameAsEnum))
+            {
+                return BadRequest("Invalid craftName");
+            }
 
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-            return await _crafsmenRepository.AddPostToGallaryAsync(userId, post);
-
+            var craftsmen = await _craftRepository.GetCraftsmenOfACraft(craftNameAsEnum);
+            return craftsmen;     
         }
-      
+
 
     }
 }

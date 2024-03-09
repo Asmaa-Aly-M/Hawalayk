@@ -8,6 +8,5 @@ namespace Hawalayk_APP.Models
         public Governorate  Governorate { get; set; }
         public City City { get; set; }
         public string StreetName { get; set; }
-
     }
 }

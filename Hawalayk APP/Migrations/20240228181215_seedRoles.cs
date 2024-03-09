@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -8,6 +9,12 @@ namespace Hawalayk_APP.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.InsertData(
+               table: "AspNetRoles",
+               columns: new[] { "Id", "Name", "NormalizedName", "ConcurrencyStamp" },
+               values: new object[] { Guid.NewGuid().ToString(), "SuperAdmin", "SuperAdmin".ToUpper(), Guid.NewGuid().ToString() }
+           );
+
             migrationBuilder.InsertData(
                table: "AspNetRoles",
                columns: new[] { "Id", "Name", "NormalizedName", "ConcurrencyStamp" },
@@ -36,3 +43,4 @@ namespace Hawalayk_APP.Migrations
         }
     }
 }
+
