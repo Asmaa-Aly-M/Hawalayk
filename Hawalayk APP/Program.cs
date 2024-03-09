@@ -74,6 +74,10 @@ namespace Hawalayk_APP
                     };
                 });
 
+            builder.Services.AddCors();
+
+
+
 
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -104,6 +108,13 @@ namespace Hawalayk_APP
                 app.UseSwaggerUI();
             }
 
+            app.UseCors(c => c
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowAnyOrigin()
+
+
+            );
 
             app.UseAuthentication();
             app.UseAuthorization();
