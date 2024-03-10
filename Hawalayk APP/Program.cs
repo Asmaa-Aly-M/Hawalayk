@@ -30,6 +30,8 @@ namespace Hawalayk_APP
 
             builder.Services.AddScoped<ICraftRepository, CraftRepository>();
             builder.Services.AddScoped<ICraftsmenRepository, CraftsmenRepository>();
+            builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+            builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
             builder.Services.AddScoped<IAuthService, AuthService>();
             builder.Services.AddScoped<IPostRepository, PostRepository>();
             builder.Services.AddScoped<IAdvertisementRepository, AdvertisementRepository>();

@@ -34,7 +34,7 @@ namespace Hawalayk_APP.Services
             int row = Context.SaveChanges();
             return row;
         }
-        public int Update(int id, ReviewDTO newReview)
+        public int Update(int id, Review newReview)
         {
             Review OldReview = Context.Reviews.FirstOrDefault(s => s.Id == id);
             OldReview.Rating = newReview.Rating;
