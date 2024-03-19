@@ -4,7 +4,6 @@ using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System.IdentityModel.Tokens.Jwt;
 
 namespace Hawalayk_APP.Services
 {
@@ -32,7 +31,7 @@ namespace Hawalayk_APP.Services
 
         public Craftsman GetById(string id)
         {
-            Craftsman Craftman = Context.Craftsmen.FirstOrDefault(s => s.Id == id);
+            Craftsman Craftman = Context.Craftsmen.Include(c => c.Craft).FirstOrDefault(s => s.Id == id);
             return Craftman;
         }
 

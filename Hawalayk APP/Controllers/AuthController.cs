@@ -1,8 +1,6 @@
 ﻿using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -13,19 +11,21 @@ namespace Hawalayk_APP.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        public AuthController(IAuthService authService)
+        private readonly IApplicationUserRepository _applicationUserService;
+        public AuthController(IAuthService authService, IApplicationUserRepository applicationUserService)
         {
             _authService = authService;
+            _applicationUserService = applicationUserService;
         }
         [HttpPost("RegisterCustomer")]
-        public async Task<IActionResult>RegisterCustomerAsync([FromBody] RegisterCustomerModel model)
+        public async Task<IActionResult> RegisterCustomerAsync([FromBody] RegisterCustomerModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var result = await _authService.RegisterCustomerAsync(model);
-            if(!result.IsAuthenticated)
+            if (!result.IsAuthenticated)
             {
                 return BadRequest(result.Message);
             }
@@ -82,16 +82,16 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpPost("Login")]
-        public async Task<IActionResult>GetTokenAsync([FromBody] TokenRequestModel model)
+        public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
             var result = await _authService.GetTokenAsync(model);
-            if(!result.IsAuthenticated)
+            if (!result.IsAuthenticated)
             {
-                return BadRequest(result.Message);
+                return BadRequest(result);
             }
             return Ok(result);
         }
@@ -103,8 +103,16 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest(ModelState);
             }
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return NotFound("This Token Not Valid : ");
+            }
 
-            var result = await _authService.VerifyOTPAsync(model.PhoneNumber, model.OTP);
+
+            var phoneNumber = await _applicationUserService.GetUserPhoneNumber(userId);
+
+            var result = await _authService.VerifyOTPAsync(phoneNumber, model.OTP);
 
             if (!result.IsAuthenticated)
             {
@@ -122,8 +130,8 @@ namespace Hawalayk_APP.Controllers
             {
                 return NotFound("This Token Not Valid : ");
             }
-            var result =  await _authService.DeleteUserAsync(userId);
-            if(result.isDeleted == false) 
+            var result = await _authService.DeleteUserAsync(userId);
+            if (result.isDeleted == false)
             {
                 return BadRequest(result.Message);
             }
@@ -133,6 +141,6 @@ namespace Hawalayk_APP.Controllers
         }
 
         //[HttpPut("UpdateAccount")]
-      
+
     }
 }

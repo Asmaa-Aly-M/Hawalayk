@@ -1,5 +1,4 @@
 ﻿using Hawalayk_APP.Enums;
-using Hawalayk_APP.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace Hawalayk_APP.DataTransferObject
@@ -15,7 +14,7 @@ namespace Hawalayk_APP.DataTransferObject
         [Required, StringLength(30)]
         public string UserName { get; set; }
 
-        [Required, StringLength(11)]
+        [Required, RegularExpression(@"^\+201([0-2]|5){1}[0-9]{8}$", ErrorMessage = "Invalid phone number format.")]
         public string PhoneNumber { get; set; }
 
         [Required, StringLength(50)]
@@ -25,9 +24,13 @@ namespace Hawalayk_APP.DataTransferObject
 
         public string CraftName { get; set; }
         //[Required]
-        //public Image PersonalImage { get; set; }
+        public string PersonalImage { get; set; }
         //[Required]
-        //public Image NationalIdImage { get; set; }
+        public string NationalIdImage { get; set; }
+        public string city { get; set; }
+        public string governorate { get; set; }
+        public string street { get; set; }
+
         //public Address Address { get; set; }
         [Required]
         public Gender Gender { get; set; }

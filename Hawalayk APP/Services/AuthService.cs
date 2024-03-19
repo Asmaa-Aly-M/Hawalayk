@@ -10,11 +10,6 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-using Hawalayk_APP.DataTransferObject;
-using Microsoft.AspNetCore.Http;
-using Twilio.Types;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-
 
 namespace Hawalayk_APP.Services
 {
@@ -114,7 +109,7 @@ namespace Hawalayk_APP.Services
         public async Task<AuthModel> ForgotPasswordAsync(string phoneNumber)
         {
             var user = await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
-            if (user  == null)
+            if (user == null)
                 return new AuthModel { Message = "Phone number is not correct" };
 
             var otpToken = _smsService.GenerateOTP(false, 4);
@@ -133,7 +128,7 @@ namespace Hawalayk_APP.Services
                 _applicationDbContext.OTPTokens.Add(otpEntity);
                 await _applicationDbContext.SaveChangesAsync();
 
-                return new AuthModel { Message = "We have sent an OTP code to your phone number.", ActionSucceeded = true};
+                return new AuthModel { Message = "We have sent an OTP code to your phone number.", ActionSucceeded = true };
             }
 
             else
@@ -201,8 +196,8 @@ namespace Hawalayk_APP.Services
                 Gender = model.Gender,
                 Craft = craft,
                 ProfilePicture = "s",
-                NationalIDImage = "s",
-                PersonalImage = "s",
+                NationalIDImage = model.NationalIdImage,
+                PersonalImage = model.PersonalImage,
                 //Address = model.Address,
                 //PersonalImage = model.PersonalImage,
                 //NationalIDImage = model.NationalIdImage,
@@ -375,7 +370,7 @@ namespace Hawalayk_APP.Services
             };
         }
 
-   
+
 
 
 
