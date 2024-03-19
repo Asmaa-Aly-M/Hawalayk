@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hawalayk_APP.Controllers
+//الكنترولر كامل محتاج تيست علشان عندي مشكلة في الداتا بيز
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -20,15 +21,22 @@ namespace Hawalayk_APP.Controllers
             var admins = adminRepo.GetAll();
             return Ok(admins);
         }
-        //[HttpPost]
-        //public IActionResult AddAdmin(Admin admin)
-        //{
-
-        //}
-        //[HttpDelete]
-        //public IActionResult Delete(int id)
-        //{
-
-        //}
+        [HttpPost]
+        public IActionResult AddAdmin(Admin admin)
+        {
+            adminRepo.Create(admin);
+            return Ok();
+        }
+        [HttpDelete]
+        public IActionResult DeleteAdmin(string id)
+        {
+            var existingAmin = adminRepo.GetById(id);
+            if (existingAmin == null)
+            {
+                return NotFound();
+            }
+            adminRepo.Delete(id);
+            return NoContent();
+        }
     }
 }

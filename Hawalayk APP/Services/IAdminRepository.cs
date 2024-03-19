@@ -6,5 +6,7 @@ namespace Hawalayk_APP.Services
     {
         List<Admin> GetAll();
         Admin GetById(string id);
+        int Create(Admin admin);
+        int Delete(string id);
     }
 }

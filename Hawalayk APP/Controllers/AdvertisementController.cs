@@ -45,7 +45,7 @@ namespace Hawalayk_APP.Controllers
         public IActionResult Create(Advertisement advertisement)//test//لازم نضيف انها  autourized للادمن فقط
         {
             advertisementRepository.Create(advertisement);
-            return CreatedAtRoute("GetAdvertisement", new { id = advertisement.Id }, advertisement);
+            return Ok();
         }
         [HttpDelete("{id}")]
         
