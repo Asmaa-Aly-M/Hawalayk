@@ -5,45 +5,41 @@ namespace Hawalayk_APP.Services
 {
     public class UserReportRepository : IUserReportRepository
     {
-        ApplicationDbContext Context;
-        public UserReportRepository(ApplicationDbContext _Context)
+        private readonly ApplicationDbContext _context;
+        public UserReportRepository(ApplicationDbContext context)
         {
-            Context = _Context;
+            _context = context;
         }
-
-
-
-
         public UserReport GetById(int id)
         {
-            UserReport UserRepo = Context.UserReports.FirstOrDefault(s => s.Id == id);
+            UserReport UserRepo = _context.UserReports.FirstOrDefault(s => s.Id == id);
             return UserRepo;
         }
         public List<UserReport> GetAll()
         {
-            return Context.UserReports.ToList();
+            return _context.UserReports.ToList();
         }
 
         public int Create(UserReport UserRepo)
         {
-            Context.UserReports.Add(UserRepo);
-            int row = Context.SaveChanges();
+            _context.UserReports.Add(UserRepo);
+            int row = _context.SaveChanges();
             return row;
         }
         public int Update(int id, UserReport UserRepo)
         {
-            UserReport OldUserRepo = Context.UserReports.FirstOrDefault(s => s.Id == id);
+            UserReport OldUserRepo = _context.UserReports.FirstOrDefault(s => s.Id == id);
             OldUserRepo.Description = UserRepo.Description;
             OldUserRepo.DatePosted = UserRepo.DatePosted;
 
-            int row = Context.SaveChanges();
+            int row = _context.SaveChanges();
             return row;
         }
         public int Delete(int id)
         {
-            UserReport OldUserRepo = Context.UserReports.FirstOrDefault(s => s.Id == id);
-            Context.UserReports.Remove(OldUserRepo);
-            int row = Context.SaveChanges();
+            UserReport OldUserRepo = _context.UserReports.FirstOrDefault(s => s.Id == id);
+            _context.UserReports.Remove(OldUserRepo);
+            int row = _context.SaveChanges();
             return row;
         }
     }
