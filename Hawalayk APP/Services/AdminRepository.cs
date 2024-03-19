@@ -11,9 +11,6 @@ namespace Hawalayk_APP.Services
             Context = _Context;
         }
 
-
-
-
         public Admin GetById(string id)
         {
             Admin admin = Context.Admins.FirstOrDefault(s => s.Id == id);

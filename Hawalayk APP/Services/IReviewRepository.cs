@@ -9,6 +9,6 @@ namespace Hawalayk_APP.Services
         int Delete(int id);
         List<Review> GetAll();
         Review GetById(int id);
-        int Update(int id, ReviewDTO newReview);
+        int Update(int id, Review newReview);
     }
 }

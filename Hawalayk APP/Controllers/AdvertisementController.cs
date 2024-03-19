@@ -26,7 +26,7 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Advertisement> GetById(int id)
+        public ActionResult<Advertisement> GetById(int id)//test
         {
             var advertisement = advertisementRepository.GetById(id);
 
@@ -41,22 +41,38 @@ namespace Hawalayk_APP.Controllers
 
             return Ok(advertisementData);
         }
-        //[HttpPost]
-        //public IActionResult Create(Advertisement advertisement)
-        //{
-        //    advertisementRepository.Create(advertisement);
-        //    return CreatedAtRoute("GetAdvertisement", new { id = advertisement.Id }, advertisement);
-        //}
-        //[HttpDelete("{id}")]
-        //public IActionResult Delete(int id)
-        //{
-        //    var existingAdvertisement = advertisementRepository.GetById(id);
-        //    if (existingAdvertisement == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    advertisementRepository.Delete(id);
-        //    return NoContent();
-        //}
+        [HttpPost]
+        public IActionResult Create(Advertisement advertisement)//test//لازم نضيف انها  autourized للادمن فقط
+        {
+            advertisementRepository.Create(advertisement);
+            return CreatedAtRoute("GetAdvertisement", new { id = advertisement.Id }, advertisement);
+        }
+        [HttpDelete("{id}")]
+        
+        public IActionResult Delete(int id)//test لازم نضيف انها  autourized للادمن فقط
+        {
+            var existingAdvertisement = advertisementRepository.GetById(id);
+            if (existingAdvertisement == null)
+            {
+                return NotFound();
+            }
+            advertisementRepository.Delete(id);
+            return NoContent();
+        }
+        [HttpPut("{id}")] //test لازم نضيف انها  autourized للادمن فقط
+        public IActionResult Update(int id, Advertisement updatedAdvertisement)
+        {
+            var existingAdvertisement = advertisementRepository.GetById(id);
+
+            if (existingAdvertisement == null)
+            {
+                return NotFound();
+            }
+
+
+            advertisementRepository.Update(id,existingAdvertisement);
+
+            return NoContent();
+        }
     }
 }
