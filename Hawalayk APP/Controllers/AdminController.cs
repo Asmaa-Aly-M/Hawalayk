@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hawalayk_APP.Controllers
+    //الكنترولر كامل محتاج تيست علشان عندي مشكلة في الداتا بيز
 {
     [Route("api/[controller]")]//هنخليه  authurized للادمن فقط
     [ApiController]
