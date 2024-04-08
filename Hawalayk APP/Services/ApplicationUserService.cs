@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Hawalayk_APP.Services
 {
-    public class ApplicationUserService : IApplicationUserRepository
+    public class ApplicationUserService : IApplicationUserService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly ApplicationDbContext _applicationDbContext;
+        private readonly ApplicationDbContext Context;
 
         //public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, IOptions<JWT> jwt, ISMSService smsService)
 
-        public ApplicationUserService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext)
+        public ApplicationUserService(UserManager<ApplicationUser> userManager, ApplicationDbContext _Context)
         {
             _userManager = userManager;
-            _applicationDbContext = applicationDbContext;
+            Context = _Context;
 
         }
         public async Task<string> GetUserPhoneNumber(string userId)
@@ -26,6 +26,11 @@ namespace Hawalayk_APP.Services
                 return user.PhoneNumber;
             }
             return null; // User not found
+        }
+        public ApplicationUser GetById(string id)
+        {
+            ApplicationUser ApplicationUser = Context.ApplicationUsers.FirstOrDefault(s => s.Id == id);
+            return ApplicationUser;
         }
     }
 }
