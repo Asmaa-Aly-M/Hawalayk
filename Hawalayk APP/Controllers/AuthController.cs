@@ -33,13 +33,13 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpPost("RegisterCraftsman")]
-        public async Task<IActionResult> RegisterCraftsmanAsync([FromBody] RegisterCraftsmanModel model)
+        public async Task<IActionResult> RegisterCraftsmanAsync([FromForm] RegisterCraftsmanModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var result = await _authService.RegisterCraftsmanAsync(model);
+            var result = await _authService.RegisterCraftsmanAsync(model, model.PersonalImage, model.NationalIdImage);
             if (!result.IsAuthenticated)
             {
                 return BadRequest(result.Message);
