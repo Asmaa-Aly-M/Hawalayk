@@ -19,7 +19,7 @@ namespace Hawalayk_APP
             // Add services to the container.
             #region Register the services in Program.cs file:
             builder.Services.AddScoped<ISeedingDataService, SeedingDataService>();
-            builder.Services.AddScoped<IApplicationUserRepository, ApplicationUserService>();
+            builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 

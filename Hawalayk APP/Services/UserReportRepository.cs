@@ -1,4 +1,5 @@
 ﻿using Hawalayk_APP.Context;
+using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
 
 namespace Hawalayk_APP.Services
@@ -6,9 +7,11 @@ namespace Hawalayk_APP.Services
     public class UserReportRepository : IUserReportRepository
     {
         private readonly ApplicationDbContext _context;
-        public UserReportRepository(ApplicationDbContext context)
+        private readonly IApplicationUserService applicationUserServiceRepo;
+        public UserReportRepository(ApplicationDbContext context, IApplicationUserService _applicationUserServiceRepo)
         {
             _context = context;
+            applicationUserServiceRepo = _applicationUserServiceRepo;
         }
         public UserReport GetById(int id)
         {
@@ -20,9 +23,16 @@ namespace Hawalayk_APP.Services
             return _context.UserReports.ToList();
         }
 
-        public int Create(UserReport UserRepo)
+        public int Create(string id, UserReportDTO UserRepo)
         {
-            _context.UserReports.Add(UserRepo);
+            ApplicationUser ApplicationUser = applicationUserServiceRepo.GetById(id);
+            UserReport userReport = new UserReport()
+            {
+                ReporedId = UserRepo.ReporedId,
+                Description = UserRepo.Description,
+                ReporerId = ApplicationUser.Id
+            };
+            _context.UserReports.Add(userReport);
             int row = _context.SaveChanges();
             return row;
         }

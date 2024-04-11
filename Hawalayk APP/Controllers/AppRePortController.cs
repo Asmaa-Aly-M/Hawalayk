@@ -1,7 +1,9 @@
-﻿using Hawalayk_APP.Models;
+﻿using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Hawalayk_APP.Controllers
 {
@@ -16,10 +18,11 @@ namespace Hawalayk_APP.Controllers
             reportRepo = _reportRepo;
         }
         [HttpPost]
-        public IActionResult reportAPP(AppReport newReport)
+        public IActionResult reportAPP(AppReportDTO newReport)
         {
-            reportRepo.Create(newReport);
-            return Ok();///// محتاجين ترجع حاجة معينة؟
+            var reporterId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            reportRepo.Create(reporterId,newReport);
+            return Ok(new { message = "Done" });///// محتاجين ترجع حاجة معينة؟
         }
     }
 }

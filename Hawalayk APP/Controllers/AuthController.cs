@@ -11,8 +11,8 @@ namespace Hawalayk_APP.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
-        private readonly IApplicationUserRepository _applicationUserService;
-        public AuthController(IAuthService authService, IApplicationUserRepository applicationUserService)
+        private readonly IApplicationUserService _applicationUserService;
+        public AuthController(IAuthService authService, IApplicationUserService applicationUserService)
         {
             _authService = authService;
             _applicationUserService = applicationUserService;
