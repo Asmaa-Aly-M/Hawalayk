@@ -176,8 +176,35 @@ namespace Hawalayk_APP.Services
             };
         }
 
-        public async Task<AuthModel> RegisterCraftsmanAsync(RegisterCraftsmanModel model)
+        public async Task<AuthModel> RegisterCraftsmanAsync(RegisterCraftsmanModel model, IFormFile file, IFormFile filee)
         {
+            string fileName = file.FileName;
+            string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
+            using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+
+
+
+            string fileeName = filee.FileName;
+            string fileePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
+            using (var fileStream = new FileStream(Path.Combine(fileePath, fileeName), FileMode.Create))
+            {
+                filee.CopyTo(fileStream);
+            }
+            //Images image = new Images();
+
+
+            //   model.PersonalImage = fileName;
+
+
+
+
+
+
+
+
             if (await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber) != null)
                 return new AuthModel { Message = "Phone number is already registered!" };
 
@@ -196,8 +223,9 @@ namespace Hawalayk_APP.Services
                 Gender = model.Gender,
                 Craft = craft,
                 ProfilePicture = "s",
-                NationalIDImage = model.NationalIdImage,
-                PersonalImage = model.PersonalImage,
+                // NationalIDImage = model.NationalIdImage,
+                PersonalImage = fileName,
+                NationalIDImage = fileeName,
                 //Address = model.Address,
                 //PersonalImage = model.PersonalImage,
                 //NationalIDImage = model.NationalIdImage,

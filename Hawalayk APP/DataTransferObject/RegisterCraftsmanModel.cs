@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hawalayk_APP.DataTransferObject
 {
@@ -24,16 +25,21 @@ namespace Hawalayk_APP.DataTransferObject
 
         public string CraftName { get; set; }
         //[Required]
-        public string PersonalImage { get; set; }
-        //[Required]
-        public string NationalIdImage { get; set; }
+
         public string city { get; set; }
         public string governorate { get; set; }
         public string street { get; set; }
 
-        //public Address Address { get; set; }
+        ///public Address Address { get; set; }
         [Required]
         public Gender Gender { get; set; }
         public DateTime BirthDate { get; set; }
+        [NotMapped]
+        public IFormFile PersonalImage { get; set; }
+        //[Required]
+        [NotMapped]
+        public IFormFile NationalIdImage { get; set; }
+
+
     }
 }

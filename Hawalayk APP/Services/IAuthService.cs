@@ -7,7 +7,7 @@ namespace Hawalayk_APP.Services
     {
         Task<AuthModel> RegisterCustomerAsync(RegisterCustomerModel model);
         Task<AuthModel> GetTokenAsync(TokenRequestModel model);
-        Task<AuthModel> RegisterCraftsmanAsync(RegisterCraftsmanModel model);
+        Task<AuthModel> RegisterCraftsmanAsync(RegisterCraftsmanModel model, IFormFile img, IFormFile immg);
         Task<AuthModel> VerifyOTPAsync(string phoneNumber, string otp);
 
         Task<AuthModel> ForgotPasswordAsync(string phoneNumber);
