@@ -43,7 +43,7 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        /*[HttpPost]
+        [HttpPost("applyToRequest")]
         public IActionResult applyToRequest(int requestId,JobApplicationDTO replay)
         {
             var customerID=serviceRequestRepo.GetById(requestId).Customer.Id;
@@ -51,6 +51,6 @@ namespace Hawalayk_APP.Controllers
             jobApplicationRepo.Create(userId, replay);
             hubContext.Clients.User(customerID).SendAsync("ApplyNotification", replay);
             return Ok("successfully");
-        }*/
+        }
     }
 }
