@@ -1,4 +1,5 @@
 ﻿using Hawalayk_APP.Context;
+using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
 
 namespace Hawalayk_APP.Services
@@ -6,9 +7,12 @@ namespace Hawalayk_APP.Services
     public class ServiceRequestRepository : IServiceRequestRepository
     {
         ApplicationDbContext Context;
-        public ServiceRequestRepository(ApplicationDbContext _Context)
+        private readonly ICustomerRepository customerRepo;
+        public ServiceRequestRepository(ApplicationDbContext _Context, ICustomerRepository _customerRepo)
         {
             Context = _Context;
+            customerRepo = _customerRepo;
+
         }
 
 
@@ -24,13 +28,22 @@ namespace Hawalayk_APP.Services
             return Context.ServiceRequests.ToList();
         }
 
-        public int Create(ServiceRequest newservice)
+        public int Create(string customerId, ServiceRequestDTO newservice)
         {
-            Context.ServiceRequests.Add(newservice);
+            Customer customer = customerRepo.GetById(customerId);
+            ServiceRequest serviceRequest = new ServiceRequest()
+            {
+                Id = newservice.Id,
+                Content = newservice.Content,
+                OptionalImage = newservice.OptionalImage,
+                CustomerId = customer.Id,
+
+            };
+            Context.ServiceRequests.Add(serviceRequest);
             int row = Context.SaveChanges();
             return row;
         }
-      
+
         public int Delete(int id)
         {
             ServiceRequest Oldservice = Context.ServiceRequests.FirstOrDefault(s => s.Id == id);

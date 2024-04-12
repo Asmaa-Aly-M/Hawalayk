@@ -78,6 +78,7 @@ namespace Hawalayk_APP
                 });
 
             builder.Services.AddCors();
+            builder.Services.AddSignalR();///////////// ؟؟؟؟مكانها صح
 
 
 

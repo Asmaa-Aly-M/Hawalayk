@@ -9,9 +9,12 @@ namespace Hawalayk_APP.System_Hub
             return Groups.AddToGroupAsync(Context.ConnectionId, groupName);
         }
 
-        public  Task SendNotificationToGroup(string groupName, string message)/////هل اخليها enum بدلا من string
-        {
-            return Clients.Group(groupName).SendAsync("ReceiveNotification", message);
-        }
+
+
+        /* public  Task SendNotificationToGroup(string groupName, string message)/////هل اخليها enum بدلا من string
+         {
+             return Clients.Group(groupName).SendAsync("ReceiveNotification", message);
+         }*/
+
     }
 }
