@@ -50,7 +50,26 @@ namespace Hawalayk_APP.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             jobApplicationRepo.Create(userId, replay);
             hubContext.Clients.User(customerID).SendAsync("ApplyNotification", replay);
-            return Ok("successfully");
+            return Ok("Sent successfully");
         }
+
+        [HttpPost("acceptApply")]
+        public IActionResult acceptApply(int repplyId)
+        {
+            jobApplicationRepo.GetById(repplyId).ResponseStatus = ResponseStatus.Accepted;
+            var craftmanID =jobApplicationRepo.GetById(repplyId).Craftsman.Id;
+            hubContext.Clients.User(craftmanID).SendAsync("AcceptApplyRequest");
+            return Ok("accept");
+        }
+
+        [HttpPost("rejectApply")]
+        public IActionResult rejectApply(int repplyId)
+        {
+            jobApplicationRepo.GetById(repplyId).ResponseStatus = ResponseStatus.Rejected;
+            var craftmanID = jobApplicationRepo.GetById(repplyId).Craftsman.Id;
+            hubContext.Clients.User(craftmanID).SendAsync("RejectApplyRequest");
+            return Ok("this service not available");
+        }
+
     }
 }

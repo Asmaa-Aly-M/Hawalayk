@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using System.Xml.Linq;
 
@@ -36,7 +37,9 @@ namespace Hawalayk_APP.Services
                 Id = newJob.Id,
                 Content = newJob.Content,
                 InitialPrice = newJob.InitialPrice,
-                CraftsmanId = craftsman.Id
+                CraftsmanId = craftsman.Id,
+                ResponseStatus = ResponseStatus.Pending
+
             };
 
             Context.JobApplications.Add(job);
