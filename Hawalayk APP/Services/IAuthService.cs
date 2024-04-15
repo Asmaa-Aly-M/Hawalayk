@@ -14,6 +14,7 @@ namespace Hawalayk_APP.Services
         Task<AuthModel> ResetPasswordAsync(ResetPasswordModel model);
 
         Task<DeleteUserDTO> DeleteUserAsync(string userId);
+        Task<string> LogoutAsync(string userId);
 
     }
 }

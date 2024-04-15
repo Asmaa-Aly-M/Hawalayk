@@ -1,13 +1,9 @@
 ﻿using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
-using Hawalayk_APP.Filters;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Data;
 using System.Security.Claims;
 
 namespace Hawalayk_APP.Controllers
@@ -21,11 +17,11 @@ namespace Hawalayk_APP.Controllers
         private readonly ICraftsmenRepository _crafsmenRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         // c s , oop csh , database , linq ,EF , MVc , 
-        public CraftsmenController(ICraftRepository craftRepository, ICraftsmenRepository crafsmenRepository, UserManager<ApplicationUser> userManager) 
+        public CraftsmenController(ICraftRepository craftRepository, ICraftsmenRepository crafsmenRepository, UserManager<ApplicationUser> userManager)
         {
-            _craftRepository= craftRepository;
-            _userManager= userManager;
-            _crafsmenRepository= crafsmenRepository;
+            _craftRepository = craftRepository;
+            _userManager = userManager;
+            _crafsmenRepository = crafsmenRepository;
         }
 
         [HttpGet("ShowCraftsmanAccount")]
@@ -72,12 +68,12 @@ namespace Hawalayk_APP.Controllers
 
         }
 
-       /* [HttpGet("CraftsNames")]
-        public async Task<List<string>> GetCraftsNamesAsync()
-        {
-            return  await _craftRepository.GetAllCraftsNamesAsync();
-        }
-       */
+        /* [HttpGet("CraftsNames")]
+         public async Task<List<string>> GetCraftsNamesAsync()
+         {
+             return  await _craftRepository.GetAllCraftsNamesAsync();
+         }
+        */
 
         [HttpGet("CraftsmenOfAcraft")]
         public async Task<ActionResult<List<CraftsmanDTO>>> GetCraftsmenOfACraft(string craftName)
@@ -88,7 +84,7 @@ namespace Hawalayk_APP.Controllers
             }
 
             var craftsmen = await _craftRepository.GetCraftsmenOfACraft(craftNameAsEnum);
-            return craftsmen;     
+            return craftsmen;
         }
 
 

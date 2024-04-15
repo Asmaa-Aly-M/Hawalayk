@@ -32,5 +32,9 @@ namespace Hawalayk_APP.Services
             ApplicationUser ApplicationUser = Context.ApplicationUsers.FirstOrDefault(s => s.Id == id);
             return ApplicationUser;
         }
+        public async Task<ApplicationUser> getCurrentUser(string userId)
+        {
+            return await _userManager.FindByIdAsync(userId);
+        }
     }
 }

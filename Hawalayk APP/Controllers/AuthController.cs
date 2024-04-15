@@ -139,6 +139,20 @@ namespace Hawalayk_APP.Controllers
 
 
         }
+        [HttpPost("LogOut")]
+
+        public async Task<IActionResult> LogOut()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return NotFound("This Token Is Not Found : ");
+            }
+            var result = await _authService.LogoutAsync(userId);
+            if (result == "User Logged Out Successfully")
+                return Ok(result);
+            return BadRequest(result);
+        }
 
         //[HttpPut("UpdateAccount")]
 

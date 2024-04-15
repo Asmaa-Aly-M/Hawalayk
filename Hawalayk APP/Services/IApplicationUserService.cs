@@ -6,5 +6,6 @@ namespace Hawalayk_APP.Services
     {
         ApplicationUser GetById(string id);
         Task<string> GetUserPhoneNumber(string userId);
+        Task<ApplicationUser> getCurrentUser(string userId);
     }
 }

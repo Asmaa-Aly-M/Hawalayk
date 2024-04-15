@@ -16,14 +16,16 @@ namespace Hawalayk_APP.Services
     public class AuthService : IAuthService
     {
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _applicationDbContext;
+        private readonly IApplicationUserService _appUser;
         private readonly ICraftRepository _craftsService;
         private readonly JWT _jwt;
 
         private readonly ISMSService _smsService;
         //public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, IOptions<JWT> jwt, ISMSService smsService)
 
-        public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, ICraftRepository craftsService, IOptions<JWT> jwt, ISMSService smsService)
+        public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, ICraftRepository craftsService, IOptions<JWT> jwt, ISMSService smsService, IApplicationUserService appUser, SignInManager<ApplicationUser> signInManager)
 
         {
             _userManager = userManager;
@@ -31,6 +33,8 @@ namespace Hawalayk_APP.Services
             _craftsService = craftsService;
             _jwt = jwt.Value;
             _smsService = smsService;
+            _appUser = appUser;
+            _signInManager = signInManager;
         }
         public async Task<AuthModel> RegisterCustomerAsync(RegisterCustomerModel model)
         {
@@ -400,7 +404,15 @@ namespace Hawalayk_APP.Services
 
 
 
-
+        public async Task<string> LogoutAsync(string userId)
+        {
+            if (await _appUser.getCurrentUser(userId) == null)
+            {
+                return "User Not Found";
+            }
+            await _signInManager.SignOutAsync();
+            return "User Logged Out Successfully";
+        }
 
 
 
