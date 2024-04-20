@@ -1,5 +1,4 @@
 ﻿using Hawalayk_APP.Enums;
-using Hawalayk_APP.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace Hawalayk_APP.DataTransferObject
@@ -18,7 +17,7 @@ namespace Hawalayk_APP.DataTransferObject
         [Required]
         public Gender Gender { get; set; }
         [Required, RegularExpression(@"^\+201[0-2]{1}[0-9]{8}$", ErrorMessage = "Invalid phone number format.")]
-         public string PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         [Required, StringLength(50)]
         public string Password { get; set; }
@@ -27,6 +26,9 @@ namespace Hawalayk_APP.DataTransferObject
         //مش لازم يحطها في التسجيل عادي تتساب فاضية ويحطها بعدين او منطلبهاش منه اصلا
         //public Image ProfilePic { get; set; }
         //public Address Address { get; set; }
+        public string Goveronrate { get; set; }
+        public string City { get; set; }
+        public string Street { get; set; }
         public DateTime BirthDate { get; set; }
 
 
