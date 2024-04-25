@@ -30,6 +30,9 @@ namespace Hawalayk_APP
 
 
             builder.Services.AddScoped<ICraftRepository, CraftRepository>();
+            builder.Services.AddScoped<IGovernorateService, GovernorateService>();
+            builder.Services.AddScoped<ICityService, CityService>();
+            builder.Services.AddScoped<IAddressService, AddressService>();
             builder.Services.AddScoped<ICraftsmenRepository, CraftsmenRepository>();
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -87,9 +90,13 @@ namespace Hawalayk_APP
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            builder.Services.AddScoped<DataSeeder>();
+            var seeder = builder.Services.BuildServiceProvider().GetRequiredService<DataSeeder>();
+            seeder.SeedGovernoratesData(builder.Services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>());
+            //seeder.SeedCitiesData(builder.Services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>());
 
             var app = builder.Build();
+            
 
             #region Inject and use the service in the Program.cs file:
 
