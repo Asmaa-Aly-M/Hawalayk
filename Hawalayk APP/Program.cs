@@ -81,11 +81,13 @@ namespace Hawalayk_APP
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
 
+
             builder.Services.AddSwaggerGen();
             builder.Services.AddScoped<DataSeeder>();
             var seeder = builder.Services.BuildServiceProvider().GetRequiredService<DataSeeder>();
             seeder.SeedGovernoratesData(builder.Services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>());
             //seeder.SeedCitiesData(builder.Services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>());
+
 
             builder.Services.AddSwaggerGen(c =>
             {
