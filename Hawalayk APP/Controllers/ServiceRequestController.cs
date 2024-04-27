@@ -79,5 +79,12 @@ namespace Hawalayk_APP.Controllers
             return Ok(counter);
         }
 
+        [HttpGet("getAllRequest")]
+        public IActionResult getAllRequest()
+        {
+            List<ServiceRequest> allRequest = serviceRequestRepo.GetAll();
+            return Ok(allRequest);
+        }
+
     }
 }
