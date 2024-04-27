@@ -31,6 +31,12 @@ namespace Hawalayk_APP.Services
             return customer;
         }
 
+        public int customerNumber()
+        {
+            int counter = _context.Customers.Count();
+            return counter;
+        }
+
 
     }
 }

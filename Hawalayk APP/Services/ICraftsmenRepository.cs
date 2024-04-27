@@ -9,5 +9,7 @@ namespace Hawalayk_APP.Services
         Craftsman GetById(string id);
         Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(Craftsman craftsman);
         Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId, CraftsmanAccountDTO craftsmanAccount);
+        int craftsmanNumber();
+       
     }
 }

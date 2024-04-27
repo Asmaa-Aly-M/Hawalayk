@@ -51,5 +51,11 @@ namespace Hawalayk_APP.Services
             int row = Context.SaveChanges();
             return row;
         }
+
+        public int countService()
+        {
+            int counter = Context.ServiceRequests.Count();
+            return counter;
+        }
     }
 }

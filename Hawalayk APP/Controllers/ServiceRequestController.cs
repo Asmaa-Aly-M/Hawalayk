@@ -28,6 +28,7 @@ namespace Hawalayk_APP.Controllers
         [HttpPost]
         public IActionResult createRequest(string craftName,ServiceRequestDTO ServiceRequest) 
         {
+           
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             serviceRequestRepo.Create(userId, ServiceRequest);
             hubContext.Clients.Group(craftName).SendAsync("ReceiveNotification", ServiceRequest);//// signalR سطر ال 
@@ -69,6 +70,13 @@ namespace Hawalayk_APP.Controllers
             var craftmanID = jobApplicationRepo.GetById(repplyId).Craftsman.Id;
             hubContext.Clients.User(craftmanID).SendAsync("RejectApplyRequest");
             return Ok("this service not available");
+        }
+
+        [HttpGet]
+        public IActionResult numberOfServiceRequest() 
+        {
+           int counter= serviceRequestRepo.countService();
+            return Ok(counter);
         }
 
     }

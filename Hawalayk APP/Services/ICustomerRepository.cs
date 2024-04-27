@@ -6,5 +6,6 @@ namespace Hawalayk_APP.Services
     {
         List<Customer> GetAll();
         Customer GetById(string id);
+        int customerNumber();
     }
 }
