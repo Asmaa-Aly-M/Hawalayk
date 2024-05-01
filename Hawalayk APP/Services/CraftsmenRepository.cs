@@ -105,6 +105,12 @@ namespace Hawalayk_APP.Services
 
         }
 
+        public int craftsmanNumber()
+        {
+            int counter = Context.Craftsmen.Count();
+            return counter;
+        }
+
 
     }
 }

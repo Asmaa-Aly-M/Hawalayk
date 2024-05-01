@@ -4,6 +4,7 @@ using Hawalayk_APP.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hawalayk_APP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240424181736_address")]
+    partial class address
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,12 +32,10 @@ namespace Hawalayk_APP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int?>("CityId")
-                        .IsRequired()
+                    b.Property<int>("Cityid")
                         .HasColumnType("int");
 
-                    b.Property<int?>("GovernorateId")
-                        .IsRequired()
+                    b.Property<int>("Governorateid")
                         .HasColumnType("int");
 
                     b.Property<string>("StreetName")
@@ -44,9 +44,9 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CityId");
+                    b.HasIndex("Cityid");
 
-                    b.HasIndex("GovernorateId");
+                    b.HasIndex("Governorateid");
 
                     b.ToTable("Addresses");
                 });
@@ -660,13 +660,13 @@ namespace Hawalayk_APP.Migrations
                 {
                     b.HasOne("Hawalayk_APP.Models.City", "City")
                         .WithMany()
-                        .HasForeignKey("CityId")
+                        .HasForeignKey("Cityid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Hawalayk_APP.Models.Governorate", "Governorate")
                         .WithMany()
-                        .HasForeignKey("GovernorateId")
+                        .HasForeignKey("Governorateid")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -25,6 +25,7 @@ namespace Hawalayk_APP.Controllers
         [HttpPost("CreateRequest")]//
         public IActionResult createRequest(ServiceRequestDTO ServiceRequest)
         {
+           
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             serviceRequestRepo.Create(userId, ServiceRequest);
 
@@ -68,6 +69,20 @@ namespace Hawalayk_APP.Controllers
             var craftmanID = jobApplicationRepo.GetById(repplyId).Craftsman.Id;
             hubContext.Clients.User(craftmanID).SendAsync("RejectApplyRequest");
             return Ok("this service not available");
+        }
+
+        [HttpGet]
+        public IActionResult numberOfServiceRequest() 
+        {
+           int counter= serviceRequestRepo.countService();
+            return Ok(counter);
+        }
+
+        [HttpGet("getAllRequest")]
+        public IActionResult getAllRequest()
+        {
+            List<ServiceRequest> allRequest = serviceRequestRepo.GetAll();
+            return Ok(allRequest);
         }
 
     }

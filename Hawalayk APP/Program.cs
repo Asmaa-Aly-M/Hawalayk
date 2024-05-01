@@ -25,6 +25,9 @@ namespace Hawalayk_APP
             builder.Services.AddTransient<ISMSService, SMSService>();
 
             builder.Services.AddScoped<ICraftRepository, CraftRepository>();
+            builder.Services.AddScoped<IGovernorateService, GovernorateService>();
+            builder.Services.AddScoped<ICityService, CityService>();
+            builder.Services.AddScoped<IAddressService, AddressService>();
             builder.Services.AddScoped<ICraftsmenRepository, CraftsmenRepository>();
             builder.Services.AddScoped<IAdminRepository, AdminRepository>();
             builder.Services.AddScoped<ICustomerRepository, CustomerRepository>();
@@ -35,6 +38,11 @@ namespace Hawalayk_APP
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IUserReportRepository, UserReportRepository>();
             builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
+<<<<<<< HEAD
+=======
+            builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+
+>>>>>>> 029edd2273567d9722467a129b58057bab87e793
             builder.Services.AddScoped<IBlockingService, BlockingService>();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -80,6 +88,15 @@ namespace Hawalayk_APP
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
+
+
+            builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<DataSeeder>();
+            var seeder = builder.Services.BuildServiceProvider().GetRequiredService<DataSeeder>();
+            seeder.SeedGovernoratesData(builder.Services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>());
+            seeder.SeedCitiesData(builder.Services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>());
+
+
             builder.Services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Your API", Version = "v1" });
@@ -94,7 +111,9 @@ namespace Hawalayk_APP
                 });
             });
 
+
             var app = builder.Build();
+            
 
             using (var scope = app.Services.CreateScope())
             {

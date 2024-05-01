@@ -88,6 +88,13 @@ namespace Hawalayk_APP.Controllers
             return craftsmen;
         }
 
+        [HttpGet]
+        public IActionResult numberOfCraftsmen()
+        {
+            int counter = _crafsmenRepository.craftsmanNumber();
+            return Ok(counter);
+        }
+
 
     }
 }
