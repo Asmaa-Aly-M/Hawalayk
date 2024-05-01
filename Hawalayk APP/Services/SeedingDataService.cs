@@ -32,7 +32,7 @@ public class SeedingDataService : ISeedingDataService
             BirthDate = DateTime.Now,
             EmailConfirmed = false,
             Email = "a@gmail.com",
-            PhoneNumber = "01000000000",
+            PhoneNumber = "+201000000000",
             ProfilePicture = "j.jpg",
             PhoneNumberConfirmed = false,
             TwoFactorEnabled = false,
@@ -49,7 +49,7 @@ public class SeedingDataService : ISeedingDataService
             BirthDate = DateTime.Now,
             EmailConfirmed = false,
             Email = "aa@gmail.com",
-            PhoneNumber = "01000000001",
+            PhoneNumber = "+201000000001",
             ProfilePicture = "j.jpg",
             PersonalImage = "j.jpg",
             NationalIDImage = "j.jpg",
@@ -57,7 +57,11 @@ public class SeedingDataService : ISeedingDataService
             TwoFactorEnabled = false,
             LockoutEnabled = false,
             AccessFailedCount = 0,
-            Rating = 0.0
+            Rating = 0.0,
+            Craft = new Craft
+            {
+                Name = CraftName.painter,
+            }
         };
 
         var customer = new Customer
@@ -69,7 +73,7 @@ public class SeedingDataService : ISeedingDataService
             BirthDate = DateTime.Now,
             EmailConfirmed = false,
             Email = "a@gmail.com",
-            PhoneNumber = "01000000002",
+            PhoneNumber = "+201000000002",
             ProfilePicture = "j.jpg",
             PhoneNumberConfirmed = false,
             TwoFactorEnabled = false,

@@ -75,9 +75,9 @@ namespace Hawalayk_APP.Services
         //    return row;
         //}
         //
-        public int Create(string id, AppReportDTO appReport)
+        public int Create(string userId, AppReportDTO appReport)
         {
-            ApplicationUser ApplicationUser = applicationUserServiceRepo.GetById(id);
+            ApplicationUser ApplicationUser = applicationUserServiceRepo.GetById(userId);
 
             //ReportedIssue reportedIssue = Enum.Parse<ReportedIssue>(appReport.ReportedIssue, true);
 

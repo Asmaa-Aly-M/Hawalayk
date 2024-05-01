@@ -33,6 +33,7 @@ namespace Hawalayk_APP.Controllers
                 return NotFound("This Token Is Not Found : ");
             }
             var craftsman = _crafsmenRepository.GetById(userId);
+
             if (craftsman == null)
             {
                 return BadRequest("Not Allowed :");

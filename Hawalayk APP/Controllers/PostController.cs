@@ -1,7 +1,6 @@
 ﻿using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -11,20 +10,22 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class PostController : ControllerBase
     {
-        IPostRepository postrepository;
-        PostController(IPostRepository _postrepository) 
+        private readonly IPostRepository postrepository;
+        public PostController(IPostRepository _postrepository)
         {
-            postrepository= _postrepository;
+            postrepository = _postrepository;
         }
-        [HttpPost]
-        public IActionResult post(PostDTO post) //////////////////Test
+
+
+        [HttpPost("CreatePost")]
+        public IActionResult post([FromForm] PostDTO post) /////////////////////////Test
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             postrepository.Create(userId, post);
-            return Ok();
+            return Ok("The post created successfully");
         }
 
-        [HttpGet]
+        [HttpGet("Craft'sGallary")]
         public IActionResult getGallary(int craftId)
         {
             var gallary = postrepository.GetGrafGallary(craftId);
@@ -37,11 +38,14 @@ namespace Hawalayk_APP.Controllers
 
         }
 
-        [Route("Portfolio")]
-        [HttpGet]
-        public IActionResult getPortfolio(string craftsmanId)
+
+        [HttpGet("Portfolio")]
+        public IActionResult getPortfolio()
         {
-            var Portfolio = postrepository.GetGraftsmanPortfolio(craftsmanId);
+            //string craftsmanId
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            var Portfolio = postrepository.GetGraftsmanPortfolio(userId);
             if (Portfolio != null)
             {
                 return Ok(Portfolio);
@@ -50,21 +54,21 @@ namespace Hawalayk_APP.Controllers
                 return NotFound(new { message = "no posts yet" });
 
         }
-        [HttpPut]
-        public IActionResult Update(int id,Post post)
+        [HttpPut("Update")]
+        public IActionResult Update(int id, Post post)
         {
             Post oldpost = postrepository.GetById(id);
             postrepository.Update(id, oldpost);
             return Ok();
-            
+
         }
-        [HttpDelete]
+        [HttpDelete("Delete")]
         public IActionResult Delete(int id)
         {
             Post oldpost = postrepository.GetById(id);
             if (oldpost == null)
             {
-               return NotFound();
+                return NotFound();
             }
             postrepository.Delete(id);
             return NoContent();

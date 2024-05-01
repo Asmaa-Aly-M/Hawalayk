@@ -17,17 +17,12 @@ namespace Hawalayk_APP
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            #region Register the services in Program.cs file:
             builder.Services.AddScoped<ISeedingDataService, SeedingDataService>();
             builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
-
             builder.Services.Configure<TwilioSettings>(builder.Configuration.GetSection("Twilio"));
-
-
             builder.Services.AddTransient<ISMSService, SMSService>();
-
 
             builder.Services.AddScoped<ICraftRepository, CraftRepository>();
             builder.Services.AddScoped<ICraftsmenRepository, CraftsmenRepository>();
@@ -40,10 +35,7 @@ namespace Hawalayk_APP
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IUserReportRepository, UserReportRepository>();
             builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
-
             builder.Services.AddScoped<IBlockingService, BlockingService>();
-            builder.Services.AddScoped<ISeedingDataService, SeedingDataService>();
-            #endregion
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -72,7 +64,18 @@ namespace Hawalayk_APP
                 };
             });
 
-            builder.Services.AddCors();
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowReact",
+                    builder =>
+                    {
+                        builder
+                            .WithOrigins("http://localhost:3000")
+                            .AllowAnyMethod()
+                            .AllowAnyHeader();
+                    });
+            });
+
             builder.Services.AddSignalR();
 
             builder.Services.AddControllers();
@@ -93,8 +96,6 @@ namespace Hawalayk_APP
 
             var app = builder.Build();
 
-            #region Inject and use the service in the Program.cs file:
-
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
@@ -104,15 +105,11 @@ namespace Hawalayk_APP
                 var seedService = services.GetRequiredService<ISeedingDataService>();
                 seedService.SeedingData();
             }
-            #endregion
 
-            if (app.Environment.IsDevelopment())
-            {
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1"));
-            }
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1"));
 
-            app.UseCors(c => c.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            app.UseCors("AllowReact");
 
             app.UseAuthentication();
             app.UseAuthorization();

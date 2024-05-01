@@ -2,7 +2,7 @@
 
 namespace Hawalayk_APP.System_Hub
 {
-    public class Notification:Hub
+    public class Notification : Hub
     {
         public Task AddToGroup(string groupName)/////هل اخليها enum بدلا من string
         {

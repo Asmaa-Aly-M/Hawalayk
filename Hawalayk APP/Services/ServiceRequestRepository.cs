@@ -33,9 +33,9 @@ namespace Hawalayk_APP.Services
             Customer customer = customerRepo.GetById(customerId);
             ServiceRequest serviceRequest = new ServiceRequest()
             {
-                Id = newservice.Id,
+                //  Id = newservice.Id,
                 Content = newservice.Content,
-                OptionalImage = newservice.OptionalImage,
+                OptionalImage = newservice.OptionalImage, // IFormFIle
                 CustomerId = customer.Id,
 
             };

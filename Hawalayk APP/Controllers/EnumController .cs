@@ -34,13 +34,52 @@ namespace YourNamespace.Controllers
     public class EnumController : ControllerBase
     {
         [HttpGet("ReportedIssueValues")]
-        public ActionResult<IEnumerable<string>> GetArabicDescriptions()
+        public ActionResult<IEnumerable<string>> getArabicValuesOfReportedIssue()
         {
-            List<string> arabicDescriptions = GetArabicDescriptions<ReportedIssue>();
-            return Ok(arabicDescriptions);
+            List<string> arabicDescriptionsOfReportedIssue = getArabicValues<ReportedIssue>();
+            return Ok(arabicDescriptionsOfReportedIssue);
         }
 
-        private static List<string> GetArabicDescriptions<T>()
+        //private static List<string> GetArabicValues<T>()
+        //{
+        //    List<string> descriptions = new List<string>();
+        //    Type enumType = typeof(T);
+
+        //    if (enumType.IsEnum)
+        //    {
+        //        FieldInfo[] fields = enumType.GetFields();
+        //        foreach (FieldInfo field in fields)
+        //        {
+        //            if (field.FieldType == enumType)
+        //            {
+        //                DescriptionAttribute[] attributes = (DescriptionAttribute[])field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+        //                string description = (attributes.Length > 0) ? attributes[0].Description : field.Name;
+        //                descriptions.Add(description);
+        //            }
+        //        }
+        //    }
+
+        //    return descriptions;
+        //}
+
+
+        [HttpGet("PostStatusValues")]
+        public ActionResult<IEnumerable<string>> getArabicValuesOfPostStatusValues()
+        {
+            List<string> arabicDescriptionsOfReportedIssue = getArabicValues<PostStatus>();
+            return Ok(arabicDescriptionsOfReportedIssue);
+        }
+
+
+
+        [HttpGet("CraftsNameValues")]
+        public ActionResult<IEnumerable<string>> getArabicValuesOfCraftName()
+        {
+            List<string> arabicValues = getArabicValues<CraftName>();
+            return Ok(arabicValues);
+        }
+
+        private static List<string> getArabicValues<T>()
         {
             List<string> descriptions = new List<string>();
             Type enumType = typeof(T);
@@ -63,38 +102,36 @@ namespace YourNamespace.Controllers
         }
 
 
+        //[HttpPost("arEnum")]
+        //public ActionResult<ReportedIssue?> ConvertArabicToEnum(string arabicString)
+        //{
+        //    ReportedIssue? enumValue = ConvertToEnum<ReportedIssue>(arabicString);
+        //    if (enumValue.HasValue)
+        //        return Ok(enumValue);
+        //    else
+        //        return BadRequest("Invalid Arabic string.");
+        //}
 
+        //private static T? ConvertToEnum<T>(string arabicString) where T : struct
+        //{
+        //    Type enumType = typeof(T);
 
-        [HttpPost("arEnum")]
-        public ActionResult<ReportedIssue?> ConvertArabicToEnum(string arabicString)
-        {
-            ReportedIssue? enumValue = ConvertToEnum<ReportedIssue>(arabicString);
-            if (enumValue.HasValue)
-                return Ok(enumValue);
-            else
-                return BadRequest("Invalid Arabic string.");
-        }
-
-        private static T? ConvertToEnum<T>(string arabicString) where T : struct
-        {
-            Type enumType = typeof(T);
-
-            if (enumType.IsEnum)
-            {
-                foreach (FieldInfo field in enumType.GetFields())
-                {
-                    if (Attribute.GetCustomAttribute(field,
-                        typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
-                    {
-                        if (attribute.Description == arabicString)
-                        {
-                            return (T)field.GetValue(null);
-                        }
-                    }
-                }
-            }
-            return null;
-        }
+        //    if (enumType.IsEnum)
+        //    {
+        //        foreach (FieldInfo field in enumType.GetFields())
+        //        {
+        //            if (Attribute.GetCustomAttribute(field,
+        //                typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
+        //            {
+        //                if (attribute.Description == arabicString)
+        //                {
+        //                    return (T)field.GetValue(null);
+        //                }
+        //            }
+        //        }
+        //    }
+        //    return null;
+        //}
     }
 }
 

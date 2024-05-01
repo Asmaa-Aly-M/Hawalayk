@@ -1,12 +1,17 @@
-﻿using Hawalayk_APP.Models;
+﻿using System.ComponentModel;
 
 namespace Hawalayk_APP.Enums
 {
     public enum PostStatus
     {
-     gallery,
-     Portfolio,
-     both
+        [Description("معرض")]
+        Gallery,
 
+        [Description("معرض الأعمال")]
+        Portfolio,
+
+        [Description("كلاهما")]
+        Both
     }
+
 }

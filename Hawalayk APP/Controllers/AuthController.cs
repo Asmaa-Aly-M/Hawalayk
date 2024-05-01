@@ -18,7 +18,7 @@ namespace Hawalayk_APP.Controllers
             _applicationUserService = applicationUserService;
         }
         [HttpPost("RegisterCustomer")]
-        public async Task<IActionResult> RegisterCustomerAsync([FromBody] RegisterCustomerModel model)
+        public async Task<IActionResult> RegisterCustomerAsync([FromForm] RegisterCustomerModel model)
         {
             if (!ModelState.IsValid)
             {

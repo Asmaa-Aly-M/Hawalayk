@@ -1,8 +1,9 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
-using Microsoft.EntityFrameworkCore;
-using Twilio.Rest.Taskrouter.V1.Workspace.TaskQueue;
+using System.ComponentModel;
+using System.Reflection;
 
 namespace Hawalayk_APP.Services
 {
@@ -45,11 +46,23 @@ namespace Hawalayk_APP.Services
         public int Create(string craftsmanId, PostDTO postDTO)
         {
             Craftsman craftsman = craftsmanRepo.GetById(craftsmanId);
+            PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postDTO.Flag);
+
+
+            var file = postDTO.imgFile;
+            string fileName = file.FileName;
+            string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
+            using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+            {
+                file.CopyTo(fileStream);
+            }
+
+
             Post post = new Post()
             {
-                ImageURL = postDTO.ImageURL,
+                ImageURL = fileName,
                 Content = postDTO.Content,
-                Flag = postDTO.Flag,
+                Flag = enumValue,
                 CraftsmanId = craftsmanId,
                 CraftId = craftsman.CraftId
             };
@@ -62,17 +75,36 @@ namespace Hawalayk_APP.Services
 
         public List<Post> GetGrafGallary(int craftId) ////مش محتاج اسم الحرفة لكن محتاج الحرفى؟؟؟
         {
-            List<Post> posts = Context.Posts.Where(s => s.CraftId == craftId && s.Flag == (Enums.PostStatus.gallery | Enums.PostStatus.both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
+            List<Post> posts = Context.Posts.Where(s => s.CraftId == craftId && s.Flag == (Enums.PostStatus.Gallery | Enums.PostStatus.Both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
             return posts;
         }
 
         public List<Post> GetGraftsmanPortfolio(string craftsmanId) ////مش محتاج اسم الحرفة لكن محتاج الحرفى؟؟؟
         {
-            List<Post> posts = Context.Posts.Where(s => s.CraftsmanId == craftsmanId && s.Flag == (Enums.PostStatus.Portfolio | Enums.PostStatus.both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
+            List<Post> posts = Context.Posts.Where(s => s.CraftsmanId == craftsmanId && s.Flag == (Enums.PostStatus.Portfolio | Enums.PostStatus.Both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
             return posts;
         }
 
+        private static T? ConvertToEnum<T>(string arabicString) where T : struct
+        {
+            Type enumType = typeof(T);
 
+            if (enumType.IsEnum)
+            {
+                foreach (FieldInfo field in enumType.GetFields())
+                {
+                    if (Attribute.GetCustomAttribute(field,
+                        typeof(DescriptionAttribute)) is DescriptionAttribute attribute)
+                    {
+                        if (attribute.Description == arabicString)
+                        {
+                            return (T)field.GetValue(null);
+                        }
+                    }
+                }
+            }
+            return null;
+        }
 
     }
 }

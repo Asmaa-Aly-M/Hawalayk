@@ -10,7 +10,7 @@ namespace Hawalayk_APP.Services
     public class CraftsmenRepository : ICraftsmenRepository
     {
 
-        ApplicationDbContext Context;
+        private readonly ApplicationDbContext Context;
         private readonly ICraftRepository _craftService;
         //private readonly IPostRepository _postRepository;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -32,7 +32,7 @@ namespace Hawalayk_APP.Services
         public Craftsman GetById(string id)
         {
             Craftsman Craftman = Context.Craftsmen.Include(c => c.Craft).FirstOrDefault(s => s.Id == id);
-            return Craftman;
+            return Craftman;//craft : 
         }
 
         /* public async Task<Craftsman> GetById(string id)
