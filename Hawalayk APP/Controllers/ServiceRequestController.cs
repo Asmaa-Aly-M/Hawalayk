@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
+using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Hawalayk_APP.System_Hub;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,7 @@ namespace Hawalayk_APP.Controllers
         [HttpPost("CreateRequest")]//
         public IActionResult createRequest(ServiceRequestDTO ServiceRequest)
         {
-           
+
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             serviceRequestRepo.Create(userId, ServiceRequest);
 
@@ -72,9 +73,9 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpGet]
-        public IActionResult numberOfServiceRequest() 
+        public IActionResult numberOfServiceRequest()
         {
-           int counter= serviceRequestRepo.countService();
+            int counter = serviceRequestRepo.countService();
             return Ok(counter);
         }
 

@@ -38,11 +38,9 @@ namespace Hawalayk_APP
             builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
             builder.Services.AddScoped<IUserReportRepository, UserReportRepository>();
             builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
-<<<<<<< HEAD
-=======
+
             builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
 
->>>>>>> 029edd2273567d9722467a129b58057bab87e793
             builder.Services.AddScoped<IBlockingService, BlockingService>();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -113,7 +111,7 @@ namespace Hawalayk_APP
 
 
             var app = builder.Build();
-            
+
 
             using (var scope = app.Services.CreateScope())
             {
