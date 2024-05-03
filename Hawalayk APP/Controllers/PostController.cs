@@ -39,13 +39,13 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpGet("Portfolio")]
-        public IActionResult getPortfolio()
+        [HttpGet("Portfolio/{craftsmanId}")]
+        public IActionResult getPortfolio(string craftsmanId)
         {
             //string craftsmanId
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var Portfolio = postrepository.GetGraftsmanPortfolio(userId);
+            var Portfolio = postrepository.GetGraftsmanPortfolio(craftsmanId);
             if (Portfolio != null)
             {
                 return Ok(Portfolio);

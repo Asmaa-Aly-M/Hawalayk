@@ -49,7 +49,7 @@ namespace Hawalayk_APP
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));//DefaultConnection
 
             builder.Services.AddAuthentication(options =>
             {

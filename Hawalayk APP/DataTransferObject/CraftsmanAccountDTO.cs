@@ -31,5 +31,6 @@ namespace Hawalayk_APP.DataTransferObject
         [Required]
 
         public DateTime BirthDate { get; set; }
+        public double Rating { get; set; }
     }
 }

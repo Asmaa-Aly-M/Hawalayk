@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -82,7 +81,7 @@ namespace Hawalayk_APP.Migrations
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
-                //.Annotation("SqlServer:Identity", "1, 1");
+            //.Annotation("SqlServer:Identity", "1, 1");
 
             migrationBuilder.AlterColumn<int>(
                 name: "id",
@@ -91,7 +90,7 @@ namespace Hawalayk_APP.Migrations
                 nullable: false,
                 oldClrType: typeof(int),
                 oldType: "int");
-                //.Annotation("SqlServer:Identity", "1, 1");
+            //.Annotation("SqlServer:Identity", "1, 1");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserReports_ReporedId",
@@ -227,7 +226,7 @@ namespace Hawalayk_APP.Migrations
                 column: "CityId",
                 principalTable: "cities",
                 principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Addresses_governorates_GovernorateId",
@@ -235,7 +234,7 @@ namespace Hawalayk_APP.Migrations
                 column: "GovernorateId",
                 principalTable: "governorates",
                 principalColumn: "id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserReports_AspNetUsers_ReportedUserId",
@@ -243,7 +242,7 @@ namespace Hawalayk_APP.Migrations
                 column: "ReportedUserId",
                 principalTable: "AspNetUsers",
                 principalColumn: "Id",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_UserReports_AspNetUsers_ReporterId",

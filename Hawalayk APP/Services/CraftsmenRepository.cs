@@ -50,6 +50,7 @@ namespace Hawalayk_APP.Services
 
         public async Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(Craftsman craftsman)
         {
+
             var enumValue = (CraftName)craftsman.Craft.Name;
 
             var descriptionAttributes = typeof(CraftName)
@@ -69,7 +70,8 @@ namespace Hawalayk_APP.Services
                 BirthDate = craftsman.BirthDate,
                 PhoneNumber = craftsman.PhoneNumber,
                 // PhoneNumber = craftsman.PhoneNumber,
-                CraftName = craftName
+                CraftName = craftName,
+                Rating = craftsman.Rating
 
             };
 
