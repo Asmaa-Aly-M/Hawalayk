@@ -1,4 +1,5 @@
-﻿using Hawalayk_APP.DataTransferObject;
+﻿using Hawalayk_APP.Context;
+using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
@@ -13,25 +14,42 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class ServiceRequestController : ControllerBase
     {
-        IServiceRequestRepository serviceRequestRepo;
-        IJobApplicationRepository jobApplicationRepo;
-        IHubContext<Notification> hubContext;
-        public ServiceRequestController(IServiceRequestRepository _serviceRequestRepo, IHubContext<Notification> _hubContext, IJobApplicationRepository _jobApplicationRepo)
+        private readonly IServiceRequestRepository serviceRequestRepo;
+        private readonly IJobApplicationRepository jobApplicationRepo;
+        private readonly ApplicationDbContext _context;
+        private readonly IHubContext<Notification> _hubContext;
+        private readonly ICraftRepository _craftRepository;
+
+
+        public ServiceRequestController(ICraftRepository craftRepository, ApplicationDbContext context, IServiceRequestRepository _serviceRequestRepo, IHubContext<Notification> hubContext, IJobApplicationRepository _jobApplicationRepo)
         {
             serviceRequestRepo = _serviceRequestRepo;
-            hubContext = _hubContext;
+            _hubContext = hubContext;
+            _craftRepository = craftRepository;
             jobApplicationRepo = _jobApplicationRepo;
+            _context = context;
+
         }
 
         [HttpPost("CreateRequest")]//
-        public IActionResult createRequest(ServiceRequestDTO ServiceRequest)
+        public async Task<IActionResult> createRequest([FromForm] ServiceRequestDTO ServiceRequest)
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            serviceRequestRepo.Create(userId, ServiceRequest);
+            await serviceRequestRepo.CreateAsync(userId, ServiceRequest);
 
+            //
+            var CraftsmentOfACraft = await _craftRepository.GetCraftsmenOfACraft(ServiceRequest.craftName);
 
-            hubContext.Clients.Group(ServiceRequest.craftName).SendAsync("ReceiveNotification", ServiceRequest);//// signalR سطر ال 
+            foreach (var craftsmen in CraftsmentOfACraft)
+            {
+                // Send notification to each painter
+                //  await _hubContext.Clients.User(craftsmen.Id.ToString()).SendAsync("ReceiveNotification", "New service request created");
+
+                await _hubContext.Clients.User(craftsmen.Id.ToString()).SendAsync("ReceiveNotification", "New service request available");
+            }
+
+            //   _hubContext.Clients.Group(ServiceRequest.craftName).SendAsync("ReceiveNotification", ServiceRequest);//// signalR سطر ال 
             return Ok("Request sent successfully");
         }
 
@@ -50,7 +68,7 @@ namespace Hawalayk_APP.Controllers
             var customerID = serviceRequestRepo.GetById(requestId).Customer.Id;
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             jobApplicationRepo.Create(userId, replay);
-            hubContext.Clients.User(customerID).SendAsync("ApplyNotification", replay);
+            _hubContext.Clients.User(customerID).SendAsync("ApplyNotification", replay);
             return Ok("Sent successfully");
         }
 
@@ -59,7 +77,7 @@ namespace Hawalayk_APP.Controllers
         {
             jobApplicationRepo.GetById(repplyId).ResponseStatus = ResponseStatus.Accepted;
             var craftmanID = jobApplicationRepo.GetById(repplyId).Craftsman.Id;
-            hubContext.Clients.User(craftmanID).SendAsync("AcceptApplyRequest");
+            _hubContext.Clients.User(craftmanID).SendAsync("AcceptApplyRequest");
             return Ok("accept");
         }
 
@@ -68,7 +86,7 @@ namespace Hawalayk_APP.Controllers
         {
             jobApplicationRepo.GetById(repplyId).ResponseStatus = ResponseStatus.Rejected;
             var craftmanID = jobApplicationRepo.GetById(repplyId).Craftsman.Id;
-            hubContext.Clients.User(craftmanID).SendAsync("RejectApplyRequest");
+            _hubContext.Clients.User(craftmanID).SendAsync("RejectApplyRequest");
             return Ok("this service not available");
         }
 

@@ -4,6 +4,7 @@ using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel;
 
 namespace Hawalayk_APP.Services
 {
@@ -49,16 +50,26 @@ namespace Hawalayk_APP.Services
 
         public async Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(Craftsman craftsman)
         {
+            var enumValue = (CraftName)craftsman.Craft.Name;
+
+            var descriptionAttributes = typeof(CraftName)
+                .GetField(enumValue.ToString())
+                .GetCustomAttributes(typeof(DescriptionAttribute), false)
+                as DescriptionAttribute[];
+
+            var craftName = descriptionAttributes?.Length > 0 ? descriptionAttributes[0].Description : "Description not found.";
+
 
             return new CraftsmanAccountDTO
             {
                 FirstName = craftsman.FirstName,
                 LastName = craftsman.LastName,
                 UserName = craftsman.UserName,
-                ProfilePic = craftsman.ProfilePicture,
+                ProfilePic = Path.Combine("imgs/", craftsman.ProfilePicture),
                 BirthDate = craftsman.BirthDate,
+                PhoneNumber = craftsman.PhoneNumber,
                 // PhoneNumber = craftsman.PhoneNumber,
-                CraftName = Enum.GetName(typeof(CraftName), craftsman.Craft.Name)
+                CraftName = craftName
 
             };
 

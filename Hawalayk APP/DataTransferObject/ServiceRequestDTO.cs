@@ -2,10 +2,10 @@
 {
     public class ServiceRequestDTO
     {
-        public int Id { get; set; }
+        // public int Id { get; set; }
         public string craftName { get; set; }
-        public string Content { get; set; }
+        public string content { get; set; }
 
-        public string OptionalImage { get; set; }
+        public string optionalImage { get; set; }
     }
 }

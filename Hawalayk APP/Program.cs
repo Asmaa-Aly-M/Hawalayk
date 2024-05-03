@@ -2,6 +2,7 @@
 using Hawalayk_APP.Helpers;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
+using Hawalayk_APP.System_Hub;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,9 @@ namespace Hawalayk_APP
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
 
+            var builder = WebApplication.CreateBuilder(args);
+            #region register service 
             // Add services to the container.
             builder.Services.AddScoped<ISeedingDataService, SeedingDataService>();
             builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
@@ -42,7 +44,7 @@ namespace Hawalayk_APP
             builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
 
             builder.Services.AddScoped<IBlockingService, BlockingService>();
-
+            #endregion
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
@@ -73,16 +75,24 @@ namespace Hawalayk_APP
             builder.Services.AddCors(options =>
             {
                 options.AddPolicy("AllowReact",
-                    builder =>
-                    {
-                        builder
-                            .WithOrigins("http://localhost:3000")
-                            .AllowAnyMethod()
-                            .AllowAnyHeader();
-                    });
+                  builder =>
+                  {
+                      builder
+          .WithOrigins("http://localhost:3000")
+          .AllowAnyMethod()
+          .AllowAnyHeader()
+          .SetIsOriginAllowedToAllowWildcardSubdomains()  // Allow subdomains of localhost
+          .AllowCredentials();  // This is the key change
+                  });
             });
 
             builder.Services.AddSignalR();
+            //options =>
+            //    {
+            //        options.EnableDetailedErrors = true; // Optional for debugging
+            //    });
+
+
 
             builder.Services.AddControllers();
             builder.Services.AddEndpointsApiExplorer();
@@ -125,7 +135,7 @@ namespace Hawalayk_APP
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1"));
-
+            app.UseStaticFiles();
             app.UseCors("AllowReact");
 
             app.UseAuthentication();
@@ -133,9 +143,15 @@ namespace Hawalayk_APP
 
             app.MapControllers();
 
+
+            app.MapHub<Notification>("/notificationHub"); // Map the hub to a URL endpoint
+
+
+
             app.Run();
         }
     }
+
 
     public class SecurityRequirementsOperationFilter : Swashbuckle.AspNetCore.SwaggerGen.IOperationFilter
     {
@@ -152,7 +168,7 @@ namespace Hawalayk_APP
                     Id = "Bearer"
                 }
             };
-
+            // cod e : url : hub
             operation.Security.Add(new Microsoft.OpenApi.Models.OpenApiSecurityRequirement
             {
                 [scheme] = new System.Collections.Generic.List<string>()

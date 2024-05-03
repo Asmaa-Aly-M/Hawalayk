@@ -27,20 +27,60 @@ namespace Hawalayk_APP.Services
         {
             return Context.ServiceRequests.ToList();
         }
+        //public async Task<int> CreateAsync(string customerId, ServiceRequestDTO newservice)
+        //{
+        //    // Validate customerId
+        //    if (string.IsNullOrEmpty(customerId))
+        //    {
+        //        throw new ArgumentNullException(nameof(customerId), "Customer ID cannot be null or empty.");
+        //    }
 
-        public int Create(string customerId, ServiceRequestDTO newservice)
+        //    // Get the customer
+        //    //Customer customer = await customerRepo.GetByIdAsync(customerId);
+        //    //if (customer == null)
+        //    //{
+        //    //    throw new ArgumentException($"Customer with ID '{customerId}' not found.", nameof(customerId));
+        //    //}
+
+        //    // Create the ServiceRequest object
+        //    ServiceRequest serviceRequest = new ServiceRequest()
+        //    {
+        //        OptionalImage = newservice.optionalImage,
+        //        Content = newservice.content,
+
+        //        CustomerId = customerId,
+        //    };
+
+        //    // Handle optional image if provided
+        //    //if (newservice.optionalImage != null)
+        //    //{
+        //    //    // Process the optional image (save to file system, database, etc.)
+        //    //    // For example, to save to a file:
+        //    //    // string imagePath = await SaveImage(newservice.optionalImage);
+        //    //    // serviceRequest.OptionalImage = imagePath;
+        //    //}
+
+        //    // Add the ServiceRequest to the context and save changes
+        //    Context.ServiceRequests.Add(serviceRequest);
+        //    int rowsAffected = await Context.SaveChangesAsync();
+
+        //    return rowsAffected;
+        //}
+
+
+        public async Task<int> CreateAsync(string customerId, ServiceRequestDTO newservice)
         {
-            Customer customer = customerRepo.GetById(customerId);
+            Customer customer = await customerRepo.GetByIdAsync(customerId);
             ServiceRequest serviceRequest = new ServiceRequest()
             {
                 //  Id = newservice.Id,
-                Content = newservice.Content,
-                OptionalImage = newservice.OptionalImage, // IFormFIle
-                CustomerId = customer.Id,
+                Content = newservice.content,
+                OptionalImage = newservice.optionalImage, // IFormFIle
+                CustomerId = customerId,
 
             };
             Context.ServiceRequests.Add(serviceRequest);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
 

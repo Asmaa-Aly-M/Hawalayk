@@ -16,6 +16,7 @@ namespace Hawalayk_APP.Services
             Context = _Context;
         }
 
+
         public async Task<Craft> GetOrCreateCraftAsync(string craftName)
         {
 
@@ -52,16 +53,20 @@ namespace Hawalayk_APP.Services
             var craftNames = Enum.GetNames(typeof(CraftName)).ToList();
             return Task.FromResult(craftNames);
         }
-        public async Task<List<CraftsmanDTO>> GetCraftsmenOfACraft(CraftName craftName)
+        public async Task<List<CraftsmanDTO>> GetCraftsmenOfACraft(string craftName)
         {
-            var craftsmen = await Context.Craftsmen.Include(c => c.Craft).Where(c => c.Craft.Name == craftName).ToListAsync();
+            Craft existingCraft = null;
+            CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftName);
+
+            var craftsmen = await Context.Craftsmen.Include(c => c.Craft).Where(c => c.Craft.Name == enumValue).ToListAsync();
             return craftsmen.Select(c => new CraftsmanDTO
             {
-                CraftName = Enum.GetName(typeof(CraftName), craftName),
+                CraftName = craftName,
                 UserName = c.UserName,
                 FirstName = c.FirstName,
                 LastName = c.LastName,
                 Rating = c.Rating,
+                Id = c.Id
 
 
             }).ToList();

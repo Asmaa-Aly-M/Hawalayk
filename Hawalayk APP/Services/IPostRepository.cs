@@ -9,8 +9,8 @@ namespace Hawalayk_APP.Services
         int Delete(int id);
         List<Post> GetAll();
         Post GetById(int id);
-        List<Post> GetGrafGallary(int craftId);
-        List<Post> GetGraftsmanPortfolio(string craftsmanId);
+        List<GallaryPostDTO> GetGrafGallary(string craftName);
+        List<GallaryPostDTO> GetGraftsmanPortfolio(string craftsmanId);
         int Update(int id, Post newPost);
     }
 }

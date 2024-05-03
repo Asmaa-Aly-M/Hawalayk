@@ -1,7 +1,6 @@
 ﻿using Hawalayk_APP.Context;
+using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
@@ -25,9 +24,29 @@ namespace Hawalayk_APP.Services
 
 
         }
-        public Customer GetById(string id)
+
+
+        public async Task<CustomerAccountDTO> GetCustomerAccountAsync(Customer customer)
         {
-            Customer customer = _context.Customers.SingleOrDefault(c => c.Id == id);
+
+
+            return new CustomerAccountDTO
+            {
+                FirstName = customer.FirstName,
+                LastName = customer.LastName,
+                UserName = customer.UserName,
+                ProfilePic = Path.Combine("imgs/", customer.ProfilePicture),
+                BirthDate = customer.BirthDate,
+                PhoneNumber = customer.PhoneNumber,
+
+
+            };
+
+        }
+
+        public async Task<Customer> GetByIdAsync(string id)
+        {
+            Customer customer = await _context.Customers.SingleOrDefaultAsync(c => c.Id == id);
             return customer;
         }
 

@@ -10,7 +10,11 @@ namespace Hawalayk_APP.System_Hub
         }
 
 
+        public async Task ReceiveNotification(string userId, string message)
+        {
 
+            await Clients.User(userId).SendAsync("ReceiveNotification", message);
+        }
         /* public  Task SendNotificationToGroup(string groupName, string message)/////هل اخليها enum بدلا من string
          {
              return Clients.Group(groupName).SendAsync("ReceiveNotification", message);

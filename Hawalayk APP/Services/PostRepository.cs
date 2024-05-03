@@ -2,6 +2,7 @@
 using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -70,19 +71,81 @@ namespace Hawalayk_APP.Services
             int row = Context.SaveChanges();
             return row;
 
+        }
+
+        public List<GallaryPostDTO> GetGrafGallary(string craftName)
+        {
+            Craft craft = null;
+            CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftName);
+
+            craft = Context.Crafts.FirstOrDefault(c => c.Name == enumValue);
+            List<Post> posts = Context.Posts.Include(c => c.Craftsman).Where(s => s.CraftId == craft.Id && (s.Flag == Enums.PostStatus.Gallery | s.Flag == Enums.PostStatus.Both)).ToList();
+
+            // Convert Post objects to PostDTO objects
+            List<GallaryPostDTO> postDTOs = posts.Select(post =>
+            {
+                return new GallaryPostDTO
+                {
+                    PostImgUrl = Path.Combine("imgs/", post.ImageURL),// Construct image URL
+                    CraftsmanId = post.Craftsman.Id,
+                    CraftsmanName = post.Craftsman.UserName,
+                    Content = post.Content,
+                    CraftsmanProfilePicUrl = Path.Combine("imgs/", post.Craftsman.ProfilePicture),
+                    CraftName = craftName,
+                    // Assuming Flag is an enum, convert it to string
+                };
+            }).ToList();
+
+            return postDTOs;
+
+
+
+
+
 
         }
 
-        public List<Post> GetGrafGallary(int craftId) ////مش محتاج اسم الحرفة لكن محتاج الحرفى؟؟؟
-        {
-            List<Post> posts = Context.Posts.Where(s => s.CraftId == craftId && s.Flag == (Enums.PostStatus.Gallery | Enums.PostStatus.Both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
-            return posts;
-        }
+        //public List<Post> GetGrafGallary(string craftName)
+        //{
+        //    Craft craft = null;
+        //    CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftName);
 
-        public List<Post> GetGraftsmanPortfolio(string craftsmanId) ////مش محتاج اسم الحرفة لكن محتاج الحرفى؟؟؟
+        //    craft = Context.Crafts.FirstOrDefault(c => c.Name == enumValue);
+        //    List<Post> posts = Context.Posts.Where(s => s.CraftId == craft.Id && s.Flag == (Enums.PostStatus.Gallery | Enums.PostStatus.Both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
+        //    return posts;
+        //}
+
+        public List<GallaryPostDTO> GetGraftsmanPortfolio(string craftsmanId)
         {
-            List<Post> posts = Context.Posts.Where(s => s.CraftsmanId == craftsmanId && s.Flag == (Enums.PostStatus.Portfolio | Enums.PostStatus.Both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
-            return posts;
+            List<Post> posts = Context.Posts.Where(s => s.CraftsmanId == craftsmanId && (s.Flag == Enums.PostStatus.Portfolio | s.Flag == Enums.PostStatus.Both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
+            Craftsman craftsman = craftsmanRepo.GetById(craftsmanId);
+
+            var enumValue = (CraftName)craftsman.Craft.Name;
+
+            var descriptionAttributes = typeof(CraftName)
+                .GetField(enumValue.ToString())
+                .GetCustomAttributes(typeof(DescriptionAttribute), false)
+                as DescriptionAttribute[];
+
+            var craftName = descriptionAttributes?.Length > 0 ? descriptionAttributes[0].Description : "Description not found.";
+
+
+            List<GallaryPostDTO> postDTOs = posts.Select(post =>
+            {
+                return new GallaryPostDTO
+                {
+                    PostImgUrl = Path.Combine("imgs/", post.ImageURL),// Construct image URL
+                    CraftsmanId = craftsman.Id,
+                    CraftsmanName = post.Craftsman.UserName,
+                    Content = post.Content,
+                    CraftsmanProfilePicUrl = Path.Combine("imgs/", craftsman.ProfilePicture),
+                    CraftName = craftName,
+                    // Assuming Flag is an enum, convert it to string
+                };
+            }).ToList();
+
+            return postDTOs;
+
         }
 
         private static T? ConvertToEnum<T>(string arabicString) where T : struct

@@ -1,5 +1,4 @@
 ﻿using Hawalayk_APP.DataTransferObject;
-using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 
 namespace Hawalayk_APP.Services
@@ -8,7 +7,7 @@ namespace Hawalayk_APP.Services
     {
         Task<List<string>> GetAllCraftsNamesAsync();
         Task<Craft> GetOrCreateCraftAsync(string craftName);
-        Task<List<CraftsmanDTO>> GetCraftsmenOfACraft(CraftName craftName);
+        Task<List<CraftsmanDTO>> GetCraftsmenOfACraft(string craftName);
 
         int Create(Craft newCraft);
         int Delete(int id);

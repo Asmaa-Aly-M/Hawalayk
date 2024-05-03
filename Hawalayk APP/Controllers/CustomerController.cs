@@ -1,6 +1,6 @@
 ﻿using Hawalayk_APP.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace Hawalayk_APP.Controllers
 {
@@ -13,6 +13,25 @@ namespace Hawalayk_APP.Controllers
         public CustomerController(ICustomerRepository _customerRepo)
         {
             customerRepo = _customerRepo;
+        }
+
+
+        [HttpGet("ShowCustomerAccount")]
+        public async Task<IActionResult> GetCustomerAccount()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return NotFound("This Token Is Not Found : ");
+            }
+            var customer = await customerRepo.GetByIdAsync(userId);
+
+            if (customer == null)
+            {
+                return BadRequest("Not Allowed :");
+            }
+            var result = await customerRepo.GetCustomerAccountAsync(customer);
+            return Ok(result);
         }
 
         [HttpGet]

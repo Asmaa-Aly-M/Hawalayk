@@ -1,5 +1,4 @@
 ﻿using Hawalayk_APP.DataTransferObject;
-using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Identity;
@@ -79,12 +78,12 @@ namespace Hawalayk_APP.Controllers
         [HttpGet("CraftsmenOfAcraft")]
         public async Task<ActionResult<List<CraftsmanDTO>>> GetCraftsmenOfACraft(string craftName)
         {
-            if (!Enum.TryParse<CraftName>(craftName, out var craftNameAsEnum))
-            {
-                return BadRequest("Invalid craftName");
-            }
+            //if (!Enum.TryParse<CraftName>(craftName, out var craftNameAsEnum))
+            //{
+            //    return BadRequest("Invalid craftName");
+            //}
 
-            var craftsmen = await _craftRepository.GetCraftsmenOfACraft(craftNameAsEnum);
+            var craftsmen = await _craftRepository.GetCraftsmenOfACraft(craftName);
             return craftsmen;
         }
 

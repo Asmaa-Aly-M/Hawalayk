@@ -39,7 +39,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _authService.RegisterCraftsmanAsync(model, model.PersonalImage, model.NationalIdImage);
+            var result = await _authService.RegisterCraftsmanAsync(model);
             if (!result.IsAuthenticated)
             {
                 return BadRequest(result.Message);

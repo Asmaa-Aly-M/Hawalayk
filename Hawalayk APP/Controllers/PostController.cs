@@ -25,10 +25,10 @@ namespace Hawalayk_APP.Controllers
             return Ok("The post created successfully");
         }
 
-        [HttpGet("Craft'sGallary")]
-        public IActionResult getGallary(int craftId)
+        [HttpGet("CraftsGallary/{craftName}")]
+        public IActionResult getGallary(string craftName)
         {
-            var gallary = postrepository.GetGrafGallary(craftId);
+            var gallary = postrepository.GetGrafGallary(craftName);
             if (gallary != null)
             {
                 return Ok(gallary);

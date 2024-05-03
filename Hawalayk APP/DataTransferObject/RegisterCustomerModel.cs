@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.Enums;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hawalayk_APP.DataTransferObject
 {
@@ -30,6 +31,8 @@ namespace Hawalayk_APP.DataTransferObject
         public string City { get; set; }
         public string Street { get; set; }
         public DateTime BirthDate { get; set; }
+        [NotMapped]
+        public IFormFile ProfilePic { get; set; }
 
 
 
