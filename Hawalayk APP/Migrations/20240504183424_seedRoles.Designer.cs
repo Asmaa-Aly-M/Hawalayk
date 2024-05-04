@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hawalayk_APP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240425074709_address3")]
-    partial class address3
+    [Migration("20240504183424_seedRoles")]
+    partial class seedRoles
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -105,6 +105,10 @@ namespace Hawalayk_APP.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("AddressId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
@@ -169,6 +173,8 @@ namespace Hawalayk_APP.Migrations
                         .HasColumnType("nvarchar(256)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("AddressId");
 
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
@@ -238,10 +244,7 @@ namespace Hawalayk_APP.Migrations
             modelBuilder.Entity("Hawalayk_APP.Models.City", b =>
                 {
                     b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
 
                     b.Property<string>("city_name_ar")
                         .IsRequired()
@@ -281,10 +284,7 @@ namespace Hawalayk_APP.Migrations
             modelBuilder.Entity("Hawalayk_APP.Models.Governorate", b =>
                 {
                     b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
 
                     b.Property<string>("governorate_name_ar")
                         .IsRequired()
@@ -675,6 +675,17 @@ namespace Hawalayk_APP.Migrations
                     b.Navigation("City");
 
                     b.Navigation("Governorate");
+                });
+
+            modelBuilder.Entity("Hawalayk_APP.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("Hawalayk_APP.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.AppReport", b =>

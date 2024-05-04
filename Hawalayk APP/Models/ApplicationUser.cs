@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.Enums;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hawalayk_APP.Models
 {
@@ -13,10 +14,10 @@ namespace Hawalayk_APP.Models
         public string LastName { get; set; }
 
         public Gender Gender { get; set; }
-        // [ForeignKey("Address")]
-        //public int? AddressId { get; set; }
-        //public Address Address { get; set; }
-
+        [ForeignKey("Address")]
+        public int? AddressId { get; set; }
+        public Address Address { get; set; }
+        public bool IsBanned { get; set; }
         public DateTime BirthDate { get; set; }
 
         public string ProfilePicture { get; set; }

@@ -2,6 +2,7 @@
 {
     public class GallaryPostDTO
     {
+        public int PostId { get; set; }
         public string CraftsmanId { get; set; }
         public string PostImgUrl { get; set; }
         public string CraftsmanProfilePicUrl { get; set; }

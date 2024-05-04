@@ -103,6 +103,10 @@ namespace Hawalayk_APP.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
+                    b.Property<int?>("AddressId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("BirthDate")
                         .HasColumnType("datetime2");
 
@@ -124,6 +128,9 @@ namespace Hawalayk_APP.Migrations
                     b.Property<string>("Gender")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsBanned")
+                        .HasColumnType("bit");
 
                     b.Property<string>("LastName")
                         .IsRequired()
@@ -168,6 +175,8 @@ namespace Hawalayk_APP.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AddressId");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -208,6 +217,31 @@ namespace Hawalayk_APP.Migrations
                     b.ToTable("AppReports");
                 });
 
+            modelBuilder.Entity("Hawalayk_APP.Models.Ban", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<int>("BanDurationInMinutes")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("BanStartTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Bans");
+                });
+
             modelBuilder.Entity("Hawalayk_APP.Models.Block", b =>
                 {
                     b.Property<int>("Id")
@@ -236,10 +270,7 @@ namespace Hawalayk_APP.Migrations
             modelBuilder.Entity("Hawalayk_APP.Models.City", b =>
                 {
                     b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
 
                     b.Property<string>("city_name_ar")
                         .IsRequired()
@@ -279,10 +310,7 @@ namespace Hawalayk_APP.Migrations
             modelBuilder.Entity("Hawalayk_APP.Models.Governorate", b =>
                 {
                     b.Property<int>("id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("id"), 1L, 1);
 
                     b.Property<string>("governorate_name_ar")
                         .IsRequired()
@@ -644,6 +672,9 @@ namespace Hawalayk_APP.Migrations
                     b.Property<double>("Rating")
                         .HasColumnType("float");
 
+                    b.Property<int>("RegistrationStatus")
+                        .HasColumnType("int");
+
                     b.HasIndex("CraftId");
 
                     b.ToTable("CraftsMan", (string)null);
@@ -675,6 +706,17 @@ namespace Hawalayk_APP.Migrations
                     b.Navigation("Governorate");
                 });
 
+            modelBuilder.Entity("Hawalayk_APP.Models.ApplicationUser", b =>
+                {
+                    b.HasOne("Hawalayk_APP.Models.Address", "Address")
+                        .WithMany()
+                        .HasForeignKey("AddressId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Address");
+                });
+
             modelBuilder.Entity("Hawalayk_APP.Models.AppReport", b =>
                 {
                     b.HasOne("Hawalayk_APP.Models.ApplicationUser", "Reporter")
@@ -684,6 +726,17 @@ namespace Hawalayk_APP.Migrations
                         .IsRequired();
 
                     b.Navigation("Reporter");
+                });
+
+            modelBuilder.Entity("Hawalayk_APP.Models.Ban", b =>
+                {
+                    b.HasOne("Hawalayk_APP.Models.ApplicationUser", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Block", b =>

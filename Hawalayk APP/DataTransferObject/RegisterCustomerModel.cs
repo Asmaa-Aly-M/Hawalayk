@@ -24,14 +24,16 @@ namespace Hawalayk_APP.DataTransferObject
         public string Password { get; set; }
         [Compare("Password")]
         public string PasswordConfirmed { get; set; }
-        //مش لازم يحطها في التسجيل عادي تتساب فاضية ويحطها بعدين او منطلبهاش منه اصلا
-        //public Image ProfilePic { get; set; }
-        //public Address Address { get; set; }
+
+        [Required]
         public string Goveronrate { get; set; }
+        [Required]
         public string City { get; set; }
+        [Required]
         public string Street { get; set; }
         public DateTime BirthDate { get; set; }
         [NotMapped]
+
         public IFormFile ProfilePic { get; set; }
 
 

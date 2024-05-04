@@ -1,5 +1,4 @@
-﻿using Hawalayk_APP.Models;
-using Twilio.Rest.Api.V2010.Account;
+﻿using Twilio.Rest.Api.V2010.Account;
 
 namespace Hawalayk_APP.Services
 {
@@ -7,5 +6,6 @@ namespace Hawalayk_APP.Services
     {
         MessageResource SendSMS(string PhoneNumber, string Body);
         public string GenerateOTP(bool IsAlphanumeric, int length);
+        void SendCraftsmanApprovalNotification(string phoneNumber, bool isApproved);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Hawalayk_APP.Controllers
@@ -20,8 +19,8 @@ namespace Hawalayk_APP.Controllers
             _cityService = cityService;
         }
 
-        [HttpGet]
-        [Route("addresses")]
+        [HttpGet("getAllAddresses")]
+
         public async Task<IActionResult> GetAllAddresses()
         {
             var addresses = await _addressService.GetAllAsync();

@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -42,36 +41,6 @@ namespace Hawalayk_APP.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetRoles", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "AspNetUsers",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -134,7 +103,90 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "cities",
+                columns: table => new
+                {
+                    id = table.Column<int>(type: "int", nullable: false),
+                    city_name_ar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    city_name_en = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    governorate_id = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_cities", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_cities_governorates_governorate_id",
+                        column: x => x.governorate_id,
+                        principalTable: "governorates",
+                        principalColumn: "id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Addresses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    GovernorateId = table.Column<int>(type: "int", nullable: false),
+                    CityId = table.Column<int>(type: "int", nullable: false),
+                    StreetName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Addresses_cities_CityId",
+                        column: x => x.CityId,
+                        principalTable: "cities",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Addresses_governorates_GovernorateId",
+                        column: x => x.GovernorateId,
+                        principalTable: "governorates",
+                        principalColumn: "id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AspNetUsers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AddressId = table.Column<int>(type: "int", nullable: false),
+                    BirthDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ProfilePicture = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_AspNetUsers_Addresses_AddressId",
+                        column: x => x.AddressId,
+                        principalTable: "Addresses",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -172,7 +224,7 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.ReporerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -193,7 +245,7 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -213,7 +265,7 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -231,13 +283,13 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -257,50 +309,33 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Customer",
-                columns: table => new
-                {
-                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Customer", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Customer_AspNetUsers_Id",
-                        column: x => x.Id,
-                        principalTable: "AspNetUsers",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "UserReports",
+                name: "Blocks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ReporterId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    ReportedUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    BlockingUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    BlockedUserId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserReports", x => x.Id);
+                    table.PrimaryKey("PK_Blocks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_UserReports_AspNetUsers_ReportedUserId",
-                        column: x => x.ReportedUserId,
+                        name: "FK_Blocks_AspNetUsers_BlockedUserId",
+                        column: x => x.BlockedUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.NoAction);
                     table.ForeignKey(
-                        name: "FK_UserReports_AspNetUsers_ReporterId",
-                        column: x => x.ReporterId,
+                        name: "FK_Blocks_AspNetUsers_BlockingUserId",
+                        column: x => x.BlockingUserId,
                         principalTable: "AspNetUsers",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.NoAction);
                 });
 
             migrationBuilder.CreateTable(
@@ -329,44 +364,47 @@ namespace Hawalayk_APP.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "cities",
+                name: "Customer",
                 columns: table => new
                 {
-                    id = table.Column<int>(type: "int", nullable: false),
-                    city_name_ar = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    city_name_en = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    governorate_id = table.Column<int>(type: "int", nullable: true)
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_cities", x => x.id);
+                    table.PrimaryKey("PK_Customer", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_cities_governorates_governorate_id",
-                        column: x => x.governorate_id,
-                        principalTable: "governorates",
-                        principalColumn: "id");
+                        name: "FK_Customer_AspNetUsers_Id",
+                        column: x => x.Id,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
-                name: "ServiceRequests",
+                name: "UserReports",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OptionalImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ReporerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ReporedId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ServiceRequests", x => x.Id);
+                    table.PrimaryKey("PK_UserReports", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ServiceRequests_Customer_CustomerId",
-                        column: x => x.CustomerId,
-                        principalTable: "Customer",
+                        name: "FK_UserReports_AspNetUsers_ReporedId",
+                        column: x => x.ReporedId,
+                        principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_UserReports_AspNetUsers_ReporerId",
+                        column: x => x.ReporerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -389,7 +427,7 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.CraftsmanId,
                         principalTable: "CraftsMan",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -401,7 +439,8 @@ namespace Hawalayk_APP.Migrations
                     ImageURL = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CraftsmanId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     CraftId = table.Column<int>(type: "int", nullable: true),
-                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Flag = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -442,30 +481,25 @@ namespace Hawalayk_APP.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Addresses",
+                name: "ServiceRequests",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    GovernorateId = table.Column<int>(type: "int", nullable: false),
-                    CityId = table.Column<int>(type: "int", nullable: false),
-                    StreetName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Content = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OptionalImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Addresses", x => x.Id);
+                    table.PrimaryKey("PK_ServiceRequests", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Addresses_cities_CityId",
-                        column: x => x.CityId,
-                        principalTable: "cities",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Addresses_governorates_GovernorateId",
-                        column: x => x.GovernorateId,
-                        principalTable: "governorates",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        name: "FK_ServiceRequests_Customer_CustomerId",
+                        column: x => x.CustomerId,
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateIndex(
@@ -516,11 +550,26 @@ namespace Hawalayk_APP.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_AspNetUsers_AddressId",
+                table: "AspNetUsers",
+                column: "AddressId");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Blocks_BlockedUserId",
+                table: "Blocks",
+                column: "BlockedUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Blocks_BlockingUserId",
+                table: "Blocks",
+                column: "BlockingUserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_cities_governorate_id",
@@ -558,21 +607,18 @@ namespace Hawalayk_APP.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserReports_ReportedUserId",
+                name: "IX_UserReports_ReporedId",
                 table: "UserReports",
-                column: "ReportedUserId");
+                column: "ReporedId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserReports_ReporterId",
+                name: "IX_UserReports_ReporerId",
                 table: "UserReports",
-                column: "ReporterId");
+                column: "ReporerId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(
-                name: "Addresses");
-
             migrationBuilder.DropTable(
                 name: "Admin");
 
@@ -598,6 +644,9 @@ namespace Hawalayk_APP.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Blocks");
+
+            migrationBuilder.DropTable(
                 name: "JobApplications");
 
             migrationBuilder.DropTable(
@@ -616,9 +665,6 @@ namespace Hawalayk_APP.Migrations
                 name: "UserReports");
 
             migrationBuilder.DropTable(
-                name: "cities");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
@@ -628,13 +674,19 @@ namespace Hawalayk_APP.Migrations
                 name: "Customer");
 
             migrationBuilder.DropTable(
-                name: "governorates");
-
-            migrationBuilder.DropTable(
                 name: "Crafts");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Addresses");
+
+            migrationBuilder.DropTable(
+                name: "cities");
+
+            migrationBuilder.DropTable(
+                name: "governorates");
         }
     }
 }

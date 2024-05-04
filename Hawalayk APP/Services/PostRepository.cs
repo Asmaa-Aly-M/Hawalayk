@@ -86,6 +86,7 @@ namespace Hawalayk_APP.Services
             {
                 return new GallaryPostDTO
                 {
+                    PostId = post.Id,
                     PostImgUrl = Path.Combine("imgs/", post.ImageURL),// Construct image URL
                     CraftsmanId = post.Craftsman.Id,
                     CraftsmanName = post.Craftsman.UserName,
@@ -134,6 +135,7 @@ namespace Hawalayk_APP.Services
             {
                 return new GallaryPostDTO
                 {
+                    PostId = post.Id,
                     PostImgUrl = Path.Combine("imgs/", post.ImageURL),// Construct image URL
                     CraftsmanId = craftsman.Id,
                     CraftsmanName = post.Craftsman.UserName,

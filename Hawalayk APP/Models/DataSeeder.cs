@@ -4,15 +4,24 @@ namespace Hawalayk_APP.Models
 {
     public class DataSeeder
     {
-        public void SeedGovernoratesData(ApplicationDbContext context)
+        private readonly ApplicationDbContext context;
+        public DataSeeder(ApplicationDbContext _context)
         {
-            using (context)
+            context = _context;
+        }
+        //public void SeedGovernoratesData()
+        //{
+        //     using (context)
+        //     {
+        //        context.Database.EnsureCreated();
+        //        if (context.governorates.Any())
+        //        {
+        //            return;
+        //        }
+        public void SeedGovernoratesData()
+        {
+            if (!context.governorates.Any())
             {
-                context.Database.EnsureCreated();
-                if (context.governorates.Any())
-                {
-                    return;
-                }
 
                 context.governorates.AddRange(new List<Governorate>
                 {
@@ -48,15 +57,19 @@ namespace Hawalayk_APP.Models
                 context.SaveChanges();
             }
         }
-        public void SeedCitiesData(ApplicationDbContext context)
+        //public void SeedCitiesData()
+        //{
+        //    using (context)
+        //    {
+        //        context.Database.EnsureCreated();
+        //        if (context.cities.Any())
+        //        {
+        //            return;
+        //        }
+        public void SeedCitiesData()
         {
-            using (context)
+            if (!context.cities.Any())
             {
-                context.Database.EnsureCreated();
-                if (context.cities.Any())
-                {
-                    return;
-                }
 
                 int id = 1;
                 context.cities.AddRange(new List<City>
@@ -120,6 +133,8 @@ namespace Hawalayk_APP.Models
                     new City { id = id++, governorate_id = 1, city_name_ar = "النزهة الجديدة", city_name_en = "New Nozha" },
                     new City { id = id++, governorate_id = 1, city_name_ar = "العاصمة الإدارية", city_name_en = "Capital New" }
                 });
+
+                context.SaveChanges();
             }
 
         }

@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Enums;
 using Hawalayk_APP.Helpers;
 using Hawalayk_APP.Models;
 using Microsoft.AspNetCore.Identity;
@@ -21,11 +22,11 @@ namespace Hawalayk_APP.Services
         private readonly IApplicationUserService _appUser;
         private readonly ICraftRepository _craftsService;
         private readonly JWT _jwt;
-
+        private readonly IAddressService _addressService;
         private readonly ISMSService _smsService;
         //public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, IOptions<JWT> jwt, ISMSService smsService)
 
-        public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, ICraftRepository craftsService, IOptions<JWT> jwt, ISMSService smsService, IApplicationUserService appUser, SignInManager<ApplicationUser> signInManager)
+        public AuthService(IAddressService addressService, UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, ICraftRepository craftsService, IOptions<JWT> jwt, ISMSService smsService, IApplicationUserService appUser, SignInManager<ApplicationUser> signInManager)
 
         {
             _userManager = userManager;
@@ -35,6 +36,7 @@ namespace Hawalayk_APP.Services
             _smsService = smsService;
             _appUser = appUser;
             _signInManager = signInManager;
+            _addressService = addressService;
         }
         public async Task<AuthModel> RegisterCustomerAsync(RegisterCustomerModel model)
         {
@@ -65,7 +67,7 @@ namespace Hawalayk_APP.Services
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
                 ProfilePicture = fileName,
-
+                Address = await _addressService.CreateAsync(model.Goveronrate, model.City, model.Street),
                 //Gender = model.Gender,
                 //Address = model.Address,
                 BirthDate = model.BirthDate
@@ -198,6 +200,7 @@ namespace Hawalayk_APP.Services
         {
             IFormFile file = model.PersonalImage;
             IFormFile filee = model.NationalIdImage;
+            IFormFile profilePic = model.ProfilePic;
             string fileName = file.FileName;
             string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
             using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
@@ -205,7 +208,12 @@ namespace Hawalayk_APP.Services
                 file.CopyTo(fileStream);
             }
 
-
+            string profilePicName = profilePic.FileName;
+            string profilePicPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
+            using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+            {
+                profilePic.CopyTo(fileStream);
+            }
 
             string fileeName = filee.FileName;
             string fileePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
@@ -242,14 +250,17 @@ namespace Hawalayk_APP.Services
                 PhoneNumber = model.PhoneNumber,
                 Gender = model.Gender,
                 Craft = craft,
-                ProfilePicture = "s",
+                ProfilePicture = profilePicName,
                 // NationalIDImage = model.NationalIdImage,
                 PersonalImage = fileName,
                 NationalIDImage = fileeName,
+                RegistrationStatus = CraftsmanRegistrationStatus.Pending,
                 //Address = model.Address,
                 //PersonalImage = model.PersonalImage,
                 //NationalIDImage = model.NationalIdImage,
                 BirthDate = model.BirthDate,
+                Address = await _addressService.CreateAsync(model.Goveronrate, model.City, model.Street),
+
                 //Craft = _applicationDbContext.Crafts.FirstOrDefault(c => c.Name == model.CraftName),
                 //CraftId = ?
             };
@@ -362,7 +373,6 @@ namespace Hawalayk_APP.Services
 
             return token;
         }
-
         public async Task<AuthModel> GetTokenAsync(TokenRequestModel model)
         {
 
@@ -374,6 +384,13 @@ namespace Hawalayk_APP.Services
                 authModel.Message = " The PhoneNumber Or Password Is Not Correct ";
                 return authModel;
             }
+
+            if (user is Craftsman && ((Craftsman)user).RegistrationStatus != CraftsmanRegistrationStatus.Approved)
+            {
+                authModel.Message = "Account not approved yet.";
+                return authModel;
+            }
+
             var jwtSecurityToken = await CreateJwtToken(user);
             var Roles = await _userManager.GetRolesAsync(user);
             authModel.IsAuthenticated = true;
@@ -384,8 +401,6 @@ namespace Hawalayk_APP.Services
 
             authModel.Roles = Roles.ToList();
             return authModel;
-
-
         }
 
 

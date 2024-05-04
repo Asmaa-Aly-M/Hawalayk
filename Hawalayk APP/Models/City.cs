@@ -5,8 +5,8 @@ namespace Hawalayk_APP.Models
 {
     public class City
     {
-        //[Key]
-        //[DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        [key]
+        [DatabaseGenerated(DatabaseGeneratedOption.None)]
         public int id { get; set; }
         public string city_name_ar { get; set; }
         public string city_name_en { get; set; }

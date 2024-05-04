@@ -26,18 +26,25 @@ namespace Hawalayk_APP.DataTransferObject
         public string CraftName { get; set; }
         //[Required]
 
-        public string city { get; set; }
-        public string governorate { get; set; }
-        public string street { get; set; }
+
 
         ///public Address Address { get; set; }
         [Required]
         public Gender Gender { get; set; }
         public DateTime BirthDate { get; set; }
         [NotMapped]
+        public IFormFile ProfilePic { get; set; }
+        [Required]
+        public string Goveronrate { get; set; }
+        [Required]
+        public string City { get; set; }
+        [Required]
+        public string Street { get; set; }
+        [NotMapped]
         public IFormFile PersonalImage { get; set; }
         //[Required]
         [NotMapped]
+
         public IFormFile NationalIdImage { get; set; }
 
 

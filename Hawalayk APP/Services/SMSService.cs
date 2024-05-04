@@ -2,7 +2,6 @@
 using Microsoft.Extensions.Options;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
-using Twilio.Rest.Api.V2010.Account.AvailablePhoneNumberCountry;
 
 namespace Hawalayk_APP.Services
 {
@@ -18,9 +17,9 @@ namespace Hawalayk_APP.Services
         {
             TwilioClient.Init(_twilio.AccountSID, _twilio.AuthToken);
             var result = MessageResource.Create(
-                body :Body , 
+                body: Body,
                 from: new Twilio.Types.PhoneNumber(_twilio.TwilioPhoneNumber),
-                to: PhoneNumber 
+                to: PhoneNumber
                 );
             return result;
         }
@@ -51,5 +50,23 @@ namespace Hawalayk_APP.Services
 
             return otp;
         }
+
+
+        public void SendCraftsmanApprovalNotification(string phoneNumber, bool isApproved)
+        {
+            string messageBody;
+            if (isApproved)
+            {
+                messageBody = $"Congratulations! Your registration has been approved. You can now access the platform.";
+            }
+            else
+            {
+                messageBody = $"We regret to inform you that your registration has been rejected. Please contact us for more information.";
+            }
+
+            SendSMS(phoneNumber, messageBody);
+        }
+
+
     }
 }

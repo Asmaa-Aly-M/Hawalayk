@@ -23,7 +23,7 @@ namespace Hawalayk_APP.Controllers
             _crafsmenRepository = crafsmenRepository;
         }
 
-        [HttpGet("ShowCraftsmanAccount")]
+        [HttpGet("MyAccount")]
         public async Task<IActionResult> GetCraftsmanAccount()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -42,8 +42,8 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpPut("UpdateCraftsmanAccount")]
-        public async Task<IActionResult> UpdateCraftsmanAccountAsync(CraftsmanAccountDTO craftmanAccount)
+        [HttpPut("UpdateMyAccount")]
+        public async Task<IActionResult> UpdateCraftsmanAccountAsync([FromForm] CraftsmanUpdatedAccountDTO craftmanAccount)
         {
             if (!ModelState.IsValid)
             {

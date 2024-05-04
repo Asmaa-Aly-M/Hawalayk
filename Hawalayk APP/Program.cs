@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.Helpers;
+using Hawalayk_APP.Middlewares;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Hawalayk_APP.System_Hub;
@@ -19,6 +20,8 @@ namespace Hawalayk_APP
             var builder = WebApplication.CreateBuilder(args);
             #region register service 
             // Add services to the container.
+            builder.Services.AddTransient<BanMiddleware>();
+            builder.Services.AddScoped<IBanService, BanService>();
             builder.Services.AddScoped<ISeedingDataService, SeedingDataService>();
             builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
 
@@ -99,10 +102,6 @@ namespace Hawalayk_APP
 
 
             builder.Services.AddSwaggerGen();
-            builder.Services.AddScoped<DataSeeder>();
-            var seeder = builder.Services.BuildServiceProvider().GetRequiredService<DataSeeder>();
-            seeder.SeedGovernoratesData(builder.Services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>());
-            seeder.SeedCitiesData(builder.Services.BuildServiceProvider().GetRequiredService<ApplicationDbContext>());
 
 
             builder.Services.AddSwaggerGen(c =>
@@ -119,19 +118,35 @@ namespace Hawalayk_APP
                 });
             });
 
+            #region seeding Address
+            // Register DataSeeder with the DI container
+            builder.Services.AddScoped<DataSeeder>();
+
+            // Build the service provider
+            using var serviceProvider = builder.Services.BuildServiceProvider();
+
+            // Resolve DataSeeder from the service provider
+            var seeder = serviceProvider.GetRequiredService<DataSeeder>();
+
+            // Call the seeding methods
+            seeder.SeedGovernoratesData();
+            seeder.SeedCitiesData();
+            //start time min : det  : banned : > var : det - s
+            #endregion
+
 
             var app = builder.Build();
 
 
-            using (var scope = app.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                var dbContext = services.GetRequiredService<ApplicationDbContext>();
-                dbContext.Database.Migrate();
+            //using (var scope = app.Services.CreateScope())
+            //{
+            //    var services = scope.ServiceProvider;
+            //    var dbContext = services.GetRequiredService<ApplicationDbContext>();
+            //    dbContext.Database.Migrate();
 
-                var seedService = services.GetRequiredService<ISeedingDataService>();
-                seedService.SeedingData();
-            }
+            //    var seedService = services.GetRequiredService<ISeedingDataService>();
+            //    seedService.SeedingData();
+            //}
 
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1"));
@@ -145,6 +160,7 @@ namespace Hawalayk_APP
 
 
             app.MapHub<Notification>("/notificationHub"); // Map the hub to a URL endpoint
+            app.UseMiddleware<BanMiddleware>();
 
 
 
