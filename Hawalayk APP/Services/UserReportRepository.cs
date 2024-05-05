@@ -1,31 +1,32 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
     public class UserReportRepository : IUserReportRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IApplicationUserService applicationUserServiceRepo;
-        public UserReportRepository(ApplicationDbContext context, IApplicationUserService _applicationUserServiceRepo)
+        private readonly IApplicationUserService applicationUserService;
+        public UserReportRepository(ApplicationDbContext context, IApplicationUserService _applicationUserService)
         {
             _context = context;
-            applicationUserServiceRepo = _applicationUserServiceRepo;
+            applicationUserService = _applicationUserService;
         }
-        public UserReport GetById(int id)
+        public async Task<UserReport> GetById(int id)
         {
-            UserReport UserRepo = _context.UserReports.FirstOrDefault(s => s.Id == id);
+            UserReport UserRepo = await _context.UserReports.FirstOrDefaultAsync(s => s.Id == id);
             return UserRepo;
         }
-        public List<UserReport> GetAll()
+        public async Task<List<UserReport>> GetAll()
         {
-            return _context.UserReports.ToList();
+            return await _context.UserReports.ToListAsync();
         }
 
-        public int Create(string id, UserReportDTO UserRepo)
+        public async Task<int> Create(string id, UserReportDTO UserRepo)
         {
-            ApplicationUser ApplicationUser = applicationUserServiceRepo.GetById(id);
+            ApplicationUser ApplicationUser = await applicationUserService.GetByIdAsync(id);
             UserReport userReport = new UserReport()
             {
                 ReporedId = UserRepo.ReporedId,
@@ -33,23 +34,23 @@ namespace Hawalayk_APP.Services
                 ReporerId = ApplicationUser.Id
             };
             _context.UserReports.Add(userReport);
-            int row = _context.SaveChanges();
+            int row = await _context.SaveChangesAsync();
             return row;
         }
-        public int Update(int id, UserReport UserRepo)
+        public async Task<int> Update(int id, UserReport UserRepo)
         {
-            UserReport OldUserRepo = _context.UserReports.FirstOrDefault(s => s.Id == id);
+            UserReport OldUserRepo = await _context.UserReports.FirstOrDefaultAsync(s => s.Id == id);
             OldUserRepo.Description = UserRepo.Description;
             OldUserRepo.DatePosted = UserRepo.DatePosted;
 
-            int row = _context.SaveChanges();
+            int row = await _context.SaveChangesAsync();
             return row;
         }
-        public int Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            UserReport OldUserRepo = _context.UserReports.FirstOrDefault(s => s.Id == id);
+            UserReport OldUserRepo = await _context.UserReports.FirstOrDefaultAsync(s => s.Id == id);
             _context.UserReports.Remove(OldUserRepo);
-            int row = _context.SaveChanges();
+            int row = await _context.SaveChangesAsync();
             return row;
         }
     }

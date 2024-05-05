@@ -19,29 +19,29 @@ namespace Hawalayk_APP.Services
             craftsmanRepo = _craftsmanRepo;
         }
 
-        public Post GetById(int id)
+        public async Task<Post> GetById(int id)
         {
-            Post onePost = Context.Posts.FirstOrDefault(s => s.Id == id);
+            Post onePost = await Context.Posts.FirstOrDefaultAsync(s => s.Id == id);
             return onePost;
         }
-        public List<Post> GetAll()
+        public async Task<List<Post>> GetAll()
         {
-            return Context.Posts.ToList();
+            return await Context.Posts.ToListAsync();
         }
 
-        public int Update(int id, Post newPost)
+        public async Task<int> Update(int id, Post newPost)
         {
-            Post OldPost = Context.Posts.FirstOrDefault(s => s.Id == id);
+            Post OldPost = await Context.Posts.FirstOrDefaultAsync(s => s.Id == id);
             OldPost.ImageURL = newPost.ImageURL;
             OldPost.Content = newPost.Content;
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
-        public int Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            Post OldPost = Context.Posts.FirstOrDefault(s => s.Id == id);
+            Post OldPost = await Context.Posts.FirstOrDefaultAsync(s => s.Id == id);
             Context.Posts.Remove(OldPost);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
         public async Task<int> Create(string craftsmanId, PostDTO postDTO)
@@ -68,18 +68,19 @@ namespace Hawalayk_APP.Services
                 CraftId = craftsman.CraftId
             };
             Context.Posts.Add(post);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
 
         }
 
-        public List<GallaryPostDTO> GetGrafGallary(string craftName)
+        public async Task<List<GallaryPostDTO>> GetGrafGallary(string craftName)
         {
             Craft craft = null;
             CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftName);
 
-            craft = Context.Crafts.FirstOrDefault(c => c.Name == enumValue);
-            List<Post> posts = Context.Posts.Include(c => c.Craftsman).Where(s => s.CraftId == craft.Id && (s.Flag == Enums.PostStatus.Gallery | s.Flag == Enums.PostStatus.Both)).ToList();
+            craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
+            List<Post> posts = await Context.Posts.Include(c => c.Craftsman).Where(s => s.CraftId == craft.Id &&
+            (s.Flag == Enums.PostStatus.Gallery | s.Flag == Enums.PostStatus.Both)).ToListAsync();
 
             // Convert Post objects to PostDTO objects
             List<GallaryPostDTO> postDTOs = posts.Select(post =>
@@ -118,7 +119,9 @@ namespace Hawalayk_APP.Services
 
         public async Task<List<GallaryPostDTO>> GetGraftsmanPortfolio(string craftsmanId)
         {
-            List<Post> posts = Context.Posts.Where(s => s.CraftsmanId == craftsmanId && (s.Flag == Enums.PostStatus.Portfolio | s.Flag == Enums.PostStatus.Both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
+
+            List<Post> posts = await Context.Posts.Where(s => s.CraftsmanId == craftsmanId &&
+            (s.Flag == Enums.PostStatus.Portfolio | s.Flag == Enums.PostStatus.Both)).ToListAsync();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
             Craftsman craftsman = await craftsmanRepo.GetById(craftsmanId);
 
             var enumValue = (CraftName)craftsman.Craft.Name;

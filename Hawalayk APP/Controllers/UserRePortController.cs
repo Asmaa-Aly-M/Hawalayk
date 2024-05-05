@@ -18,10 +18,10 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpPost]
-        public IActionResult writeReport(UserReportDTO userReport)
+        public async Task<IActionResult> writeReport(UserReportDTO userReport)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            userReportRepo.Create(userId, userReport);
+            await userReportRepo.Create(userId, userReport);
             return Ok();
 
 

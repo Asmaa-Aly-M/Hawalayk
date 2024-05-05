@@ -2,6 +2,7 @@
 using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
+using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -12,11 +13,11 @@ namespace Hawalayk_APP.Services
 
 
         ApplicationDbContext _context;
-        private readonly IApplicationUserService applicationUserServiceRepo;
-        public AppReportRepository(ApplicationDbContext context, IApplicationUserService _applicationUserServiceRepo)
+        private readonly IApplicationUserService applicationUserService;
+        public AppReportRepository(ApplicationDbContext context, IApplicationUserService _applicationUserService)
         {
             _context = context;
-            applicationUserServiceRepo = _applicationUserServiceRepo;
+            applicationUserService = _applicationUserService;
         }
         //public async Task<AppReport> GetOrCreateCraftAsync(string reprotedIssue)
         //{
@@ -37,17 +38,17 @@ namespace Hawalayk_APP.Services
         //}
 
 
-        public List<AppReport> GetAll()
+        public async Task<List<AppReport>> GetAll()
         {
-            List<AppReport> AppReports = _context.AppReports.ToList();
+            List<AppReport> AppReports = await _context.AppReports.ToListAsync();
 
             return AppReports;
 
 
         }
-        public AppReport GetById(int id)
+        public async Task<AppReport> GetById(int id)
         {
-            AppReport appreport = _context.AppReports.SingleOrDefault(c => c.Id == id);
+            AppReport appreport = await _context.AppReports.SingleOrDefaultAsync(c => c.Id == id);
             return appreport;
         }
         //public int Create(string id, AppReportDTO appReport)
@@ -75,9 +76,9 @@ namespace Hawalayk_APP.Services
         //    return row;
         //}
         //
-        public int Create(string userId, AppReportDTO appReport)
+        public async Task<int> Create(string userId, AppReportDTO appReport)
         {
-            ApplicationUser ApplicationUser = applicationUserServiceRepo.GetById(userId);
+            ApplicationUser ApplicationUser = await applicationUserService.GetByIdAsync(userId);
 
             //ReportedIssue reportedIssue = Enum.Parse<ReportedIssue>(appReport.ReportedIssue, true);
 
@@ -91,13 +92,13 @@ namespace Hawalayk_APP.Services
             };
 
             _context.AppReports.Add(newAppReport);
-            int rowsAffected = _context.SaveChanges();
+            int rowsAffected = await _context.SaveChangesAsync();
             return rowsAffected;
         }
 
-        public int Update(int id, AppReport appreport)
+        public async Task<int> Update(int id, AppReport appreport)
         {
-            AppReport Oldappreport = _context.AppReports.SingleOrDefault(c => c.Id == id);
+            AppReport Oldappreport = await _context.AppReports.SingleOrDefaultAsync(c => c.Id == id);
             // Oldappreport.Id = appreport.Id;
             Oldappreport.Reporter = appreport.Reporter;
             // Oldappreport.ReporerId = appreport.ReporerId;
@@ -105,13 +106,13 @@ namespace Hawalayk_APP.Services
             Oldappreport.DatePosted = appreport.DatePosted;
             Oldappreport.Description = appreport.Description;
 
-            int row = _context.SaveChanges();
+            int row = await _context.SaveChangesAsync();
             return row;
         }
-        public int Delete(AppReport appreport)
+        public async Task<int> Delete(AppReport appreport)
         {
             _context.AppReports.Remove(appreport);
-            int row = _context.SaveChanges();
+            int row = await _context.SaveChangesAsync();
             return row;
         }
         private static T? ConvertToEnum<T>(string arabicString) where T : struct

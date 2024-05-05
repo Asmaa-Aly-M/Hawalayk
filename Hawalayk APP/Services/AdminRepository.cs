@@ -13,27 +13,27 @@ namespace Hawalayk_APP.Services
             Context = _Context;
         }
 
-        public Admin GetById(string id)
+        public async Task<Admin> GetById(string id)
         {
-            Admin admin = Context.Admins.FirstOrDefault(s => s.Id == id);
+            Admin admin = await Context.Admins.FirstOrDefaultAsync(s => s.Id == id);
             return admin;
         }
-        public List<Admin> GetAll()
+        public async Task<List<Admin>> GetAll()
         {
-            return Context.Admins.ToList();
+            return await Context.Admins.ToListAsync();
         }
-        public int Create(Admin admin)
+        public async Task<int> Create(Admin admin)
         {
             Context.Admins.Add(admin);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
 
-        public int Delete(string id)
+        public async Task<int> Delete(string id)
         {
-            Admin admin = Context.Admins.FirstOrDefault(s => s.Id == id);
+            Admin admin = await Context.Admins.FirstOrDefaultAsync(s => s.Id == id);
             Context.Admins.Remove(admin);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
 

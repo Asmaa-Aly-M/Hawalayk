@@ -15,27 +15,30 @@ namespace Hawalayk_APP.Controllers
 
             adminRepo = adminRepository;
         }
+
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var admins = adminRepo.GetAll();
+            var admins = await adminRepo.GetAll();
             return Ok(admins);
         }
+
         [HttpPost]
-        public IActionResult AddAdmin(Admin admin)
+        public async Task<IActionResult> AddAdmin(Admin admin)
         {
-            adminRepo.Create(admin);
+            await adminRepo.Create(admin);
             return Ok();
         }
+
         [HttpDelete]
-        public IActionResult DeleteAdmin(string id)
+        public async Task<IActionResult> DeleteAdmin(string id)
         {
-            var existingAmin = adminRepo.GetById(id);
+            var existingAmin = await adminRepo.GetById(id);
             if (existingAmin == null)
             {
                 return NotFound();
             }
-            adminRepo.Delete(id);
+            await adminRepo.Delete(id);
             return NoContent();
         }
     }

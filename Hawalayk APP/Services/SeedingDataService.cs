@@ -3,6 +3,7 @@ using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 public class SeedingDataService : ISeedingDataService
 {
@@ -14,9 +15,9 @@ public class SeedingDataService : ISeedingDataService
         _context = context;
         _userManager = userManager;
     }
-    public void SeedingData()
+    public async Task SeedingData()
     {
-        if (_context.ApplicationUsers.Any())
+        if (await _context.ApplicationUsers.AnyAsync())
         {
             return;
         }

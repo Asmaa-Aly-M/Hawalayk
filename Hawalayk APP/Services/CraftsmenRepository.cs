@@ -85,9 +85,9 @@ namespace Hawalayk_APP.Services
              return Craftman;
          }*/
 
-        public List<Craftsman> GetAll()
+        public async Task<List<Craftsman>> GetAll()
         {
-            return Context.Craftsmen.ToList();
+            return await Context.Craftsmen.ToListAsync();
         }
 
 
@@ -189,9 +189,9 @@ namespace Hawalayk_APP.Services
 
         }
 
-        public int craftsmanNumber()
+        public async Task<int> craftsmanNumber()
         {
-            int counter = Context.Craftsmen.Count();
+            int counter = await Context.Craftsmen.CountAsync();
             return counter;
         }
 

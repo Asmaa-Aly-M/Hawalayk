@@ -1,6 +1,7 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
@@ -18,14 +19,14 @@ namespace Hawalayk_APP.Services
 
 
 
-        public ServiceRequest GetById(int id)
+        public async Task<ServiceRequest> GetById(int id)
         {
-            ServiceRequest service = Context.ServiceRequests.FirstOrDefault(s => s.Id == id);
+            ServiceRequest service = await Context.ServiceRequests.FirstOrDefaultAsync(s => s.Id == id);
             return service;
         }
-        public List<ServiceRequest> GetAll()
+        public async Task<List<ServiceRequest>> GetAll()
         {
-            return Context.ServiceRequests.ToList();
+            return await Context.ServiceRequests.ToListAsync();
         }
         //public async Task<int> CreateAsync(string customerId, ServiceRequestDTO newservice)
         //{
@@ -84,17 +85,17 @@ namespace Hawalayk_APP.Services
             return row;
         }
 
-        public int Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            ServiceRequest Oldservice = Context.ServiceRequests.FirstOrDefault(s => s.Id == id);
+            ServiceRequest Oldservice = await Context.ServiceRequests.FirstOrDefaultAsync(s => s.Id == id);
             Context.ServiceRequests.Remove(Oldservice);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
 
-        public int countService()
+        public async Task<int> countService()
         {
-            int counter = Context.ServiceRequests.Count();
+            int counter = await Context.ServiceRequests.CountAsync();
             return counter;
         }
     }

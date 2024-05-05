@@ -110,12 +110,12 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpGet]
-        public IActionResult numberOfCraftsmen()
+        public async Task<IActionResult> numberOfCraftsmen()
         {
-            int counter = _crafsmenRepository.craftsmanNumber();
+            int counter = await _crafsmenRepository.craftsmanNumber();
             return Ok(counter);
         }
-
+        S
 
     }
 }

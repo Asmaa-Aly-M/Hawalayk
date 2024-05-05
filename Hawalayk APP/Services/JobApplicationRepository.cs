@@ -2,6 +2,11 @@
 using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
+<<<<<<< HEAD
+=======
+using Microsoft.EntityFrameworkCore;
+using System.Xml.Linq;
+>>>>>>> d44a62dc11f45570f618f209d5262876bbd75df0
 
 namespace Hawalayk_APP.Services
 {
@@ -18,14 +23,14 @@ namespace Hawalayk_APP.Services
 
 
 
-        public JobApplication GetById(int id)
+        public async Task<JobApplication> GetById(int id)
         {
-            JobApplication job = Context.JobApplications.FirstOrDefault(s => s.Id == id);
+            JobApplication job = await Context.JobApplications.FirstOrDefaultAsync(s => s.Id == id);
             return job;
         }
-        public List<JobApplication> GetAll()
+        public async Task<List<JobApplication>> GetAll()
         {
-            return Context.JobApplications.ToList();
+            return await Context.JobApplications.ToListAsync();
         }
 
         public async Task<int> Create(string craftmanId, JobApplicationDTO newJob)
@@ -55,11 +60,11 @@ namespace Hawalayk_APP.Services
              int row = Context.SaveChanges();
              return row;
          }*/
-        public int Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            JobApplication OldJob = Context.JobApplications.FirstOrDefault(s => s.Id == id);
+            JobApplication OldJob = await Context.JobApplications.FirstOrDefaultAsync(s => s.Id == id);
             Context.JobApplications.Remove(OldJob);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
     }

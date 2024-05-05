@@ -4,9 +4,9 @@ namespace Hawalayk_APP.Services
 {
     public interface IAdminRepository
     {
-        List<Admin> GetAll();
-        Admin GetById(string id);
-        int Create(Admin admin);
-        int Delete(string id);
+        Task<List<Admin>> GetAll();
+        Task<Admin> GetById(string id);
+        Task<int> Create(Admin admin);
+        Task<int> Delete(string id);
     }
 }

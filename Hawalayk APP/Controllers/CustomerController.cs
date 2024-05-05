@@ -35,9 +35,9 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpGet]
-        public IActionResult numberOfCustomer()
+        public async Task<IActionResult> numberOfCustomer()
         {
-            int counter = customerRepo.customerNumber();
+            int counter = await customerRepo.customerNumber();
             return Ok(counter);
         }
     }

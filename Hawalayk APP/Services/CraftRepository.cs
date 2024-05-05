@@ -42,10 +42,11 @@ namespace Hawalayk_APP.Services
             return newCraft;
         }
 
-        public List<Craft> GetAll()
+        public async Task<List<Craft>> GetAll()
         {
-            return Context.Crafts.ToList();
+            return await Context.Crafts.ToListAsync();
         }
+
         public Task<List<string>> GetAllCraftsNamesAsync()
         {
             var craftNames = Enum.GetNames(typeof(CraftName)).ToList();
@@ -70,31 +71,39 @@ namespace Hawalayk_APP.Services
             }).ToList();
 
         }
-        public Craft GetById(int id)
+
+
+
+
+
+
+
+
+        public async Task<Craft> GetById(int id)
         {
-            Craft craft = Context.Crafts.FirstOrDefault(s => s.Id == id);
+            Craft craft = await Context.Crafts.FirstOrDefaultAsync(s => s.Id == id);
             return craft;
         }
 
-        public int Create(Craft newCraft)
+        public async Task<int> Create(Craft newCraft)
         {
             Context.Crafts.Add(newCraft);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
-        public int Update(int id, Craft newCraft)
+        public async Task<int> Update(int id, Craft newCraft)
         {
-            Craft OldCraft = Context.Crafts.FirstOrDefault(s => s.Id == id);
+            Craft OldCraft = await Context.Crafts.FirstOrDefaultAsync(s => s.Id == id);
             OldCraft.Name = newCraft.Name;
 
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
-        public int Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            Craft OldCraft = Context.Crafts.FirstOrDefault(s => s.Id == id);
+            Craft OldCraft = await Context.Crafts.FirstOrDefaultAsync(s => s.Id == id);
             Context.Crafts.Remove(OldCraft);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
 
