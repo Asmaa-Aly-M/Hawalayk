@@ -2,7 +2,6 @@
 using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
-using System.Xml.Linq;
 
 namespace Hawalayk_APP.Services
 {
@@ -29,9 +28,9 @@ namespace Hawalayk_APP.Services
             return Context.JobApplications.ToList();
         }
 
-        public int Create(string craftmanId, JobApplicationDTO newJob)
+        public async Task<int> Create(string craftmanId, JobApplicationDTO newJob)
         {
-            Craftsman craftsman = craftsmanRepo.GetById(craftmanId);
+            Craftsman craftsman = await craftsmanRepo.GetById(craftmanId);
             JobApplication job = new JobApplication()
             {
                 Id = newJob.Id,
@@ -43,7 +42,7 @@ namespace Hawalayk_APP.Services
             };
 
             Context.JobApplications.Add(job);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
         /* public int Update(int id, JobApplicationDTO newJob)////////هل محتاجينها+فيها غلطات؟؟؟

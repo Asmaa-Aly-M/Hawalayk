@@ -20,8 +20,6 @@ namespace Hawalayk_APP.Services
         public async Task<Craft> GetOrCreateCraftAsync(string craftName)
         {
 
-
-
             //CraftName craft_Name;
             Craft existingCraft = null;
             CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftName);
@@ -72,15 +70,6 @@ namespace Hawalayk_APP.Services
             }).ToList();
 
         }
-
-
-
-
-
-
-
-
-
         public Craft GetById(int id)
         {
             Craft craft = Context.Crafts.FirstOrDefault(s => s.Id == id);
@@ -109,9 +98,11 @@ namespace Hawalayk_APP.Services
             return row;
         }
 
+        //public async Task<string>GetCraftName(int id)
+        //{
+        //    var craft = Context.Crafts.FirstOrDefaultAsync(c=>c.Id==id);
 
-
-
+        //}
         private static T? ConvertToEnum<T>(string arabicString) where T : struct
         {
             Type enumType = typeof(T);

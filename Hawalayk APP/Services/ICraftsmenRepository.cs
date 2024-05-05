@@ -6,7 +6,7 @@ namespace Hawalayk_APP.Services
     public interface ICraftsmenRepository
     {
         List<Craftsman> GetAll();
-        Craftsman GetById(string id);
+        Task<Craftsman> GetById(string id);
         Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(Craftsman craftsman);
         Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId, CraftsmanUpdatedAccountDTO craftsmanAccount);
         Task<List<Craftsman>> GetPendingCraftsmen();

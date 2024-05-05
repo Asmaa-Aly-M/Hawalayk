@@ -44,9 +44,9 @@ namespace Hawalayk_APP.Services
             int row = Context.SaveChanges();
             return row;
         }
-        public int Create(string craftsmanId, PostDTO postDTO)
+        public async Task<int> Create(string craftsmanId, PostDTO postDTO)
         {
-            Craftsman craftsman = craftsmanRepo.GetById(craftsmanId);
+            Craftsman craftsman = await craftsmanRepo.GetById(craftsmanId);
             PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postDTO.Flag);
 
 
@@ -116,10 +116,10 @@ namespace Hawalayk_APP.Services
         //    return posts;
         //}
 
-        public List<GallaryPostDTO> GetGraftsmanPortfolio(string craftsmanId)
+        public async Task<List<GallaryPostDTO>> GetGraftsmanPortfolio(string craftsmanId)
         {
             List<Post> posts = Context.Posts.Where(s => s.CraftsmanId == craftsmanId && (s.Flag == Enums.PostStatus.Portfolio | s.Flag == Enums.PostStatus.Both)).ToList();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
-            Craftsman craftsman = craftsmanRepo.GetById(craftsmanId);
+            Craftsman craftsman = await craftsmanRepo.GetById(craftsmanId);
 
             var enumValue = (CraftName)craftsman.Craft.Name;
 
