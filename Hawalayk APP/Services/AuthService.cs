@@ -93,7 +93,7 @@ namespace Hawalayk_APP.Services
             var otpToken = _smsService.GenerateOTP(false, 4);
 
 
-            var smsResult = _smsService.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
+            var smsResult = await _smsService.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
 
             if (String.IsNullOrEmpty(smsResult.ErrorMessage))
             {
@@ -133,7 +133,7 @@ namespace Hawalayk_APP.Services
                 return new AuthModel { Message = "Phone number is not correct" };
 
             var otpToken = _smsService.GenerateOTP(false, 4);
-            var smsResult = _smsService.SendSMS(phoneNumber, $"Your OTP is: {otpToken}");
+            var smsResult = await _smsService.SendSMS(phoneNumber, $"Your OTP is: {otpToken}");
 
             if (String.IsNullOrEmpty(smsResult.ErrorMessage))
             {
@@ -284,7 +284,7 @@ namespace Hawalayk_APP.Services
             var otpToken = _smsService.GenerateOTP(false, 4);
 
 
-            var smsResult = _smsService.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
+            var smsResult = await _smsService.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
 
             if (String.IsNullOrEmpty(smsResult.ErrorMessage))
             {

@@ -13,10 +13,10 @@ namespace Hawalayk_APP.Services
         {
             _twilio = twilio.Value;
         }
-        public MessageResource SendSMS(string PhoneNumber, string Body)
+        public async Task<MessageResource> SendSMS(string PhoneNumber, string Body)
         {
             TwilioClient.Init(_twilio.AccountSID, _twilio.AuthToken);
-            var result = MessageResource.Create(
+            var result = await MessageResource.CreateAsync(
                 body: Body,
                 from: new Twilio.Types.PhoneNumber(_twilio.TwilioPhoneNumber),
                 to: PhoneNumber
@@ -52,7 +52,7 @@ namespace Hawalayk_APP.Services
         }
 
 
-        public void SendCraftsmanApprovalNotification(string phoneNumber, bool isApproved)
+        public async Task SendCraftsmanApprovalNotification(string phoneNumber, bool isApproved)
         {
             string messageBody;
             if (isApproved)
@@ -64,7 +64,7 @@ namespace Hawalayk_APP.Services
                 messageBody = $"We regret to inform you that your registration has been rejected. Please contact us for more information.";
             }
 
-            SendSMS(phoneNumber, messageBody);
+            await SendSMS(phoneNumber, messageBody);
         }
 
 

@@ -16,9 +16,9 @@ namespace Hawalayk_APP.Services
 
         }
 
-        public List<Customer> GetAll()
+        public async Task<List<Customer>> GetAll()
         {
-            List<Customer> customers = _context.Customers.ToList();
+            List<Customer> customers = await _context.Customers.ToListAsync();
 
             return customers;
 
@@ -50,9 +50,9 @@ namespace Hawalayk_APP.Services
             return customer;
         }
 
-        public int customerNumber()
+        public async Task<int> customerNumber()
         {
-            int counter = _context.Customers.Count();
+            int counter = await _context.Customers.CountAsync();
             return counter;
         }
 

@@ -1,6 +1,7 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
@@ -27,9 +28,9 @@ namespace Hawalayk_APP.Services
             }
             return null; // User not found
         }
-        public ApplicationUser GetById(string id)
+        public async Task<ApplicationUser> GetByIdAsync(string id)
         {
-            ApplicationUser ApplicationUser = Context.ApplicationUsers.FirstOrDefault(s => s.Id == id);
+            ApplicationUser ApplicationUser = await Context.ApplicationUsers.FirstOrDefaultAsync(s => s.Id == id);
             return ApplicationUser;
         }
         public async Task<ApplicationUser> getCurrentUser(string userId)

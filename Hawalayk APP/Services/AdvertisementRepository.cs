@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
@@ -14,23 +15,23 @@ namespace Hawalayk_APP.Services
 
 
 
-        public Advertisement GetById(int id)
+        public async Task<Advertisement> GetById(int id)
         {
-            Advertisement adverts = Context.Advertisements.FirstOrDefault(s => s.Id == id);
+            Advertisement adverts = await Context.Advertisements.FirstOrDefaultAsync(s => s.Id == id);
             return adverts;
         }
-        public List<Advertisement> GetAll()
+        public async Task<List<Advertisement>> GetAll()
         {
-            return Context.Advertisements.ToList();
+            return await Context.Advertisements.ToListAsync();
         }
 
-        public int Create(Advertisement Advertis)
+        public async Task<int> Create(Advertisement Advertis)
         {
             Context.Advertisements.Add(Advertis);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
-        public int Update(int id, Advertisement Advertis)
+        public async Task<int> Update(int id, Advertisement Advertis)
         {
             Advertisement OldAdvertis = Context.Advertisements.FirstOrDefault(s => s.Id == id);
             OldAdvertis.Title = Advertis.Title;
@@ -43,14 +44,14 @@ namespace Hawalayk_APP.Services
             OldAdvertis.EndDate = Advertis.EndDate;
             OldAdvertis.DateCreated = Advertis.DateCreated;
 
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
-        public int Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            Advertisement OldAdvertis = Context.Advertisements.FirstOrDefault(s => s.Id == id);
+            Advertisement OldAdvertis = await Context.Advertisements.FirstOrDefaultAsync(s => s.Id == id);
             Context.Advertisements.Remove(OldAdvertis);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
     }

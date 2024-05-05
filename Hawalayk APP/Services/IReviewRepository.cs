@@ -5,10 +5,10 @@ namespace Hawalayk_APP.Services
 {
     public interface IReviewRepository
     {
-        int Create(ReviewDTO newReview);
-        int Delete(int id);
-        List<Review> GetAll();
-        Review GetById(int id);
-        int Update(int id, Review newReview);
+        Task<int> Create(ReviewDTO newReview);
+        Task<int> Delete(int id);
+        Task<List<Review>> GetAll();
+        Task<Review> GetById(int id);
+        Task<int> Update(int id, Review newReview);
     }
 }

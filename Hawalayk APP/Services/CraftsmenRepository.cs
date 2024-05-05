@@ -73,9 +73,9 @@ namespace Hawalayk_APP.Services
 
 
 
-        public Craftsman GetById(string id)
+        public async Task<Craftsman> GetById(string id)
         {
-            Craftsman Craftman = Context.Craftsmen.Include(c => c.Craft).Include(a => a.Address).ThenInclude(city => city.City).ThenInclude(gov => gov.Governorate).FirstOrDefault(s => s.Id == id);
+            Craftsman Craftman = await Context.Craftsmen.Include(c => c.Craft).Include(a => a.Address).ThenInclude(city => city.City).ThenInclude(gov => gov.Governorate).FirstOrDefaultAsync(s => s.Id == id);
             return Craftman;//craft : 
         }
 
@@ -85,9 +85,9 @@ namespace Hawalayk_APP.Services
              return Craftman;
          }*/
 
-        public List<Craftsman> GetAll()
+        public async Task<List<Craftsman>> GetAll()
         {
-            return Context.Craftsmen.ToList();
+            return await Context.Craftsmen.ToListAsync();
         }
 
 
@@ -127,7 +127,7 @@ namespace Hawalayk_APP.Services
 
         {
 
-            var craftsman = GetById(craftsmanId);
+            var craftsman = await GetById(craftsmanId);
             if (craftsman == null)
             {
                 return new UpdateUserDTO { IsUpdated = false, Message = "Not Found : " };
@@ -189,9 +189,9 @@ namespace Hawalayk_APP.Services
 
         }
 
-        public int craftsmanNumber()
+        public async Task<int> craftsmanNumber()
         {
-            int counter = Context.Craftsmen.Count();
+            int counter = await Context.Craftsmen.CountAsync();
             return counter;
         }
 
