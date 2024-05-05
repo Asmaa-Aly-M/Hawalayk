@@ -1,4 +1,5 @@
 ﻿using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Filters;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Identity;
@@ -40,6 +41,28 @@ namespace Hawalayk_APP.Controllers
             var result = await _crafsmenRepository.GetCraftsmanAccountAsync(craftsman);
             return Ok(result);
         }
+
+
+        [ServiceFilter(typeof(BlockingFilter))]
+        [HttpGet("CraftsmanAcoount")]
+        public async Task<IActionResult> ShawCraftsmanAccount(string craftsmanId)
+        {
+            //  var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //if (userId == null)
+            //{
+            //    return NotFound("This Token Is Not Found : ");
+            //}
+            var craftsman = _crafsmenRepository.GetById(craftsmanId);
+
+            if (craftsman == null)
+            {
+                return BadRequest("Not Allowed :");
+            }
+            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(craftsman);
+            return Ok(result);
+        }
+
+
 
 
         [HttpPut("UpdateMyAccount")]

@@ -21,6 +21,7 @@ namespace Hawalayk_APP
             #region register service 
             // Add services to the container.
             builder.Services.AddTransient<BanMiddleware>();
+            builder.Services.AddScoped<IBlockingService, BlockingService>();
             builder.Services.AddScoped<IBanService, BanService>();
             builder.Services.AddScoped<ISeedingDataService, SeedingDataService>();
             builder.Services.AddScoped<IApplicationUserService, ApplicationUserService>();
@@ -46,7 +47,6 @@ namespace Hawalayk_APP
 
             builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
 
-            builder.Services.AddScoped<IBlockingService, BlockingService>();
             #endregion
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();

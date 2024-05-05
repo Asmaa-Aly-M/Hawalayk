@@ -24,12 +24,16 @@ namespace Hawalayk_APP.Controllers
         [HttpPost("BlockUser")]
         public async Task<IActionResult> BlockUser(string blockedUserId)
         {
+            var blockingUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (blockingUserId == null)
+            {
+                return NotFound("This Token Is Not Found : ");
+            }
             if (string.IsNullOrEmpty(blockedUserId))
             {
                 return BadRequest("Missing required user ID.");
             }
 
-            var blockingUserId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             try
             {
