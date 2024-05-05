@@ -18,35 +18,35 @@ namespace Hawalayk_APP.Controllers
         }
         [Route("view")]
         [HttpPost]
-        public IActionResult writeReview(ReviewDTO newreview) 
+        public async Task<IActionResult> writeReview(ReviewDTO newreview) 
         {
-            review.Create(newreview);//مش المفروض يباصيلنا حاجة من نوع reviewDTO
+            await review.Create(newreview);//مش المفروض يباصيلنا حاجة من نوع reviewDTO
             return Ok();
         }
 
         [Route("like")]
         [HttpPost]
-        public IActionResult like(int reviewId)
+        public async Task<IActionResult> like(int reviewId)
         {
-            Review theReview = review.GetById(reviewId);
+            Review theReview = await review.GetById(reviewId);
             int newPositiveReacts = theReview.PositiveReacts + 1;
             return Ok(newPositiveReacts);
         }
         
         [Route("removeLike")]
         [HttpPost]
-        public IActionResult Removelike(int reviewId)
+        public async Task<IActionResult> Removelike(int reviewId)
         {
-            Review theReview = review.GetById(reviewId);
+            Review theReview = await review.GetById(reviewId);
             int newPositiveReacts = theReview.PositiveReacts - 1;
             return Ok(newPositiveReacts);
         }
 
         [Route("disLike")]
         [HttpPost]
-        public IActionResult disLike(int reviewId)
+        public async Task<IActionResult> disLike(int reviewId)
         {
-            Review theReview = review.GetById(reviewId);
+            Review theReview = await review.GetById(reviewId);
             int newNegativeReacts = theReview.NegativeReacts + 1;
             return Ok(newNegativeReacts);///// هل محتاجين يرجع حاجة
         }
@@ -54,23 +54,23 @@ namespace Hawalayk_APP.Controllers
        
         [Route("removeDisLike")]
         [HttpPost]
-        public IActionResult removeDisLike(int reviewId) 
+        public async Task<IActionResult> removeDisLike(int reviewId) 
         {
-            Review theReview = review.GetById(reviewId);
+            Review theReview = await review.GetById(reviewId);
             int newNegativeReacts = theReview.NegativeReacts - 1;
             return Ok(newNegativeReacts);
         }
 
         [HttpGet] //Test
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll()
         {
-            var Reviews = review.GetAll();
+            var Reviews = await review.GetAll();
             return Ok(Reviews);
         }
         [HttpGet("{id}")]//Test
-        public IActionResult Get(int id)
+        public async Task<IActionResult> Get(int id)
         {
-            var Review = review.GetById(id);
+            var Review = await review.GetById(id);
 
             if (Review == null)
             {
@@ -86,10 +86,10 @@ namespace Hawalayk_APP.Controllers
             return Ok(ReviewDTO);
         }
         [HttpPut] //test
-        public IActionResult Update(int id, ReviewUpdateDTO updatedReviewDTO) {
+        public async Task<IActionResult> Update(int id, ReviewUpdateDTO updatedReviewDTO) {
 
 
-            var existingReview = review.GetById(id);
+            var existingReview = await review.GetById(id);
 
             if (existingReview == null)
             {
@@ -100,23 +100,23 @@ namespace Hawalayk_APP.Controllers
             existingReview.Content = updatedReviewDTO.Content;
             existingReview.Rating = updatedReviewDTO.Rating;
 
-            review.Update(id,existingReview);
+            await review.Update(id,existingReview);
 
             return NoContent();
 
         }
 
         [HttpDelete("{id}")]//test
-        public IActionResult DeleteReview(int id)
+        public async Task<IActionResult> DeleteReview(int id)
         {
-            var existingReview = review.GetById(id);
+            var existingReview = await review.GetById(id);
 
             if (existingReview == null)
             {
                 return NotFound();
             }
 
-            review.Delete(id);
+            await review.Delete(id);
 
             return NoContent();
         }

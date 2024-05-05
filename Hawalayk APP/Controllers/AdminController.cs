@@ -34,49 +34,48 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpGet("customers")]
-        public IActionResult GetAllCustomers()
+        public async Task<IActionResult> GetAllCustomers()
         {
-            var customers = _customerRepository.GetAll();
+            var customers = await _customerRepository.GetAll();
             return Ok(customers);
         }
 
         [HttpGet("craftsmen")]
-        public IActionResult GetAllCraftsmen()
+        public async Task<IActionResult> GetAllCraftsmen()
         {
-            var craftsmen = _craftsmanRepository.GetAll();
+            var craftsmen = await _craftsmanRepository.GetAll();
             return Ok(craftsmen);
         }
 
         [HttpGet("app-reports")]
-        public IActionResult GetAllAppReports()
+        public async Task<IActionResult> GetAllAppReports()
         {
-            var appReports = _appReportRepository.GetAll();
+            var appReports = await _appReportRepository.GetAll();
             return Ok(appReports);
         }
 
         [HttpGet("user-reports")]
-        public IActionResult GetAllUserReports()
+        public async Task<IActionResult> GetAllUserReports()
         {
-            var userReports = _userReportRepository.GetAll();
+            var userReports = await _userReportRepository.GetAll();
             return Ok(userReports);
         }
+
         [HttpGet("advertisement")]
-        public IActionResult GetAlladvertisement()
+        public async Task<IActionResult> GetAlladvertisement()
         {
-            var advertisements = _advertisementRepository.GetAll();
+            var advertisements = await _advertisementRepository.GetAll();
             return Ok(advertisements);
         }
-        [HttpGet]
-        [Route("admin/craftsmen/pending")]
+
+        [HttpGet("craftsmen/pending")]
         public async Task<IActionResult> GetPendingCraftsmen()
         {
             var pendingCraftsmen = await _craftsmanRepository.GetPendingCraftsmen();
             return Ok(pendingCraftsmen);
         }
 
-
-        [HttpPut]
-        [Route("admin/craftsmen/{id}")]
+        [HttpPut("approveCraftsman/{id}")]
         public async Task<IActionResult> ApproveCraftsman(string id, bool isApproved)
         {
             if (string.IsNullOrEmpty(id))
@@ -96,7 +95,7 @@ namespace Hawalayk_APP.Controllers
             }
         }
 
-        [HttpPost("admin/ban-user")]
+        [HttpPost("ban-user")]
         public async Task<IActionResult> BanUser(string userId, int banDurationInMinutes)
         {
             if (string.IsNullOrEmpty(userId))
@@ -124,7 +123,7 @@ namespace Hawalayk_APP.Controllers
             return Ok("User banned successfully.");
         }
 
-        [HttpPost("admin/unban-user")]
+        [HttpPost("unban-user")]
         public async Task<IActionResult> UnbanUser(string userId)
         {
             if (string.IsNullOrEmpty(userId))
@@ -142,7 +141,7 @@ namespace Hawalayk_APP.Controllers
             return Ok("User unbanned successfully.");
         }
 
-        [HttpGet("admin/banned-users")]
+        [HttpGet("banned-users")]
         public async Task<IActionResult> GetBannedUsers()
         {
             var bannedUsers = await _banService.GetBannedUsersAsync();

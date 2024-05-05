@@ -32,7 +32,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return NotFound("This Token Is Not Found : ");
             }
-            var craftsman = _crafsmenRepository.GetById(userId);
+            var craftsman = await _crafsmenRepository.GetById(userId);
 
             if (craftsman == null)
             {
@@ -52,7 +52,7 @@ namespace Hawalayk_APP.Controllers
             //{
             //    return NotFound("This Token Is Not Found : ");
             //}
-            var craftsman = _crafsmenRepository.GetById(craftsmanId);
+            var craftsman = await _crafsmenRepository.GetById(craftsmanId);
 
             if (craftsman == null)
             {
@@ -111,12 +111,12 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpGet]
-        public IActionResult numberOfCraftsmen()
+        public async Task<IActionResult> numberOfCraftsmen()
         {
-            int counter = _crafsmenRepository.craftsmanNumber();
+            int counter = await _crafsmenRepository.craftsmanNumber();
             return Ok(counter);
         }
-
+        S
 
     }
 }

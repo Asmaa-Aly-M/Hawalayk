@@ -16,10 +16,10 @@ namespace Hawalayk_APP.Controllers
             reportRepo = _reportRepo;
         }
         [HttpPost("ReportApp")]
-        public IActionResult reportAPP([FromBody] AppReportDTO newReport)
+        public async Task<IActionResult> reportAPP([FromBody] AppReportDTO newReport)
         {
             var reporterId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            reportRepo.Create(reporterId, newReport);
+            await reportRepo.Create(reporterId, newReport);
             return Ok(new { message = "Done" });///// محتاجين ترجع حاجة معينة؟
         }
 

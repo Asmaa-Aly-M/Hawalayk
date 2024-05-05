@@ -18,17 +18,17 @@ namespace Hawalayk_APP.Controllers
 
 
         [HttpPost("CreatePost")]
-        public IActionResult post([FromForm] PostDTO post) /////////////////////////Test
+        public async Task<IActionResult> post([FromForm] PostDTO post) /////////////////////////Test
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            postrepository.Create(userId, post);
+            await postrepository.Create(userId, post);
             return Ok("The post created successfully");
         }
 
         [HttpGet("CraftsGallary/{craftName}")]
-        public IActionResult getGallary(string craftName)
+        public async Task<IActionResult> getGallary(string craftName)
         {
-            var gallary = postrepository.GetGrafGallary(craftName);
+            var gallary = await postrepository.GetGrafGallary(craftName);
             if (gallary != null)
             {
                 return Ok(gallary);
@@ -40,12 +40,12 @@ namespace Hawalayk_APP.Controllers
 
 
         [HttpGet("Portfolio/{craftsmanId}")]
-        public IActionResult getPortfolio(string craftsmanId)
+        public async Task<IActionResult> getPortfolio(string craftsmanId)
         {
             //string craftsmanId
             // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var Portfolio = postrepository.GetGraftsmanPortfolio(craftsmanId);
+            var Portfolio = await postrepository.GetGraftsmanPortfolio(craftsmanId);
             if (Portfolio != null)
             {
                 return Ok(Portfolio);
@@ -55,22 +55,22 @@ namespace Hawalayk_APP.Controllers
 
         }
         [HttpPut("Update")]
-        public IActionResult Update(int id, Post post)
+        public async Task<IActionResult> Update(int id, Post post)
         {
-            Post oldpost = postrepository.GetById(id);
-            postrepository.Update(id, oldpost);
+            Post oldpost = await postrepository.GetById(id);
+            await postrepository.Update(id, oldpost);
             return Ok();
 
         }
         [HttpDelete("Delete")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            Post oldpost = postrepository.GetById(id);
+            Post oldpost = await postrepository.GetById(id);
             if (oldpost == null)
             {
                 return NotFound();
             }
-            postrepository.Delete(id);
+            await postrepository.Delete(id);
             return NoContent();
         }
     }

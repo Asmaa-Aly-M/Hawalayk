@@ -34,9 +34,9 @@ namespace YourNamespace.Controllers
     public class EnumController : ControllerBase
     {
         [HttpGet("ReportedIssueValues")]
-        public ActionResult<IEnumerable<string>> getArabicValuesOfReportedIssue()
+        public async Task<ActionResult<IEnumerable<string>>> getArabicValuesOfReportedIssue()
         {
-            List<string> arabicDescriptionsOfReportedIssue = getArabicValues<ReportedIssue>();
+            List<string> arabicDescriptionsOfReportedIssue = await getArabicValues<ReportedIssue>();
             return Ok(arabicDescriptionsOfReportedIssue);
         }
 
@@ -64,22 +64,22 @@ namespace YourNamespace.Controllers
 
 
         [HttpGet("PostStatusValues")]
-        public ActionResult<IEnumerable<string>> getArabicValuesOfPostStatusValues()
+        public async Task<ActionResult<IEnumerable<string>>> getArabicValuesOfPostStatusValues()
         {
-            List<string> arabicDescriptionsOfReportedIssue = getArabicValues<PostStatus>();
+            List<string> arabicDescriptionsOfReportedIssue = await getArabicValues<PostStatus>();
             return Ok(arabicDescriptionsOfReportedIssue);
         }
 
 
 
         [HttpGet("CraftsNameValues")]
-        public ActionResult<IEnumerable<string>> getArabicValuesOfCraftName()
+        public async Task<ActionResult<IEnumerable<string>>> getArabicValuesOfCraftName()
         {
-            List<string> arabicValues = getArabicValues<CraftName>();
+            List<string> arabicValues = await getArabicValues<CraftName>();
             return Ok(arabicValues);
         }
 
-        private static List<string> getArabicValues<T>()
+        private static async Task<List<string>> getArabicValues<T>()
         {
             List<string> descriptions = new List<string>();
             Type enumType = typeof(T);
@@ -91,7 +91,7 @@ namespace YourNamespace.Controllers
                 {
                     if (field.FieldType == enumType)
                     {
-                        DescriptionAttribute[] attributes = (DescriptionAttribute[])field.GetCustomAttributes(typeof(DescriptionAttribute), false);
+                        DescriptionAttribute[] attributes = (DescriptionAttribute[])await Task.FromResult(field.GetCustomAttributes(typeof(DescriptionAttribute), false));
                         string description = (attributes.Length > 0) ? attributes[0].Description : field.Name;
                         descriptions.Add(description);
                     }
