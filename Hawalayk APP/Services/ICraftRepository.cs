@@ -1,4 +1,5 @@
 ﻿using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 
 namespace Hawalayk_APP.Services
@@ -14,5 +15,7 @@ namespace Hawalayk_APP.Services
         Task<List<Craft>> GetAll();
         Task<Craft> GetById(int id);
         Task<int> Update(int id, Craft newCraft);
+        Task<CraftName> GetEnumValueOfACraftByArabicDesCription(string craftArabicDes);
+        Task<string> GetCraftNameInArabicByEnumValue(CraftName enumValue);
     }
 }

@@ -2,11 +2,7 @@
 using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
-<<<<<<< HEAD
-=======
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
->>>>>>> d44a62dc11f45570f618f209d5262876bbd75df0
 
 namespace Hawalayk_APP.Services
 {

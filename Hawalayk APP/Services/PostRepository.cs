@@ -12,11 +12,13 @@ namespace Hawalayk_APP.Services
     {
         ApplicationDbContext Context;
         private readonly ICraftsmenRepository craftsmanRepo;
+        private readonly ICraftRepository _craftService;
 
-        public PostRepository(ApplicationDbContext _Context, ICraftsmenRepository _craftsmanRepo)
+        public PostRepository(ApplicationDbContext _Context, ICraftsmenRepository _craftsmanRepo, ICraftRepository craftService)
         {
             Context = _Context;
             craftsmanRepo = _craftsmanRepo;
+            _craftService = craftService;
         }
 
         public async Task<Post> GetById(int id)
@@ -76,7 +78,7 @@ namespace Hawalayk_APP.Services
         public async Task<List<GallaryPostDTO>> GetGrafGallary(string craftName)
         {
             Craft craft = null;
-            CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftName);
+            CraftName enumValue = await _craftService.GetEnumValueOfACraftByArabicDesCription(craftName);
 
             craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
             List<Post> posts = await Context.Posts.Include(c => c.Craftsman).Where(s => s.CraftId == craft.Id &&
@@ -152,7 +154,6 @@ namespace Hawalayk_APP.Services
             return postDTOs;
 
         }
-
         private static T? ConvertToEnum<T>(string arabicString) where T : struct
         {
             Type enumType = typeof(T);
@@ -173,6 +174,7 @@ namespace Hawalayk_APP.Services
             }
             return null;
         }
+
 
     }
 }

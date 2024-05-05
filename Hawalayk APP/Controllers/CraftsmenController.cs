@@ -15,12 +15,14 @@ namespace Hawalayk_APP.Controllers
         private readonly ICraftRepository _craftRepository;
         private readonly ICraftsmenRepository _crafsmenRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IPostRepository _postRepository;
         // c s , oop csh , database , linq ,EF , MVc , 
-        public CraftsmenController(ICraftRepository craftRepository, ICraftsmenRepository crafsmenRepository, UserManager<ApplicationUser> userManager)
+        public CraftsmenController(ICraftRepository craftRepository, ICraftsmenRepository crafsmenRepository, UserManager<ApplicationUser> userManager, IPostRepository postRepository)
         {
             _craftRepository = craftRepository;
             _userManager = userManager;
             _crafsmenRepository = crafsmenRepository;
+            _postRepository = postRepository;
         }
 
         [HttpGet("MyAccount")]
@@ -43,7 +45,7 @@ namespace Hawalayk_APP.Controllers
 
 
         // [ServiceFilter(typeof(BlockingFilter))]
-        [HttpGet("CraftsmanAcoount")]
+        [HttpGet("CraftsmanAccount")]
         public async Task<IActionResult> ShawCraftsmanAccount(string craftsmanId)
         {
             //  var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -90,6 +92,24 @@ namespace Hawalayk_APP.Controllers
 
         }
 
+        [HttpGet("MyPortfolio")]
+        public async Task<IActionResult> getPortfolio()
+        {
+            //string craftsmanId
+            var craftsmanId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (craftsmanId == null)
+            {
+                return NotFound("This Token Is Not Found : ");
+            }
+            var Portfolio = await _postRepository.GetGraftsmanPortfolio(craftsmanId);
+            if (Portfolio != null)
+            {
+                return Ok(Portfolio);
+            }
+            else
+                return NotFound(new { message = "no posts yet" });
+
+        }
         /* [HttpGet("CraftsNames")]
          public async Task<List<string>> GetCraftsNamesAsync()
          {
@@ -115,7 +135,19 @@ namespace Hawalayk_APP.Controllers
             int counter = await _crafsmenRepository.craftsmanNumber();
             return Ok(counter);
         }
-        S
+
+        [HttpGet("FilterMyCraftGallary")]
+        public async Task<IActionResult> MyCraftGallary()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return NotFound("This Token Is Not Found : ");
+            }
+
+            var result = await _crafsmenRepository.FilterMyCraftGallary(userId);
+            return Ok(result);
+        }
 
     }
 }
