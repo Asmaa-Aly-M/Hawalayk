@@ -11,9 +11,13 @@ namespace Hawalayk_APP.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostRepository postrepository;
-        public PostController(IPostRepository _postrepository)
+        private readonly ICraftsmenRepository craftsmanrepo;
+        private readonly ICraftRepository craftRepository;
+        public PostController(IPostRepository _postrepository, ICraftsmenRepository _craftsmanrepo, ICraftRepository _craftRepository)
         {
             postrepository = _postrepository;
+            craftsmanrepo = _craftsmanrepo;
+            craftRepository = _craftRepository;
         }
 
 
@@ -72,6 +76,26 @@ namespace Hawalayk_APP.Controllers
             }
             await postrepository.Delete(id);
             return NoContent();
+        }
+
+
+        [HttpGet("CraftsGallary")]
+        public async Task<IActionResult> getGallary()
+        {
+            //string craftsmanId
+            var userId =User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var craftsman = await craftsmanrepo.GetById(userId);
+            var craftNameEnumValue = craftsman.Craft.Name;
+            var craftName=await craftRepository.GetCraftNameInArabicByEnumValue(craftNameEnumValue);
+
+            var gallary = await postrepository.GetGrafGallary(craftName);
+            if (gallary != null)
+            {
+                return Ok(gallary);
+            }
+            else
+                return NotFound(new { message = "no posts yet" });
+
         }
     }
 }
