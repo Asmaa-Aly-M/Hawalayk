@@ -15,13 +15,15 @@ namespace Hawalayk_APP.Controllers
         private readonly IAppReportRepository _appReportRepository;
         private readonly IUserReportRepository _userReportRepository;
         private readonly IAdvertisementRepository _advertisementRepository;
+
+        private readonly IServiceRequestRepository serviceRequestRepo;
         private readonly ISMSService _smsService;
         private readonly IBanService _banService;
         private readonly UserManager<ApplicationUser> _userManager;
 
         public AdminController(ISMSService smsService, IBanService banService, ICustomerRepository customerRepository, ICraftsmenRepository craftsmanRepository,
             IAppReportRepository appReportRepository, IUserReportRepository userReportRepository,
-            IAdvertisementRepository advertisementRepository, UserManager<ApplicationUser> userManager)
+            IAdvertisementRepository advertisementRepository, UserManager<ApplicationUser> userManager, IServiceRequestRepository _serviceRequestRepo)
         {
             _smsService = smsService;
             _banService = banService;
@@ -31,6 +33,7 @@ namespace Hawalayk_APP.Controllers
             _userReportRepository = userReportRepository;
             _advertisementRepository = advertisementRepository;
             _userManager = userManager;
+            _serviceRequestRepo = serviceRequestRepo;
         }
 
         [HttpGet("customers")]
@@ -146,6 +149,34 @@ namespace Hawalayk_APP.Controllers
         {
             var bannedUsers = await _banService.GetBannedUsersAsync();
             return Ok(bannedUsers);
+        }
+        [HttpGet("last 5 service request")]
+        public IActionResult Last5TopServic()
+        {
+
+            return Ok(serviceRequestRepo.GetLatestServiceRequests());
+
+        }
+        [HttpGet("CountUsersMakingRequestsLastMonth")]
+        public IActionResult TotalNumberOfUsersMakeingRequstLastMonth()
+        {
+
+            return Ok(serviceRequestRepo.CountUsersMakingRequestsLastMonth());
+
+        }
+        [HttpGet("CountUsersMakingRequestsLastWeek")]
+        public IActionResult TotalNumberOfUsersMakeingRequstLastWeek()
+        {
+
+            return Ok(serviceRequestRepo.CountUsersMakingRequestsLastWeek());
+
+        }
+        [HttpGet("CountUsersMakingRequestsToday")]
+        public IActionResult TotalNumberOfUsersMakeingRequstToday()
+        {
+
+            return Ok(serviceRequestRepo.CountUsersMakingRequestsToday());
+
         }
     }
 }

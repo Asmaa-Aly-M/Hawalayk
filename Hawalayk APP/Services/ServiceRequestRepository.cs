@@ -98,5 +98,59 @@ namespace Hawalayk_APP.Services
             int counter = await Context.ServiceRequests.CountAsync();
             return counter;
         }
+        public List<ServiceRequest> GetLatestServiceRequests()
+        {
+            // Query the database for the latest 5 service requests
+            var latestRequests = Context.ServiceRequests
+                .OrderByDescending(sr => sr.DatePosted)
+                .Take(5)
+                .ToList();
+
+            return latestRequests;
+        }
+        public int CountUsersMakingRequestsToday()
+        {
+            // Calculate the start of today
+            DateTime today = DateTime.Today;
+
+            // Count distinct users who made service requests today
+            int count = Context.ServiceRequests
+                .Where(sr => sr.DatePosted >= today)
+                .Select(sr => sr.CustomerId)
+                .Distinct()
+                .Count();
+
+            return count;
+        }
+
+        public int CountUsersMakingRequestsLastWeek()
+        {
+            // Calculate the start of the week (last Sunday)
+            DateTime lastSunday = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+
+            // Count distinct users who made service requests last week
+            int count = Context.ServiceRequests
+                .Where(sr => sr.DatePosted >= lastSunday && sr.DatePosted < lastSunday.AddDays(7))
+                .Select(sr => sr.CustomerId)
+                .Distinct()
+                .Count();
+
+            return count;
+        }
+
+        public int CountUsersMakingRequestsLastMonth()
+        {
+            // Calculate the start of the last month
+            DateTime lastMonthStart = DateTime.Today.AddMonths(-1).AddDays(1 - DateTime.Today.Day);
+
+            // Count distinct users who made service requests last month
+            int count = Context.ServiceRequests
+                .Where(sr => sr.DatePosted >= lastMonthStart && sr.DatePosted < DateTime.Today)
+                .Select(sr => sr.CustomerId)
+                .Distinct()
+                .Count();
+
+            return count;
+        }
     }
 }

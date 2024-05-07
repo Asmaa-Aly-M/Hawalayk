@@ -10,5 +10,9 @@ namespace Hawalayk_APP.Services
         Task<int> Delete(int id);
         Task<List<ServiceRequest>> GetAll();
         Task<ServiceRequest> GetById(int id);
+        List<ServiceRequest> GetLatestServiceRequests();
+        int CountUsersMakingRequestsToday();
+        int CountUsersMakingRequestsLastWeek();
+        int CountUsersMakingRequestsLastMonth();
     }
 }
