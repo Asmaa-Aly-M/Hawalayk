@@ -34,7 +34,7 @@ namespace Hawalayk_APP.Services
             Craftsman craftsman = await craftsmanRepo.GetById(craftmanId);
             JobApplication job = new JobApplication()
             {
-                Id = newJob.Id,
+                //Id = newJob.Id,
                 Content = newJob.Content,
                 InitialPrice = newJob.InitialPrice,
                 CraftsmanId = craftsman.Id,

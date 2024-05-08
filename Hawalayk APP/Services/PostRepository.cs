@@ -31,11 +31,35 @@ namespace Hawalayk_APP.Services
             return await Context.Posts.ToListAsync();
         }
 
-        public async Task<int> Update(int id, Post newPost)
+        public async Task<int> Update(int id, PostUpdatedDTO postUpdateDto)
         {
-            Post OldPost = await Context.Posts.FirstOrDefaultAsync(s => s.Id == id);
-            OldPost.ImageURL = newPost.ImageURL;
-            OldPost.Content = newPost.Content;
+            Post post = await GetById(id);
+            if (post == null) return -1;
+            if (!string.IsNullOrWhiteSpace(postUpdateDto.Content))
+            {
+                post.Content = postUpdateDto.Content;
+            }
+
+            if (!string.IsNullOrWhiteSpace(postUpdateDto.Flag))
+            {
+                PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postUpdateDto.Flag);
+
+                post.Flag = enumValue;
+            }
+            string fileName = post.ImageURL;
+            if (postUpdateDto.imgFile != null)
+            {
+                var file = postUpdateDto.imgFile;
+                fileName = file.FileName;
+                string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
+                using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+                post.ImageURL = fileName;
+
+            }
+            Context.Posts.Update(post);
             int row = await Context.SaveChangesAsync();
             return row;
         }
@@ -81,6 +105,10 @@ namespace Hawalayk_APP.Services
             CraftName enumValue = await _craftService.GetEnumValueOfACraftByArabicDesCription(craftName);
 
             craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
+            if (craft == null)
+            {
+                return null;
+            }
             List<Post> posts = await Context.Posts.Include(c => c.Craftsman).Where(s => s.CraftId == craft.Id &&
             (s.Flag == Enums.PostStatus.Gallery | s.Flag == Enums.PostStatus.Both)).ToListAsync();
 

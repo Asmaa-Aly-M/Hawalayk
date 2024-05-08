@@ -85,17 +85,33 @@ namespace Hawalayk_APP.System_Hub
 
         private readonly ICraftsmenRepository _craftsmanService;
         private readonly IServiceRequestRepository _serviceRequestRepo;
-
-        public NotificationHub(ICraftsmenRepository craftsmenRepo, IServiceRequestRepository serviceRequestRepo)
+        private readonly ICraftRepository _craftRepository;
+        public NotificationHub(ICraftsmenRepository craftsmenRepo, IServiceRequestRepository serviceRequestRepo, ICraftRepository craftRepository)
         {
             _craftsmanService = craftsmenRepo;
             _serviceRequestRepo = serviceRequestRepo;
-
+            _craftRepository = craftRepository;
         }
         public override async Task OnConnectedAsync()
         {
-            await Clients.All.SendAsync("ReciveMessage", $"{Context.ConnectionId} has joined");
+            // await Clients.All.SendAsync("ReciveMessage", $"{Context.ConnectionId} has joined");
             var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var craftsman = await _craftsmanService.GetById(userId);
+
+
+            if (craftsman != null)
+            {
+                var craftName = await _craftRepository.GetCraftNameInArabicByEnumValue(craftsman.Craft.Name);
+
+                await Groups.AddToGroupAsync(Context.ConnectionId, craftName);
+            }
+
+            await base.OnConnectedAsync();
+
+
+
+
+
 
             //var craftsman = await _craftsmanService.GetById(userId);
             //if (craftsman != null)
@@ -103,16 +119,32 @@ namespace Hawalayk_APP.System_Hub
             //    await Groups.AddToGroupAsync(craftsman.Craft.Name.ToString(), Context.ConnectionId);
             //}
         }
-        public async Task CreateServiceRequest(string requestDTO)
+        //public async Task CreateServiceRequest(ServiceRequestDTO requestDTO)
+        //{
+        //    var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        //    await _serviceRequestRepo.CreateAsync(userId, requestDTO);
+
+        //    //   await _serviceRequestRepo.CreateAsync(userId, requestDTO);
+        //    Clients.All.SendAsync("serveceRequestAdded", requestDTO);
+        //    //      Clients.("serveceRequestAdded" ,requestDTO);
+
+        //}
+        public override async Task OnDisconnectedAsync(Exception exception)
         {
             var userId = Context.User?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var craftsman = await _craftsmanService.GetById(userId);
 
-            //   await _serviceRequestRepo.CreateAsync(userId, requestDTO);
-            Clients.All.SendAsync("serveceRequestAdded", requestDTO);
-            //      Clients.("serveceRequestAdded" ,requestDTO);
 
+            if (craftsman != null)
+            {
+                var craftName = await _craftRepository.GetCraftNameInArabicByEnumValue(craftsman.Craft.Name);
+
+                await Groups.RemoveFromGroupAsync(Context.ConnectionId, craftName);
+            }
+            // Remove the user from the group when they disconnect
+
+            await base.OnDisconnectedAsync(exception);
         }
-
     }
 }
 
