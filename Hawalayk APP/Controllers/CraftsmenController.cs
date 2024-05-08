@@ -1,4 +1,5 @@
 ﻿using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Identity;
@@ -147,6 +148,13 @@ namespace Hawalayk_APP.Controllers
 
             var result = await _crafsmenRepository.FilterMyCraftGallary(userId);
             return Ok(result);
+        }
+        [HttpGet("Get Service Requests By CraftName")]
+        public IActionResult RequestsByCraftName(CraftName craft)
+        {
+
+            return Ok(_crafsmenRepository.GetServiceRequestsByCraftName(craft));
+
         }
 
     }

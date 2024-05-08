@@ -56,6 +56,14 @@ namespace Hawalayk_APP.Services
             return counter;
         }
 
+        public List<ServiceRequest> GetServiceRequestsForThisCustomer(string customer)
+        {
 
+            var Requests = _context.ServiceRequests
+                .Where(request => request.CustomerId == customer)
+                .ToList();
+
+            return Requests;
+        }
     }
 }
