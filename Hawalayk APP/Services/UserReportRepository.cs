@@ -19,9 +19,28 @@ namespace Hawalayk_APP.Services
             UserReport UserRepo = await _context.UserReports.FirstOrDefaultAsync(s => s.Id == id);
             return UserRepo;
         }
-        public async Task<List<UserReport>> GetAll()
+        public async Task<List<UserReportForAdminDashBoard>> GetAllUserReports()
         {
-            return await _context.UserReports.ToListAsync();
+
+            List<UserReportForAdminDashBoard> userReports = new List<UserReportForAdminDashBoard>();
+            List<UserReport> userReportList = await _context.UserReports.ToListAsync();
+
+            foreach (var UserReport in userReportList)
+            {
+                UserReportForAdminDashBoard dto = new UserReportForAdminDashBoard
+                {
+                    Id = UserReport.Id,
+                    ReporterId = UserReport.ReporerId,
+                    ReporterName = UserReport.Reporter.FirstName + UserReport.Reporter.LastName,
+                    ReportedId = UserReport.ReporedId,
+                    ReportedName = UserReport.ReportedUser.FirstName + UserReport.ReportedUser.LastName,
+                    Description = UserReport.Description
+                };
+
+                userReports.Add(dto);
+            }
+
+            return userReports;
         }
 
         public async Task<int> Create(string id, UserReportDTO UserRepo)
@@ -29,7 +48,8 @@ namespace Hawalayk_APP.Services
             ApplicationUser ApplicationUser = await applicationUserService.GetByIdAsync(id);
             UserReport userReport = new UserReport()
             {
-                ReporedId = UserRepo.ReporedId,
+                Id= UserRepo.Id,
+                ReporedId =UserRepo.ReporedId,
                 Description = UserRepo.Description,
                 ReporerId = ApplicationUser.Id
             };
@@ -53,5 +73,6 @@ namespace Hawalayk_APP.Services
             int row = await _context.SaveChangesAsync();
             return row;
         }
+
     }
 }

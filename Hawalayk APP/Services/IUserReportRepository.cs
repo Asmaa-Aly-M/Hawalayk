@@ -7,7 +7,7 @@ namespace Hawalayk_APP.Services
     {
         Task<int> Create(string id, UserReportDTO UserRepo);
         Task<int> Delete(int id);
-        Task<List<UserReport>> GetAll();
+        Task<List<UserReportForAdminDashBoard>> GetAllUserReports();
         Task<UserReport> GetById(int id);
         Task<int> Update(int id, UserReport UserRepo);
     }
