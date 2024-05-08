@@ -17,7 +17,7 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAllAdmins()
         {
             var admins = await adminRepo.GetAll();
             return Ok(admins);

@@ -60,7 +60,7 @@ namespace Hawalayk_APP.Controllers
         [HttpGet("user-reports")]
         public async Task<IActionResult> GetAllUserReports()
         {
-            var userReports = await _userReportRepository.GetAll();
+            var userReports = await _userReportRepository.GetAllUserReports();
             return Ok(userReports);
         }
 
