@@ -15,8 +15,11 @@ namespace Hawalayk_APP.Models
         [ForeignKey("Customer")]
         public string CustomerId { get; set; }
         public Customer Customer { get; set; }
+        [ForeignKey("craftName")]
+        public int CraftId { get; set; }
+        public Craft craft { get; set; }
+        public ICollection<JobApplication> JobApplication { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.Now;
-        public CraftName craftName { get; set; }
-        // any craft 
+        
     }
 }

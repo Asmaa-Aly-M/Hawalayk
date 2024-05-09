@@ -254,14 +254,14 @@ namespace Hawalayk_APP.Services
             return null;
         }
 
-        public List<ServiceRequest> GetServiceRequestsByCraftName(CraftName craft)
-        {
-            
-            var Requests = Context.ServiceRequests
-                .Where(request => request.craftName == craft)
-                .ToList();
+        /* public List<ServiceRequest> GetServiceRequestsByCraftName(CraftName craft)
+         {
 
-            return Requests;
-        }
+             var Requests = Context.ServiceRequests
+                 .Where(request => request.craftName == craft)
+                 .ToList();
+
+             return Requests;
+         }*/
     }
 }
