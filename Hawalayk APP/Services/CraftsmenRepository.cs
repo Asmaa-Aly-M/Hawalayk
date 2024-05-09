@@ -30,7 +30,14 @@ namespace Hawalayk_APP.Services
             _addressService = addressService;
         }
 
+<<<<<<< HEAD
         public async Task<List<PendingCraftsmanDTO>> GetPendingCraftsmen()
+=======
+
+
+
+        public async Task<List<Craftsman>> GetPendingCraftsmen()
+>>>>>>> 1f85bc7fed8a7f6ecacd9a3aeabbd17fd922ac30
         {
             var pendingCraftsmen = await Context.Craftsmen
                                    .Where(c => c.RegistrationStatus == CraftsmanRegistrationStatus.Pending)
@@ -191,6 +198,47 @@ namespace Hawalayk_APP.Services
             return counter;
         }
 
+
+
+        public async Task<List<GallaryPostDTO>> FilterMyCraftGallary(string craftsmanId)
+        {
+            Craftsman craftsman = await GetById(craftsmanId);
+            Craft craft = craftsman.Craft;
+            CraftName enumValue = craftsman.Craft.Name;
+            string craftName = await _craftService.GetCraftNameInArabicByEnumValue(enumValue);
+            /// craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
+            List<Post> posts = await Context.Posts
+                .Include(c => c.Craftsman)
+                .Where(s => s.CraftId == craft.Id &&
+            (s.Flag == Enums.PostStatus.Gallery | s.Flag == Enums.PostStatus.Both) && s.CraftsmanId == craftsmanId).ToListAsync();
+
+            // Convert Post objects to PostDTO objects
+            List<GallaryPostDTO> postDTOs = posts.Select(post =>
+            {
+                return new GallaryPostDTO
+                {
+                    PostId = post.Id,
+                    PostImgUrl = Path.Combine("imgs/", post.ImageURL),// Construct image URL
+                    CraftsmanId = post.Craftsman.Id,
+                    CraftsmanName = post.Craftsman.UserName,
+                    Content = post.Content,
+                    CraftsmanProfilePicUrl = Path.Combine("imgs/", post.Craftsman.ProfilePicture),
+                    CraftName = craftName,
+                    // Assuming Flag is an enum, convert it to string
+                };
+            }).ToList();
+
+            return postDTOs;
+
+        }
+
+
+
+
+
+
+
+
         private static T? ConvertToEnum<T>(string arabicString) where T : struct
         {
             Type enumType = typeof(T);
@@ -212,6 +260,14 @@ namespace Hawalayk_APP.Services
             return null;
         }
 
+        public List<ServiceRequest> GetServiceRequestsByCraftName(CraftName craft)
+        {
+            
+            var Requests = Context.ServiceRequests
+                .Where(request => request.craftName == craft)
+                .ToList();
 
+            return Requests;
+        }
     }
 }

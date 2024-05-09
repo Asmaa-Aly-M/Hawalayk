@@ -17,41 +17,47 @@ namespace Hawalayk_APP.Controllers
         private readonly IServiceRequestRepository serviceRequestRepo;
         private readonly IJobApplicationRepository jobApplicationRepo;
         private readonly ApplicationDbContext _context;
-        private readonly IHubContext<Notification> _hubContext;
+        IHubContext<NotificationHub> _notificationHub;
+
         private readonly ICraftRepository _craftRepository;
 
 
-        public ServiceRequestController(ICraftRepository craftRepository, ApplicationDbContext context, IServiceRequestRepository _serviceRequestRepo, IHubContext<Notification> hubContext, IJobApplicationRepository _jobApplicationRepo)
+        public ServiceRequestController(ICraftRepository craftRepository, ApplicationDbContext context, IServiceRequestRepository _serviceRequestRepo, IHubContext<NotificationHub> hubContext, IJobApplicationRepository _jobApplicationRepo)
         {
             serviceRequestRepo = _serviceRequestRepo;
-            _hubContext = hubContext;
+            _notificationHub = hubContext;
             _craftRepository = craftRepository;
             jobApplicationRepo = _jobApplicationRepo;
             _context = context;
 
         }
 
+
         [HttpPost("CreateRequest")]//
         public async Task<IActionResult> createRequest([FromForm] ServiceRequestDTO ServiceRequest)
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            await serviceRequestRepo.CreateAsync(userId, ServiceRequest);
-
-            //
-            var CraftsmentOfACraft = await _craftRepository.GetCraftsmenOfACraft(ServiceRequest.craftName);
-
-            foreach (var craftsmen in CraftsmentOfACraft)
+            if (userId == null)
             {
-                // Send notification to each painter
-                //  await _hubContext.Clients.User(craftsmen.Id.ToString()).SendAsync("ReceiveNotification", "New service request created");
-
-                await _hubContext.Clients.User(craftsmen.Id.ToString()).SendAsync("ReceiveNotification", "New service request available");
+                return BadRequest("No token was sent");
             }
 
-            //   _hubContext.Clients.Group(ServiceRequest.craftName).SendAsync("ReceiveNotification", ServiceRequest);//// signalR سطر ال 
-            return Ok("Request sent successfully");
+            var row = await serviceRequestRepo.CreateAsync(userId, ServiceRequest);
+
+            if (row != -1)
+            {
+                var serviceSend = await serviceRequestRepo.GetServiceRequestSend(row);
+                _notificationHub.Clients.Group(ServiceRequest.craftName).SendAsync("ReceiveNotification", serviceSend);//// signalR سطر ال 
+                return Ok("Request sent successfully");
+
+            }
+
+            return BadRequest("Please Try again");
+
         }
+
+
 
 
         [HttpDelete]
@@ -60,16 +66,21 @@ namespace Hawalayk_APP.Controllers
             await serviceRequestRepo.Delete(serviceId);
             return Ok(new { message = "Service is canceled" });
         }
-
+        //http://localhost:5153/api/ServiceRequest/applyToRequest
 
         [HttpPost("applyToRequest")]
-        public async Task<IActionResult> applyToRequest(int requestId, JobApplicationDTO replay)
+        public async Task<IActionResult> applyToRequest(JobApplicationDTO replay)
         {
-            var customerID = (await serviceRequestRepo.GetById(requestId)).Customer.Id;
+            //   var customerID = (await serviceRequestRepo.GetById(requestId)).Customer.Id;
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return NotFound("invalid token");
+            }
             await jobApplicationRepo.Create(userId, replay);
-            _hubContext.Clients.User(customerID).SendAsync("ApplyNotification", replay);
+            _notificationHub.Clients.User(replay.customerId).SendAsync("ApplyNotification", "the applicatio accept");
             return Ok("Sent successfully");
+
         }
 
         [HttpPost("acceptApply")]
@@ -77,7 +88,7 @@ namespace Hawalayk_APP.Controllers
         {
             (await jobApplicationRepo.GetById(repplyId)).ResponseStatus = ResponseStatus.Accepted;
             var craftmanID = (await jobApplicationRepo.GetById(repplyId)).Craftsman.Id;
-            _hubContext.Clients.User(craftmanID).SendAsync("AcceptApplyRequest");
+            _notificationHub.Clients.User(craftmanID).SendAsync("AcceptApplyRequest");
             return Ok("accept");
         }
 
@@ -86,7 +97,7 @@ namespace Hawalayk_APP.Controllers
         {
             (await jobApplicationRepo.GetById(repplyId)).ResponseStatus = ResponseStatus.Rejected;
             var craftmanID = (await jobApplicationRepo.GetById(repplyId)).Craftsman.Id;
-            _hubContext.Clients.User(craftmanID).SendAsync("RejectApplyRequest");
+            _notificationHub.Clients.User(craftmanID).SendAsync("RejectApplyRequest");
             return Ok("this service not available");
         }
 

@@ -16,12 +16,26 @@ namespace Hawalayk_APP.Services
 
         }
 
+        public async Task<ServiceRequestSendDTO> GetServiceRequestSend(int id)
+        {
+            var serviceRequest = await GetById(id);
+            return new ServiceRequestSendDTO
+            {
 
-
+                CustomerId = serviceRequest.CustomerId,
+                CustomerFirstName = serviceRequest.Customer.FirstName,
+                CustomerLastName = serviceRequest.Customer.LastName,
+                CustomerImg = Path.Combine("imgs/", serviceRequest.Customer.ProfilePicture),
+                CustomerUserName = serviceRequest.Customer.UserName,
+                Content = serviceRequest.Content,
+                ServiceRequestId = serviceRequest.Id,
+                ServiceRequestImg = Path.Combine("imgs/", serviceRequest.OptionalImage)
+            };
+        }
 
         public async Task<ServiceRequest> GetById(int id)
         {
-            ServiceRequest service = await Context.ServiceRequests.FirstOrDefaultAsync(s => s.Id == id);
+            ServiceRequest service = await Context.ServiceRequests.Include(c => c.Customer).FirstOrDefaultAsync(s => s.Id == id);
             return service;
         }
         public async Task<List<ServiceRequest>> GetAll()
@@ -72,18 +86,65 @@ namespace Hawalayk_APP.Services
         public async Task<int> CreateAsync(string customerId, ServiceRequestDTO newservice)
         {
             Customer customer = await customerRepo.GetByIdAsync(customerId);
+
+            if (customer == null)
+            {
+                return -1;
+            }
+            var file = newservice.optionalImage;
+
+            string fileName = "";
+            if (file != null)
+            {
+                fileName = file.FileName;
+                string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
+                using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+            }
             ServiceRequest serviceRequest = new ServiceRequest()
             {
                 //  Id = newservice.Id,
                 Content = newservice.content,
-                OptionalImage = newservice.optionalImage, // IFormFIle
+                OptionalImage = fileName, // IFormFIle
                 CustomerId = customerId,
 
             };
             Context.ServiceRequests.Add(serviceRequest);
             int row = await Context.SaveChangesAsync();
-            return row;
+            if (row > 0)
+            {
+                return serviceRequest.Id;
+            }
+            else
+            {
+                return -1;
+            }
+            // ServiceRequestSendDTO  serviceRequestSendDTO = new ServiceRequestSendDTO()
+            //if(row > 0)
+            //{
+            //    serviceRequestSendDTO = GetServiceRequestByCustomerIdAndDateTimePosted(customerId,)
+            //}
+            // return serviceRequest;
+            //        return row;
         }
+        //private async Task<ServiceRequestSendDTO> GetServiceRequestByCustomerIdAndDateTimePosted(string customerId, DateTime dateTime)
+        //{
+        //    var serviceRequest = await Context.ServiceRequests.Include(s => s.Customer).FirstOrDefaultAsync(c => c.CustomerId == customerId && c.DatePosted == dateTime);
+        //    return new ServiceRequestSendDTO
+        //    {
+
+        //        CustomerId = customerId,
+        //        CustomerFirstName = serviceRequest.Customer.FirstName,
+        //        CustomerLastName = serviceRequest.Customer.LastName,
+        //        CustomerImg = serviceRequest.Customer.ProfilePicture,
+        //        CustomerUserName = serviceRequest.Customer.UserName,
+        //        Content = serviceRequest.Content,
+        //        ServiceRequestId = serviceRequest.Id,
+        //        ServiceRequestImg = serviceRequest.OptionalImage
+        //    };
+        //}
 
         public async Task<int> Delete(int id)
         {
@@ -97,6 +158,60 @@ namespace Hawalayk_APP.Services
         {
             int counter = await Context.ServiceRequests.CountAsync();
             return counter;
+        }
+        public List<ServiceRequest> GetLatestServiceRequests()
+        {
+            // Query the database for the latest 5 service requests
+            var latestRequests = Context.ServiceRequests
+                .OrderByDescending(sr => sr.DatePosted)
+                .Take(5)
+                .ToList();
+
+            return latestRequests;
+        }
+        public int CountUsersMakingRequestsToday()
+        {
+            // Calculate the start of today
+            DateTime today = DateTime.Today;
+
+            // Count distinct users who made service requests today
+            int count = Context.ServiceRequests
+                .Where(sr => sr.DatePosted >= today)
+                .Select(sr => sr.CustomerId)
+                .Distinct()
+                .Count();
+
+            return count;
+        }
+
+        public int CountUsersMakingRequestsLastWeek()
+        {
+            // Calculate the start of the week (last Sunday)
+            DateTime lastSunday = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+
+            // Count distinct users who made service requests last week
+            int count = Context.ServiceRequests
+                .Where(sr => sr.DatePosted >= lastSunday && sr.DatePosted < lastSunday.AddDays(7))
+                .Select(sr => sr.CustomerId)
+                .Distinct()
+                .Count();
+
+            return count;
+        }
+
+        public int CountUsersMakingRequestsLastMonth()
+        {
+            // Calculate the start of the last month
+            DateTime lastMonthStart = DateTime.Today.AddMonths(-1).AddDays(1 - DateTime.Today.Day);
+
+            // Count distinct users who made service requests last month
+            int count = Context.ServiceRequests
+                .Where(sr => sr.DatePosted >= lastMonthStart && sr.DatePosted < DateTime.Today)
+                .Select(sr => sr.CustomerId)
+                .Distinct()
+                .Count();
+
+            return count;
         }
     }
 }

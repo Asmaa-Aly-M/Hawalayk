@@ -20,11 +20,9 @@ namespace Hawalayk_APP.Services
         public async Task<Craft> GetOrCreateCraftAsync(string craftName)
         {
 
-
-
             //CraftName craft_Name;
             Craft existingCraft = null;
-            CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftName);
+            CraftName enumValue = await GetEnumValueOfACraftByArabicDesCription(craftName);
 
             //if (Enum.TryParse(craftName, out craft_Name))
             //{
@@ -57,7 +55,7 @@ namespace Hawalayk_APP.Services
         public async Task<List<CraftsmanDTO>> GetCraftsmenOfACraft(string craftName)
         {
             Craft existingCraft = null;
-            CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftName);
+            CraftName enumValue = await GetEnumValueOfACraftByArabicDesCription(craftName);
 
             var craftsmen = await Context.Craftsmen.Include(c => c.Craft).Where(c => c.Craft.Name == enumValue).ToListAsync();
             return craftsmen.Select(c => new CraftsmanDTO
@@ -73,7 +71,6 @@ namespace Hawalayk_APP.Services
             }).ToList();
 
         }
-
 
 
 
@@ -110,9 +107,25 @@ namespace Hawalayk_APP.Services
             return row;
         }
 
+        //public async Task<string>GetCraftName(int id)
+        //{
+        //    var craft = Context.Crafts.FirstOrDefaultAsync(c=>c.Id==id);
 
+        //}
+        public async Task<string> GetCraftNameInArabicByEnumValue(CraftName enumValue)
+        {
+            FieldInfo fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
 
+            DescriptionAttribute attribute = fieldInfo.GetCustomAttribute<DescriptionAttribute>();
+            return attribute.Description;
 
+        }
+        public async Task<CraftName> GetEnumValueOfACraftByArabicDesCription(string craftArabicDes)
+        {
+            CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftArabicDes);
+            return enumValue;
+
+        }
         private static T? ConvertToEnum<T>(string arabicString) where T : struct
         {
             Type enumType = typeof(T);

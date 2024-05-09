@@ -9,5 +9,6 @@ namespace Hawalayk_APP.Services
         Task<List<Customer>> GetAll();
         Task<Customer> GetByIdAsync(string id);
         Task<int> customerNumber();
+        List<ServiceRequest> GetServiceRequestsForThisCustomer(string id);
     }
 }

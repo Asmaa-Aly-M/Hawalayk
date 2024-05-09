@@ -3,7 +3,6 @@ using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Microsoft.EntityFrameworkCore;
-using System.Xml.Linq;
 
 namespace Hawalayk_APP.Services
 {
@@ -35,7 +34,7 @@ namespace Hawalayk_APP.Services
             Craftsman craftsman = await craftsmanRepo.GetById(craftmanId);
             JobApplication job = new JobApplication()
             {
-                Id = newJob.Id,
+                //Id = newJob.Id,
                 Content = newJob.Content,
                 InitialPrice = newJob.InitialPrice,
                 CraftsmanId = craftsman.Id,
@@ -44,7 +43,7 @@ namespace Hawalayk_APP.Services
             };
 
             Context.JobApplications.Add(job);
-            int row = Context.SaveChanges();
+            int row = await Context.SaveChangesAsync();
             return row;
         }
         /* public int Update(int id, JobApplicationDTO newJob)////////هل محتاجينها+فيها غلطات؟؟؟

@@ -12,11 +12,13 @@ namespace Hawalayk_APP.Services
     {
         ApplicationDbContext Context;
         private readonly ICraftsmenRepository craftsmanRepo;
+        private readonly ICraftRepository _craftService;
 
-        public PostRepository(ApplicationDbContext _Context, ICraftsmenRepository _craftsmanRepo)
+        public PostRepository(ApplicationDbContext _Context, ICraftsmenRepository _craftsmanRepo, ICraftRepository craftService)
         {
             Context = _Context;
             craftsmanRepo = _craftsmanRepo;
+            _craftService = craftService;
         }
 
         public async Task<Post> GetById(int id)
@@ -29,11 +31,35 @@ namespace Hawalayk_APP.Services
             return await Context.Posts.ToListAsync();
         }
 
-        public async Task<int> Update(int id, Post newPost)
+        public async Task<int> Update(int id, PostUpdatedDTO postUpdateDto)
         {
-            Post OldPost = await Context.Posts.FirstOrDefaultAsync(s => s.Id == id);
-            OldPost.ImageURL = newPost.ImageURL;
-            OldPost.Content = newPost.Content;
+            Post post = await GetById(id);
+            if (post == null) return -1;
+            if (!string.IsNullOrWhiteSpace(postUpdateDto.Content))
+            {
+                post.Content = postUpdateDto.Content;
+            }
+
+            if (!string.IsNullOrWhiteSpace(postUpdateDto.Flag))
+            {
+                PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postUpdateDto.Flag);
+
+                post.Flag = enumValue;
+            }
+            string fileName = post.ImageURL;
+            if (postUpdateDto.imgFile != null)
+            {
+                var file = postUpdateDto.imgFile;
+                fileName = file.FileName;
+                string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
+                using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
+                post.ImageURL = fileName;
+
+            }
+            Context.Posts.Update(post);
             int row = await Context.SaveChangesAsync();
             return row;
         }
@@ -76,9 +102,13 @@ namespace Hawalayk_APP.Services
         public async Task<List<GallaryPostDTO>> GetGrafGallary(string craftName)
         {
             Craft craft = null;
-            CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftName);
+            CraftName enumValue = await _craftService.GetEnumValueOfACraftByArabicDesCription(craftName);
 
             craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
+            if (craft == null)
+            {
+                return null;
+            }
             List<Post> posts = await Context.Posts.Include(c => c.Craftsman).Where(s => s.CraftId == craft.Id &&
             (s.Flag == Enums.PostStatus.Gallery | s.Flag == Enums.PostStatus.Both)).ToListAsync();
 
@@ -119,6 +149,7 @@ namespace Hawalayk_APP.Services
 
         public async Task<List<GallaryPostDTO>> GetGraftsmanPortfolio(string craftsmanId)
         {
+
             List<Post> posts = await Context.Posts.Where(s => s.CraftsmanId == craftsmanId &&
             (s.Flag == Enums.PostStatus.Portfolio | s.Flag == Enums.PostStatus.Both)).ToListAsync();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
             Craftsman craftsman = await craftsmanRepo.GetById(craftsmanId);
@@ -151,7 +182,6 @@ namespace Hawalayk_APP.Services
             return postDTOs;
 
         }
-
         private static T? ConvertToEnum<T>(string arabicString) where T : struct
         {
             Type enumType = typeof(T);
@@ -172,6 +202,7 @@ namespace Hawalayk_APP.Services
             }
             return null;
         }
+
 
     }
 }
