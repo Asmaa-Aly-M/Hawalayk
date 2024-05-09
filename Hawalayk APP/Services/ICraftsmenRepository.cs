@@ -9,7 +9,7 @@ namespace Hawalayk_APP.Services
         Task<Craftsman> GetById(string id);
         Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(Craftsman craftsman);
         Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId, CraftsmanUpdatedAccountDTO craftsmanAccount);
-        Task<List<Craftsman>> GetPendingCraftsmen();
+        Task<List<PendingCraftsmanDTO>> GetPendingCraftsmen();
         Task<Craftsman> ApproveCraftsman(string id, bool isApproved);
 
         Task<int> craftsmanNumber();

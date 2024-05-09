@@ -16,38 +16,45 @@ namespace Hawalayk_APP.Services
         private readonly ICraftRepository _craftService;
         //private readonly IPostRepository _postRepository;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAddressService _addressService;
 
 
 
-        public CraftsmenRepository(ICraftRepository craftService, ApplicationDbContext _Context, UserManager<ApplicationUser> userManager)
+        public CraftsmenRepository(ICraftRepository craftService, ApplicationDbContext _Context,
+            UserManager<ApplicationUser> userManager, IAddressService addressService)
         {
             Context = _Context;
             // _postRepository = postRepository;
             _userManager = userManager;
             _craftService = craftService;
-
+            _addressService = addressService;
         }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public async Task<List<Craftsman>> GetPendingCraftsmen()
+        public async Task<List<PendingCraftsmanDTO>> GetPendingCraftsmen()
         {
-            return await Context.Craftsmen
+            var pendingCraftsmen = await Context.Craftsmen
                                    .Where(c => c.RegistrationStatus == CraftsmanRegistrationStatus.Pending)
                                    .ToListAsync();
+
+            var pendingCraftsmanDTO = pendingCraftsmen.Select(p =>
+            {
+                return new PendingCraftsmanDTO
+                {
+                    FirstName = p.FirstName,
+                    LastName = p.LastName,
+                    BirthDate = p.BirthDate,
+                    PhoneNumber = p.PhoneNumber,
+                    Gender = p.Gender,
+                    Governorate = p.Address.Governorate.governorate_name_ar,
+                    City = p.Address.City.city_name_ar,
+                    StreetName = p.Address.StreetName,
+                    Craft = p.Craft.Name.ToString(),
+                    PersonalImage = p.PersonalImage,
+                    NationalIDImage = p.NationalIDImage
+                };
+            }).ToList();
+
+            return pendingCraftsmanDTO;
         }
 
         public async Task<Craftsman> ApproveCraftsman(string id, bool isApproved)
@@ -70,20 +77,11 @@ namespace Hawalayk_APP.Services
         }
 
 
-
-
-
         public async Task<Craftsman> GetById(string id)
         {
             Craftsman Craftman = await Context.Craftsmen.Include(c => c.Craft).Include(a => a.Address).ThenInclude(city => city.City).ThenInclude(gov => gov.Governorate).FirstOrDefaultAsync(s => s.Id == id);
             return Craftman;//craft : 
         }
-
-        /* public async Task<Craftsman> GetById(string id)
-         {
-             Craftsman Craftman = await Context.Craftsmen.Include(c => c.Craft).FirstOrDefaultAsync(s => s.Id == id);
-             return Craftman;
-         }*/
 
         public async Task<List<Craftsman>> GetAll()
         {
@@ -113,13 +111,11 @@ namespace Hawalayk_APP.Services
                 ProfilePic = Path.Combine("imgs/", craftsman.ProfilePicture),
                 BirthDate = craftsman.BirthDate,
                 PhoneNumber = craftsman.PhoneNumber,
-                // PhoneNumber = craftsman.PhoneNumber,
                 CraftName = craftName,
                 Rating = craftsman.Rating,
                 City = craftsman.Address.City.city_name_ar,
                 Governorate = craftsman.Address.Governorate.governorate_name_ar,
                 street = craftsman.Address.StreetName
-
             };
 
         }
@@ -152,7 +148,6 @@ namespace Hawalayk_APP.Services
                 }
             }
 
-
             Craft craft = null;
             CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftsmanAccount.CraftName);
 
@@ -173,9 +168,11 @@ namespace Hawalayk_APP.Services
             craftsman.ProfilePicture = fileeName;
             craftsman.Craft = craft;
             craftsman.BirthDate = craftsmanAccount.BirthDate;
+            craftsman.Address = await _addressService.CreateAsync(craftsmanAccount.Governorate, craftsmanAccount.City, craftsmanAccount.StreetName);
 
 
             var result = await _userManager.UpdateAsync(craftsman);
+
             if (!result.Succeeded)
             {
                 return new UpdateUserDTO
@@ -184,9 +181,8 @@ namespace Hawalayk_APP.Services
                     Message = "Failed to update"
                 };
             }
+
             return new UpdateUserDTO { IsUpdated = true, Message = "The Account Updated Successfully :" };
-
-
         }
 
         public async Task<int> craftsmanNumber()

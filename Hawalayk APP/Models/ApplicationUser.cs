@@ -19,7 +19,7 @@ namespace Hawalayk_APP.Models
         public Address Address { get; set; }
         public bool IsBanned { get; set; }
         public DateTime BirthDate { get; set; }
-
+        public bool IsOtpVerified { get; set; } = false;
         public string ProfilePicture { get; set; }
 
     }

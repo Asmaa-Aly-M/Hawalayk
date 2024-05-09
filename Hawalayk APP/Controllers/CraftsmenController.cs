@@ -116,7 +116,7 @@ namespace Hawalayk_APP.Controllers
             int counter = await _crafsmenRepository.craftsmanNumber();
             return Ok(counter);
         }
-        S
+        
 
     }
 }
