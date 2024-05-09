@@ -30,14 +30,8 @@ namespace Hawalayk_APP.Services
             _addressService = addressService;
         }
 
-<<<<<<< HEAD
+
         public async Task<List<PendingCraftsmanDTO>> GetPendingCraftsmen()
-=======
-
-
-
-        public async Task<List<Craftsman>> GetPendingCraftsmen()
->>>>>>> 1f85bc7fed8a7f6ecacd9a3aeabbd17fd922ac30
         {
             var pendingCraftsmen = await Context.Craftsmen
                                    .Where(c => c.RegistrationStatus == CraftsmanRegistrationStatus.Pending)
