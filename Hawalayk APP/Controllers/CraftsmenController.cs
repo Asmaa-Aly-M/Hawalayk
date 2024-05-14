@@ -137,6 +137,12 @@ namespace Hawalayk_APP.Controllers
         }
 
 
+<<<<<<< HEAD
+=======
+
+        
+>>>>>>> 3010567267857403ae43a30dd90794163508ea12
+
 
 
         [HttpGet("FilterMyCraftGallary")]
@@ -164,6 +170,8 @@ namespace Hawalayk_APP.Controllers
 
         }
 
+
+
         [HttpGet("AcceptedJobApplication")]
         public async Task<IActionResult> AcceptedJobApplication()
         {
@@ -171,6 +179,7 @@ namespace Hawalayk_APP.Controllers
             var AcceptedJobApplication = await _crafsmenRepository.GetAcceptedJobApplicationForCraftsman(userId);
             return Ok(AcceptedJobApplication);
         }
+
 
     }
 }

@@ -20,6 +20,12 @@ namespace Hawalayk_APP.Models
         public Craft craft { get; set; }
         public ICollection<JobApplication> JobApplication { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.Now;
+
+        public CraftName craftName { get; set; }
+        public ICollection<JobApplication> jobApplications { get; set; }
+        // any craft 
+
         
+
     }
 }

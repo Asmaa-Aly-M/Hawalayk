@@ -257,6 +257,15 @@ namespace Hawalayk_APP.Services
 
         /*public async Task<List<ServiceRequest>> GetServiceRequestsByCraftName(CraftName craftName)
         {
+
+            
+            var requests = Context.ServiceRequests
+                .Where(request => request.craftName == craft && 
+                request.jobApplications.
+                Where(jobApplication=>jobApplication.ResponseStatus==ResponseStatus.Accepted).ToList()==null)
+                .ToList();
+
+
             var requests =await Context.ServiceRequests
                 .Where(request => request.craft.Name == craftName &&
                request.JobApplication.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList()== null).ToList();
@@ -268,6 +277,7 @@ namespace Hawalayk_APP.Services
                 .Where(request => request.craft.Name == craftName &&
                request.JobApplication.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList() == null)
                 .ToListAsync();
+
             return requests;
         }
 
