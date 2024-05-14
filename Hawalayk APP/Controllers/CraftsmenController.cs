@@ -136,9 +136,7 @@ namespace Hawalayk_APP.Controllers
             int counter = await _crafsmenRepository.craftsmanNumber();
             return Ok(counter);
         }
-<<<<<<< HEAD
-        
-=======
+
 
         [HttpGet("FilterMyCraftGallary")]
         public async Task<IActionResult> MyCraftGallary()
@@ -159,7 +157,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(_crafsmenRepository.GetServiceRequestsByCraftName(craft));
 
         }
->>>>>>> 1f85bc7fed8a7f6ecacd9a3aeabbd17fd922ac30
+
 
     }
 }

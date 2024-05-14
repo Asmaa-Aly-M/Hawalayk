@@ -17,6 +17,7 @@ namespace Hawalayk_APP.Models
         public Customer Customer { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.Now;
         public CraftName craftName { get; set; }
+        public ICollection<JobApplication> jobApplications { get; set; }
         // any craft 
     }
 }

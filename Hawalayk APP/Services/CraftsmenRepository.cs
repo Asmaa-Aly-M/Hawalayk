@@ -257,11 +257,13 @@ namespace Hawalayk_APP.Services
         public List<ServiceRequest> GetServiceRequestsByCraftName(CraftName craft)
         {
             
-            var Requests = Context.ServiceRequests
-                .Where(request => request.craftName == craft)
+            var requests = Context.ServiceRequests
+                .Where(request => request.craftName == craft && 
+                request.jobApplications.
+                Where(jobApplication=>jobApplication.ResponseStatus==ResponseStatus.Accepted).ToList()==null)
                 .ToList();
 
-            return Requests;
+            return requests;
         }
     }
 }
