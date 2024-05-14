@@ -16,12 +16,24 @@ namespace Hawalayk_APP.Services
             craftsmanRepo = _craftsmanRepo;
         }
 
-
-
-
+        public async Task<JobApplicationSendDTO> GetJpbApplicationSend(int jobApplicationId)
+        {
+            var jobApplication = await GetById(jobApplicationId);
+            return new JobApplicationSendDTO
+            {
+                JobApplicationId = jobApplicationId,
+                Content = jobApplication.Content,
+                InitialPrice = jobApplication.InitialPrice,
+                CraftsmanFirstName = jobApplication.Craftsman.FirstName,
+                CraftsmanId = jobApplication.Craftsman.Id,
+                CraftsmanImg = Path.Combine("imgs/", jobApplication.Craftsman.ProfilePicture),
+                CraftsmanLastName = jobApplication.Craftsman.LastName,
+                CraftsmanUserName = jobApplication.Craftsman.UserName,
+            };
+        }
         public async Task<JobApplication> GetById(int id)
         {
-            JobApplication job = await Context.JobApplications.FirstOrDefaultAsync(s => s.Id == id);
+            JobApplication job = await Context.JobApplications.Include(c => c.Craftsman).FirstOrDefaultAsync(s => s.Id == id);
             return job;
         }
         public async Task<List<JobApplication>> GetAll()
@@ -32,6 +44,10 @@ namespace Hawalayk_APP.Services
         public async Task<int> Create(string craftmanId, JobApplicationDTO newJob)
         {
             Craftsman craftsman = await craftsmanRepo.GetById(craftmanId);
+            if (craftmanId == null)
+            {
+                return -1;
+            }
             JobApplication job = new JobApplication()
             {
                 //Id = newJob.Id,
@@ -44,7 +60,12 @@ namespace Hawalayk_APP.Services
 
             Context.JobApplications.Add(job);
             int row = await Context.SaveChangesAsync();
-            return row;
+            if (row > 0)
+            {
+                return job.Id;
+            }
+
+            return -1;
         }
         /* public int Update(int id, JobApplicationDTO newJob)////////هل محتاجينها+فيها غلطات؟؟؟
          {

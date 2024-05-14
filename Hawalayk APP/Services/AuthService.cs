@@ -40,15 +40,18 @@ namespace Hawalayk_APP.Services
         }
         public async Task<AuthModel> RegisterCustomerAsync(RegisterCustomerModel model)
         {
+            string fileName = "def";
 
-            IFormFile file = model.ProfilePic;
-            string fileName = file.FileName;
-            string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-            using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+            if (model.ProfilePic != null)
             {
-                file.CopyTo(fileStream);
+                IFormFile file = model.ProfilePic;
+                fileName = file.FileName;
+                string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
+                using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+                {
+                    file.CopyTo(fileStream);
+                }
             }
-
 
 
 
@@ -200,20 +203,24 @@ namespace Hawalayk_APP.Services
         {
             IFormFile file = model.PersonalImage;
             IFormFile filee = model.NationalIdImage;
-            IFormFile profilePic = model.ProfilePic;
             string fileName = file.FileName;
             string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
             using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
             {
                 file.CopyTo(fileStream);
             }
-
-            string profilePicName = profilePic.FileName;
-            string profilePicPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-            using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+            string profilePicName = "def";
+            if (model.ProfilePic != null)
             {
-                profilePic.CopyTo(fileStream);
+                IFormFile profilePic = model.ProfilePic;
+                string profilePicPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
+                using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+                {
+                    profilePic.CopyTo(fileStream);
+                }
+
             }
+
 
             string fileeName = filee.FileName;
             string fileePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));

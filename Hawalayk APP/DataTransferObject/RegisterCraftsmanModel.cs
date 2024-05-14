@@ -33,7 +33,7 @@ namespace Hawalayk_APP.DataTransferObject
         public Gender Gender { get; set; }
         public DateTime BirthDate { get; set; }
         [NotMapped]
-        public IFormFile ProfilePic { get; set; }
+        public IFormFile? ProfilePic { get; set; }
         [Required]
         public string Goveronrate { get; set; }
         [Required]

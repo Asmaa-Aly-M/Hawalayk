@@ -34,7 +34,7 @@ namespace Hawalayk_APP.DataTransferObject
         public DateTime BirthDate { get; set; }
         [NotMapped]
 
-        public IFormFile ProfilePic { get; set; }
+        public IFormFile? ProfilePic { get; set; }
 
 
 
