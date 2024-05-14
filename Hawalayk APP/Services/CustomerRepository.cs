@@ -55,12 +55,12 @@ namespace Hawalayk_APP.Services
             return counter;
         }
 
-        public List<ServiceRequest> GetServiceRequestsForThisCustomer(string customer)
+        public async Task<List<ServiceRequest>> GetServiceRequestsForThisCustomer(string customerID)
         {
 
-            var Requests = _context.ServiceRequests
-                .Where(request => request.CustomerId == customer)
-                .ToList();
+            var Requests = await _context.ServiceRequests
+                .Where(request => request.CustomerId == customerID)
+                .ToListAsync();
 
             return Requests;
         }

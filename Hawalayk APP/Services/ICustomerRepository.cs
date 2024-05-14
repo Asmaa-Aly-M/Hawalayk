@@ -5,10 +5,10 @@ namespace Hawalayk_APP.Services
 {
     public interface ICustomerRepository
     {
-        Task<CustomerAccountDTO> GetCustomerAccountAsync(Customer customer);
+        Task<int> customerNumber();
         Task<List<Customer>> GetAll();
         Task<Customer> GetByIdAsync(string id);
-        Task<int> customerNumber();
-        List<ServiceRequest> GetServiceRequestsForThisCustomer(string id);
+        Task<CustomerAccountDTO> GetCustomerAccountAsync(Customer customer);
+        Task<List<ServiceRequest>> GetServiceRequestsForThisCustomer(string customerID);
     }
 }
