@@ -40,11 +40,12 @@ namespace Hawalayk_APP.Controllers
             int counter = await customerRepo.customerNumber();
             return Ok(counter);
         }
-        [HttpGet("Get Service Requests for Customer")]
-        public IActionResult AllRequestsForThisCustomer()
+        [HttpGet("Get All Service Requests by customer")]
+        public async Task<IActionResult> AllRequestsForThisCustomer()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            return Ok(customerRepo.GetServiceRequestsForThisCustomer(userId));
+            var requests = await customerRepo.GetServiceRequestsForThisCustomer(userId);
+            return Ok(requests);
 
         }
     }

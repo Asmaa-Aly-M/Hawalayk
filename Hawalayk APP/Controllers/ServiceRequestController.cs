@@ -43,11 +43,11 @@ namespace Hawalayk_APP.Controllers
                 return BadRequest("No token was sent");
             }
 
-            var row = await serviceRequestRepo.CreateAsync(userId, ServiceRequest);
+            var serviceRequestId = await serviceRequestRepo.CreateAsync(userId, ServiceRequest);
 
-            if (row != -1)
+            if (serviceRequestId != -1)
             {
-                var serviceSend = await serviceRequestRepo.GetServiceRequestSend(row);
+                var serviceSend = await serviceRequestRepo.GetServiceRequestSend(serviceRequestId);
                 _notificationHub.Clients.Group(ServiceRequest.craftName).SendAsync("ReceiveNotification", serviceSend);//// signalR سطر ال 
                 return Ok("Request sent successfully");
 
@@ -77,9 +77,14 @@ namespace Hawalayk_APP.Controllers
             {
                 return NotFound("invalid token");
             }
-            await jobApplicationRepo.Create(userId, replay);
-            _notificationHub.Clients.User(replay.customerId).SendAsync("ApplyNotification", "the applicatio accept");
-            return Ok("Sent successfully");
+            var jobApplicationId = await jobApplicationRepo.Create(userId, replay);
+            if (jobApplicationId != -1)
+            {
+                var jobApplicationSend = await jobApplicationRepo.GetJpbApplicationSend(jobApplicationId);
+                _notificationHub.Clients.User(replay.customerId).SendAsync("ApplyNotification", jobApplicationSend);
+                return Ok("Sent successfully");
+            }
+            return BadRequest("an error occured ");
 
         }
 

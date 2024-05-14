@@ -5,6 +5,7 @@ using Hawalayk_APP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
+using System.Linq;
 using System.Reflection;
 
 namespace Hawalayk_APP.Services
@@ -254,8 +255,9 @@ namespace Hawalayk_APP.Services
             return null;
         }
 
-        public List<ServiceRequest> GetServiceRequestsByCraftName(CraftName craft)
+        /*public async Task<List<ServiceRequest>> GetServiceRequestsByCraftName(CraftName craftName)
         {
+
             
             var requests = Context.ServiceRequests
                 .Where(request => request.craftName == craft && 
@@ -263,7 +265,37 @@ namespace Hawalayk_APP.Services
                 Where(jobApplication=>jobApplication.ResponseStatus==ResponseStatus.Accepted).ToList()==null)
                 .ToList();
 
+
+            var requests =await Context.ServiceRequests
+                .Where(request => request.craft.Name == craftName &&
+               request.JobApplication.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList()== null).ToList();
+            return requests;
+        }*/
+        public async Task<List<ServiceRequest>> GetServiceRequestsByCraftName(CraftName craftName)
+        {
+            var requests = await Context.ServiceRequests
+                .Where(request => request.craft.Name == craftName &&
+               request.JobApplication.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList() == null)
+                .ToListAsync();
+
             return requests;
         }
+
+        public async Task<List<JobApplication>> GetAcceptedJobApplicationForCraftsman(string craftsmanID)
+        {
+            var AlljopApplications = await Context.JobApplications.Where(x => (x.CraftsmanId == craftsmanID) && 
+            (x.ResponseStatus == ResponseStatus.Accepted)).ToListAsync();
+            return AlljopApplications;
+        }
+
+        /* public List<ServiceRequest> GetServiceRequestsByCraftName(CraftName craft)
+         {
+
+             var Requests = Context.ServiceRequests
+                 .Where(request => request.craftName == craft)
+                 .ToList();
+
+             return Requests;
+         }حلاص مش محتاجينها */
     }
 }

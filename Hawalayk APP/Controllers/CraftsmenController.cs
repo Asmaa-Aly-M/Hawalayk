@@ -138,6 +138,11 @@ namespace Hawalayk_APP.Controllers
         }
 
 
+
+        
+
+
+
         [HttpGet("FilterMyCraftGallary")]
         public async Task<IActionResult> MyCraftGallary()
         {
@@ -150,12 +155,27 @@ namespace Hawalayk_APP.Controllers
             var result = await _crafsmenRepository.FilterMyCraftGallary(userId);
             return Ok(result);
         }
+        
         [HttpGet("Get Service Requests By CraftName")]
-        public IActionResult RequestsByCraftName(CraftName craft)
+        public async Task<IActionResult> RequestsByCraftName()
         {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var craftsman=await _crafsmenRepository.GetById(userId);
+            var craftName = craftsman.Craft.Name;
+            var requests=await _crafsmenRepository.GetServiceRequestsByCraftName(craftName);
 
-            return Ok(_crafsmenRepository.GetServiceRequestsByCraftName(craft));
+             return Ok(requests);
 
+        }
+
+
+
+        [HttpGet("AcceptedJobApplication")]
+        public async Task<IActionResult> AcceptedJobApplication()
+        {
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var AcceptedJobApplication =await _crafsmenRepository.GetAcceptedJobApplicationForCraftsman(userId);
+            return Ok(AcceptedJobApplication);
         }
 
 

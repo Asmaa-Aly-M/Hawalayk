@@ -9,6 +9,7 @@ namespace Hawalayk_APP.Models
         public CraftName Name { get; set; }
 
         public ICollection<Craftsman> Craftsmen { get; set; }
+        public ICollection<ServiceRequest> ServiceRequest { get; set; }
         public ICollection<Post> Gallery { get; set; }
     }
 }//craft -> request 
