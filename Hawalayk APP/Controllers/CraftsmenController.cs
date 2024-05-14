@@ -1,5 +1,4 @@
 ﻿using Hawalayk_APP.DataTransferObject;
-using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Identity;
@@ -137,7 +136,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(counter);
         }
 
-        
+
 
 
         [HttpGet("FilterMyCraftGallary")]
@@ -152,16 +151,16 @@ namespace Hawalayk_APP.Controllers
             var result = await _crafsmenRepository.FilterMyCraftGallary(userId);
             return Ok(result);
         }
-        
+
         [HttpGet("Get Service Requests By CraftName")]
         public async Task<IActionResult> RequestsByCraftName()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var craftsman=await _crafsmenRepository.GetById(userId);
+            var craftsman = await _crafsmenRepository.GetById(userId);
             var craftName = craftsman.Craft.Name;
-            var requests=await _crafsmenRepository.GetServiceRequestsByCraftName(craftName);
+            var requests = await _crafsmenRepository.GetServiceRequestsByCraftName(craftName);
 
-             return Ok(requests);
+            return Ok(requests);
 
         }
 
@@ -169,7 +168,7 @@ namespace Hawalayk_APP.Controllers
         public async Task<IActionResult> AcceptedJobApplication()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var AcceptedJobApplication =await _crafsmenRepository.GetAcceptedJobApplicationForCraftsman(userId);
+            var AcceptedJobApplication = await _crafsmenRepository.GetAcceptedJobApplicationForCraftsman(userId);
             return Ok(AcceptedJobApplication);
         }
 

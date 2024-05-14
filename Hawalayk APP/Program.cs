@@ -285,7 +285,7 @@ namespace Hawalayk_APP
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(builder.Configuration.GetConnectionString("server")));//DefaultConnection
 
             builder.Services.AddAuthentication(options =>
             {
@@ -350,7 +350,21 @@ namespace Hawalayk_APP
                 });
             });
 
+            #region seeding Address
+            // Register DataSeeder with the DI container
             builder.Services.AddScoped<DataSeeder>();
+
+            // Build the service provider
+            using var serviceProvider = builder.Services.BuildServiceProvider();
+
+            // Resolve DataSeeder from the service provider
+            var seeder = serviceProvider.GetRequiredService<DataSeeder>();
+
+            // Call the seeding methods
+            seeder.SeedGovernoratesData();
+            seeder.SeedCitiesData();
+            //start time min : det  : banned : > var : det - s
+            #endregion
 
             var app = builder.Build();
 
