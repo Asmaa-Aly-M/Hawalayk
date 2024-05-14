@@ -28,8 +28,6 @@ namespace Hawalayk_APP.Services
 
         public async Task<CustomerAccountDTO> GetCustomerAccountAsync(Customer customer)
         {
-
-
             return new CustomerAccountDTO
             {
                 FirstName = customer.FirstName,
@@ -38,8 +36,9 @@ namespace Hawalayk_APP.Services
                 ProfilePic = Path.Combine("imgs/", customer.ProfilePicture),
                 BirthDate = customer.BirthDate,
                 PhoneNumber = customer.PhoneNumber,
-
-
+                Governorate = customer.Address.Governorate.governorate_name_ar,
+                City = customer.Address.City.city_name_ar,
+                StreetName = customer.Address.StreetName
             };
 
         }
@@ -56,6 +55,14 @@ namespace Hawalayk_APP.Services
             return counter;
         }
 
+        public async Task<List<ServiceRequest>> GetServiceRequestsForThisCustomer(string customerID)
+        {
 
+            var Requests = await _context.ServiceRequests
+                .Where(request => request.CustomerId == customerID)
+                .ToListAsync();
+
+            return Requests;
+        }
     }
 }

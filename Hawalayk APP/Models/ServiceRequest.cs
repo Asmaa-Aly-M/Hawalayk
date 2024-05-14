@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using Hawalayk_APP.Enums;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hawalayk_APP.Models
 {
@@ -14,7 +15,11 @@ namespace Hawalayk_APP.Models
         [ForeignKey("Customer")]
         public string CustomerId { get; set; }
         public Customer Customer { get; set; }
+        [ForeignKey("craftName")]
+        public int CraftId { get; set; }
+        public Craft craft { get; set; }
+        public ICollection<JobApplication> JobApplication { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.Now;
-        // any craft 
+        
     }
 }

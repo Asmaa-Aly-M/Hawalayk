@@ -46,6 +46,22 @@ namespace Hawalayk_APP.Controllers
             }
             return Ok(result);
         }
+        [HttpPost("ResendOtp")]
+        public async Task<IActionResult> ResendOtpAsync([FromBody] string phoneNumber)
+        {
+            if (string.IsNullOrEmpty(phoneNumber))
+            {
+                return BadRequest("Phone number is required");
+            }
+
+            var result = await _authService.ResendOTPAsync(phoneNumber);
+            if (!result.ActionSucceeded)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
+        }
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPasswordAsync([FromBody] string phoneNumber)
         {
@@ -103,16 +119,16 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (userId == null)
-            {
-                return NotFound("This Token Not Valid : ");
-            }
+            //var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            //if (userId == null)
+            //{
+            //    return NotFound("This Token Not Valid : ");
+            //}
 
 
-            var phoneNumber = await _applicationUserService.GetUserPhoneNumber(userId);
+            //var phoneNumber = await _applicationUserService.GetUserPhoneNumber(userId);
 
-            var result = await _authService.VerifyOTPAsync(phoneNumber, model.OTP);
+            var result = await _authService.VerifyOTPAsync(model.OTP);
 
             if (!result.IsAuthenticated)
             {

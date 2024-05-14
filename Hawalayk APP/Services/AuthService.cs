@@ -52,11 +52,6 @@ namespace Hawalayk_APP.Services
                     file.CopyTo(fileStream);
                 }
             }
-
-
-
-
-
             if (await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber) != null)
                 return new AuthModel { Message = "Phone number is already registered!" };
 
@@ -71,9 +66,9 @@ namespace Hawalayk_APP.Services
                 PhoneNumber = model.PhoneNumber,
                 ProfilePicture = fileName,
                 Address = await _addressService.CreateAsync(model.Goveronrate, model.City, model.Street),
-                //Gender = model.Gender,
-                //Address = model.Address,
-                BirthDate = model.BirthDate
+                Gender = model.Gender,
+                BirthDate = model.BirthDate,
+                IsOtpVerified = false
             };
 
             var result = await _userManager.CreateAsync(customer, model.Password);
@@ -105,7 +100,7 @@ namespace Hawalayk_APP.Services
                     UserId = customer.Id,
                     PhoneNumber = model.PhoneNumber,
                     Token = otpToken,
-                    ExpirationTime = DateTime.UtcNow.AddMinutes(5)
+                    ExpirationTime = DateTime.UtcNow.AddMinutes(60)
                 };
 
                 _applicationDbContext.OTPTokens.Add(otpEntity);
@@ -129,6 +124,7 @@ namespace Hawalayk_APP.Services
             }
 
         }
+
         public async Task<AuthModel> ForgotPasswordAsync(string phoneNumber)
         {
             var user = await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
@@ -234,12 +230,6 @@ namespace Hawalayk_APP.Services
             //   model.PersonalImage = fileName;
 
 
-
-
-
-
-
-
             if (await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber) != null)
                 return new AuthModel { Message = "Phone number is already registered!" };
 
@@ -258,18 +248,11 @@ namespace Hawalayk_APP.Services
                 Gender = model.Gender,
                 Craft = craft,
                 ProfilePicture = profilePicName,
-                // NationalIDImage = model.NationalIdImage,
                 PersonalImage = fileName,
                 NationalIDImage = fileeName,
                 RegistrationStatus = CraftsmanRegistrationStatus.Pending,
-                //Address = model.Address,
-                //PersonalImage = model.PersonalImage,
-                //NationalIDImage = model.NationalIdImage,
                 BirthDate = model.BirthDate,
                 Address = await _addressService.CreateAsync(model.Goveronrate, model.City, model.Street),
-
-                //Craft = _applicationDbContext.Crafts.FirstOrDefault(c => c.Name == model.CraftName),
-                //CraftId = ?
             };
 
             var result = await _userManager.CreateAsync(craftsman, model.Password);
@@ -300,7 +283,7 @@ namespace Hawalayk_APP.Services
                     UserId = craftsman.Id,
                     PhoneNumber = model.PhoneNumber,
                     Token = otpToken,
-                    ExpirationTime = DateTime.UtcNow.AddMinutes(5)
+                    ExpirationTime = DateTime.UtcNow.AddMinutes(60)
                 };
 
                 _applicationDbContext.OTPTokens.Add(otpEntity);
@@ -325,9 +308,9 @@ namespace Hawalayk_APP.Services
 
         }
 
-        public async Task<AuthModel> VerifyOTPAsync(string phoneNumber, string otp)
+        public async Task<AuthModel> VerifyOTPAsync(string otp)
         {
-            var otpEntity = await _applicationDbContext.OTPTokens.FirstOrDefaultAsync(t => t.PhoneNumber == phoneNumber && t.Token == otp && t.ExpirationTime > DateTime.UtcNow);
+            var otpEntity = await _applicationDbContext.OTPTokens.FirstOrDefaultAsync(t => t.Token == otp && t.ExpirationTime > DateTime.UtcNow);
             if (otpEntity == null)
                 return new AuthModel { Message = "Invalid OTP!" };
 
@@ -336,6 +319,8 @@ namespace Hawalayk_APP.Services
                 return new AuthModel { Message = "User not found!" };
 
             _applicationDbContext.OTPTokens.Remove(otpEntity);
+            user.IsOtpVerified = true;
+            await _userManager.UpdateAsync(user);
             await _applicationDbContext.SaveChangesAsync();
 
             var jwtSecurityToken = await CreateJwtToken(user);
@@ -351,6 +336,40 @@ namespace Hawalayk_APP.Services
                 Roles = rolesList.ToList(),
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
             };
+        }
+
+        public async Task<AuthModel> ResendOTPAsync(string phoneNumber)
+        {
+            var user = await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
+            if (user == null)
+            {
+                return new AuthModel { Message = "Phone number is not registered!" };
+            }
+
+            var otpToken = _smsService.GenerateOTP(false, 4);
+            var smsResult = await _smsService.SendSMS(phoneNumber, $"Your OTP is: {otpToken}");
+
+            if (String.IsNullOrEmpty(smsResult.ErrorMessage))
+            {
+                var existingOtpTokens = await _applicationDbContext.OTPTokens.Where(t => t.UserId == user.Id).ToListAsync();
+                _applicationDbContext.OTPTokens.RemoveRange(existingOtpTokens);
+
+                _applicationDbContext.OTPTokens.Add(new OTPToken
+                {
+                    UserId = user.Id,
+                    PhoneNumber = phoneNumber,
+                    Token = otpToken,
+                    ExpirationTime = DateTime.UtcNow.AddMinutes(60)
+                });
+
+                await _applicationDbContext.SaveChangesAsync();
+
+                return new AuthModel { Message = "We have sent a new OTP code to your phone number.", ActionSucceeded = true };
+            }
+            else
+            {
+                return new AuthModel { Message = smsResult.ErrorMessage, ActionSucceeded = false };
+            }
         }
 
         private async Task<JwtSecurityToken> CreateJwtToken(ApplicationUser user)
@@ -380,6 +399,7 @@ namespace Hawalayk_APP.Services
 
             return token;
         }
+
         public async Task<AuthModel> GetTokenAsync(TokenRequestModel model)
         {
 
@@ -390,6 +410,10 @@ namespace Hawalayk_APP.Services
             {
                 authModel.Message = " The PhoneNumber Or Password Is Not Correct ";
                 return authModel;
+            }
+            if (user.IsOtpVerified == false)
+            {
+                authModel.Message = "OTP code is not verified yet";
             }
 
             if (user is Craftsman && ((Craftsman)user).RegistrationStatus != CraftsmanRegistrationStatus.Approved)
@@ -409,7 +433,6 @@ namespace Hawalayk_APP.Services
             authModel.Roles = Roles.ToList();
             return authModel;
         }
-
 
         public async Task<DeleteUserDTO> DeleteUserAsync(string userId)
         {
@@ -439,8 +462,6 @@ namespace Hawalayk_APP.Services
                 Message = "The User Deleted Successfully : "
             };
         }
-
-
 
         public async Task<string> LogoutAsync(string userId)
         {

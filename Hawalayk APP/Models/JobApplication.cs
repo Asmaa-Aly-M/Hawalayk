@@ -14,6 +14,10 @@ namespace Hawalayk_APP.Models
         [ForeignKey("Craftsman")]
         public string CraftsmanId { get; set; }
         public Craftsman Craftsman { get; set; }
+
+        [ForeignKey("ServiceRequest")]
+        public int ServiceRequestId { get; set; }
+        public ServiceRequest ServiceRequest { get; set; }
         public DateTime DatePosted { get; set; } 
 }
 }

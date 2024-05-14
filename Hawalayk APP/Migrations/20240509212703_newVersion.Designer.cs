@@ -4,6 +4,7 @@ using Hawalayk_APP.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hawalayk_APP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240509212703_newVersion")]
+    partial class newVersion
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -353,14 +355,9 @@ namespace Hawalayk_APP.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ServiceRequestId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CraftsmanId");
-
-                    b.HasIndex("ServiceRequestId");
 
                     b.ToTable("JobApplications");
                 });
@@ -788,15 +785,7 @@ namespace Hawalayk_APP.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Hawalayk_APP.Models.ServiceRequest", "ServiceRequest")
-                        .WithMany("JobApplication")
-                        .HasForeignKey("ServiceRequestId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Craftsman");
-
-                    b.Navigation("ServiceRequest");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Post", b =>
@@ -823,7 +812,7 @@ namespace Hawalayk_APP.Migrations
 
             modelBuilder.Entity("Hawalayk_APP.Models.ServiceRequest", b =>
                 {
-                    b.HasOne("Hawalayk_APP.Models.Craft", "craft")
+                    b.HasOne("Hawalayk_APP.Models.Craft", "craftName")
                         .WithMany("ServiceRequest")
                         .HasForeignKey("CraftId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -837,7 +826,7 @@ namespace Hawalayk_APP.Migrations
 
                     b.Navigation("Customer");
 
-                    b.Navigation("craft");
+                    b.Navigation("craftName");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.UserReport", b =>
@@ -955,11 +944,6 @@ namespace Hawalayk_APP.Migrations
             modelBuilder.Entity("Hawalayk_APP.Models.Governorate", b =>
                 {
                     b.Navigation("Cities");
-                });
-
-            modelBuilder.Entity("Hawalayk_APP.Models.ServiceRequest", b =>
-                {
-                    b.Navigation("JobApplication");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.Craftsman", b =>

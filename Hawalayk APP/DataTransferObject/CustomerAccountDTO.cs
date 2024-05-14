@@ -28,9 +28,12 @@ namespace Hawalayk_APP.DataTransferObject
         public string PhoneNumber { get; set; }
         //[Required]
         //public Image NationalIdImage { get; set; }
-        //public Address Address { get; set; }
+        
         [Required]
 
         public DateTime BirthDate { get; set; }
+        public string Governorate { get; set; }
+        public string City { get; set; }
+        public string StreetName { get; set; }
     }
 }
