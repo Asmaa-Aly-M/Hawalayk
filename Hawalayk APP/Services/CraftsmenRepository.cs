@@ -5,7 +5,6 @@ using Hawalayk_APP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.ComponentModel;
-using System.Linq;
 using System.Reflection;
 
 namespace Hawalayk_APP.Services
@@ -271,11 +270,12 @@ namespace Hawalayk_APP.Services
                request.JobApplication.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList()== null).ToList();
             return requests;
         }*/
+        //service request => no job app : refused job app
         public async Task<List<ServiceRequest>> GetServiceRequestsByCraftName(CraftName craftName)
         {
             var requests = await Context.ServiceRequests
                 .Where(request => request.craft.Name == craftName &&
-               request.JobApplication.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList() == null)
+               request.JobApplications.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList() == null)
                 .ToListAsync();
 
             return requests;
@@ -283,7 +283,7 @@ namespace Hawalayk_APP.Services
 
         public async Task<List<JobApplication>> GetAcceptedJobApplicationForCraftsman(string craftsmanID)
         {
-            var AlljopApplications = await Context.JobApplications.Where(x => (x.CraftsmanId == craftsmanID) && 
+            var AlljopApplications = await Context.JobApplications.Where(x => (x.CraftsmanId == craftsmanID) &&
             (x.ResponseStatus == ResponseStatus.Accepted)).ToListAsync();
             return AlljopApplications;
         }

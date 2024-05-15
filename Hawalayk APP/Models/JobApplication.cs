@@ -1,14 +1,13 @@
 ﻿using Hawalayk_APP.Enums;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Hawalayk_APP.Models
 {
-    public class JobApplication
+    public class JobApplication//=>
     {
         public int Id { get; set; }
         public string? Content { get; set; }
-        
+
         public int InitialPrice { get; set; }
         public ResponseStatus ResponseStatus { get; set; }
         [ForeignKey("Craftsman")]
@@ -18,7 +17,7 @@ namespace Hawalayk_APP.Models
         [ForeignKey("ServiceRequest")]
         public int ServiceRequestId { get; set; }
         public ServiceRequest ServiceRequest { get; set; }
-        public DateTime DatePosted { get; set; } 
+        public DateTime DatePosted { get; set; }
+    }
 }
-}
-   
+

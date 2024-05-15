@@ -39,7 +39,8 @@ namespace Hawalayk_APP.Hubs
             _Users.RemoveAll(u => u.ConnectionId == Context.ConnectionId);
 
             // Send down the new user list to all clients
-            await SendUserListUpdate();
+
+            // await SendUserListUpdate();
 
             await base.OnDisconnectedAsync(exception);
         }

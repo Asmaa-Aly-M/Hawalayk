@@ -21,8 +21,8 @@ namespace Hawalayk_APP.Models
         public DateTime BirthDate { get; set; }
         public bool IsOtpVerified { get; set; } = false;
         public string ProfilePicture { get; set; }
-        public string ConnectionId { get; set; }
-        public bool InCall { get; set; }
+        public string? ConnectionId { get; set; }
+        public bool? InCall { get; set; }
 
     }
 }

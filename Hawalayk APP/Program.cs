@@ -285,7 +285,7 @@ namespace Hawalayk_APP
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("server")));//DefaultConnection
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));//
 
             builder.Services.AddAuthentication(options =>
             {
@@ -322,14 +322,12 @@ namespace Hawalayk_APP
 
             builder.Services.AddCors(options =>
             {
-                options.AddPolicy("AllowReact", builder =>
+                options.AddPolicy("AllowAll", builder =>
                 {
                     builder
-                        .WithOrigins("http://localhost:3000")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .SetIsOriginAllowedToAllowWildcardSubdomains()
-                        .AllowCredentials();
+                            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
                 });
             });
 
@@ -371,7 +369,7 @@ namespace Hawalayk_APP
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "Your API V1"));
             app.UseStaticFiles();
-            app.UseCors("AllowReact");
+            app.UseCors("AllowAll");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseMiddleware<BanMiddleware>();

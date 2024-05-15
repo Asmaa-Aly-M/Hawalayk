@@ -137,14 +137,6 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-<<<<<<< HEAD
-=======
-
-        
->>>>>>> 3010567267857403ae43a30dd90794163508ea12
-
-
-
         [HttpGet("FilterMyCraftGallary")]
         public async Task<IActionResult> MyCraftGallary()
         {
