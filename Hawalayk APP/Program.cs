@@ -285,7 +285,7 @@ namespace Hawalayk_APP
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));//
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));//serverserver
 
             builder.Services.AddAuthentication(options =>
             {
@@ -325,9 +325,10 @@ namespace Hawalayk_APP
                 options.AddPolicy("AllowAll", builder =>
                 {
                     builder
-                            .AllowAnyOrigin()
+            .WithOrigins("http://localhost:3000")  // Specify allowed origins here
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .AllowCredentials();
                 });
             });
 
@@ -348,21 +349,21 @@ namespace Hawalayk_APP
                 });
             });
 
-            #region seeding Address
-            // Register DataSeeder with the DI container
-            builder.Services.AddScoped<DataSeeder>();
+            //#region seeding Address
+            //// Register DataSeeder with the DI container
+            //builder.Services.AddScoped<DataSeeder>();
 
-            // Build the service provider
-            using var serviceProvider = builder.Services.BuildServiceProvider();
+            //// Build the service provider
+            //using var serviceProvider = builder.Services.BuildServiceProvider();
 
-            // Resolve DataSeeder from the service provider
-            var seeder = serviceProvider.GetRequiredService<DataSeeder>();
+            //// Resolve DataSeeder from the service provider
+            //var seeder = serviceProvider.GetRequiredService<DataSeeder>();
 
-            // Call the seeding methods
-            seeder.SeedGovernoratesData();
-            seeder.SeedCitiesData();
-            //start time min : det  : banned : > var : det - s
-            #endregion
+            //// Call the seeding methods
+            //seeder.SeedGovernoratesData();
+            //seeder.SeedCitiesData();
+            ////start time min : det  : banned : > var : det - s
+            //#endregion
 
             var app = builder.Build();
 
@@ -375,7 +376,7 @@ namespace Hawalayk_APP
             app.UseMiddleware<BanMiddleware>();
             app.MapControllers();
             app.MapHub<NotificationHub>("/notificationHub");
-
+            app.MapHub<CallHub>("/callHub");
             app.Run();
         }
     }
