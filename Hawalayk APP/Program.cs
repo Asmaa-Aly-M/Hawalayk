@@ -285,7 +285,7 @@ namespace Hawalayk_APP
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));//
+                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));//serverserver
 
             builder.Services.AddAuthentication(options =>
             {
@@ -325,9 +325,10 @@ namespace Hawalayk_APP
                 options.AddPolicy("AllowAll", builder =>
                 {
                     builder
-                            .AllowAnyOrigin()
+            .WithOrigins("http://localhost:3000")  // Specify allowed origins here
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowAnyHeader()
+            .AllowCredentials();
                 });
             });
 
@@ -375,7 +376,7 @@ namespace Hawalayk_APP
             app.UseMiddleware<BanMiddleware>();
             app.MapControllers();
             app.MapHub<NotificationHub>("/notificationHub");
-
+            app.MapHub<CallHub>("/callHub");
             app.Run();
         }
     }

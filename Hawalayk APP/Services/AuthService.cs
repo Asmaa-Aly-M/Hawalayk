@@ -446,6 +446,28 @@ namespace Hawalayk_APP.Services
                 };
             }
 
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            if (userRoles.Any())
+            {
+                foreach (var role in userRoles)
+                {
+                    await _userManager.RemoveFromRoleAsync(user, role);
+                }
+            }
+
+            // Delete user claims (if any)
+            var userClaims = await _userManager.GetClaimsAsync(user);
+            if (userClaims.Any())
+            {
+                foreach (var claim in userClaims)
+                {
+                    await _userManager.RemoveClaimAsync(user, claim);
+                }
+            }
+
+
+
             var result = await _userManager.DeleteAsync(user);
             if (!result.Succeeded)
             {

@@ -787,7 +787,8 @@ namespace Hawalayk_APP.Migrations
                 {
                     b.HasOne("Hawalayk_APP.Models.Governorate", "Governorate")
                         .WithMany("Cities")
-                        .HasForeignKey("governorate_id");
+                        .HasForeignKey("governorate_id")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Governorate");
                 });
@@ -815,11 +816,13 @@ namespace Hawalayk_APP.Migrations
                 {
                     b.HasOne("Hawalayk_APP.Models.Craft", "craft")
                         .WithMany("Gallery")
-                        .HasForeignKey("CraftId");
+                        .HasForeignKey("CraftId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Hawalayk_APP.Models.Craftsman", "Craftsman")
                         .WithMany("Portfolio")
-                        .HasForeignKey("CraftsmanId");
+                        .HasForeignKey("CraftsmanId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.Navigation("Craftsman");
 
@@ -830,7 +833,8 @@ namespace Hawalayk_APP.Migrations
                 {
                     b.HasOne("Hawalayk_APP.Models.Craftsman", null)
                         .WithMany("Reviews")
-                        .HasForeignKey("CraftsmanId");
+                        .HasForeignKey("CraftsmanId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.ServiceRequest", b =>
@@ -935,7 +939,8 @@ namespace Hawalayk_APP.Migrations
                 {
                     b.HasOne("Hawalayk_APP.Models.Craft", "Craft")
                         .WithMany("Craftsmen")
-                        .HasForeignKey("CraftId");
+                        .HasForeignKey("CraftId")
+                        .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("Hawalayk_APP.Models.ApplicationUser", null)
                         .WithOne()
