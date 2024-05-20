@@ -474,6 +474,77 @@ namespace Hawalayk_APP.Services
         }
 
 
+        public async Task<UpdateUserDTO> RequestUpdatingPhoneNumberAsync(string userId, UpdatePhoneNumberDTO updatePhoneNumber)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "User not found." };
+            }
+
+            var passwordCheck = await _userManager.CheckPasswordAsync(user, updatePhoneNumber.Password);
+            if (!passwordCheck)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "Invalid password." };
+            }
+
+            if (await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == updatePhoneNumber.NewPhoneNumber) != null)
+                return new UpdateUserDTO { IsUpdated = false, Message = "Phone number is already registered!" };
+
+            var otpToken = _smsService.GenerateOTP(false, 4);
+            var smsResult = await _smsService.SendSMS(updatePhoneNumber.NewPhoneNumber, $"Your OTP is: {otpToken}");
+
+            if (!string.IsNullOrEmpty(smsResult.ErrorMessage))
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = smsResult.ErrorMessage };
+            }
+
+            var otpEntity = new OTPToken
+            {
+                UserId = user.Id,
+                PhoneNumber = updatePhoneNumber.NewPhoneNumber,
+                Token = otpToken,
+                ExpirationTime = DateTime.UtcNow.AddMinutes(60)
+            };
+
+            _applicationDbContext.OTPTokens.Add(otpEntity);
+            await _applicationDbContext.SaveChangesAsync();
+
+            return new UpdateUserDTO { IsUpdated = true, Message = "OTP sent to new phone number. Please verify." };
+        }
+
+
+        public async Task<UpdateUserDTO> ConfirmPhoneNumberUpdateAsync(string userId, string otpToken)
+        {
+            var otpEntity = await _applicationDbContext.OTPTokens.FirstOrDefaultAsync(t => t.UserId == userId && t.Token == otpToken);
+            if (otpEntity == null || otpEntity.ExpirationTime < DateTime.UtcNow)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "Invalid or expired OTP." };
+            }
+
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "User not found." };
+            }
+
+            user.PhoneNumber = otpEntity.PhoneNumber;
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                return new UpdateUserDTO
+                {
+                    IsUpdated = false,
+                    Message = "Failed to update phone number."
+                };
+            }
+
+            _applicationDbContext.OTPTokens.Remove(otpEntity);
+            await _applicationDbContext.SaveChangesAsync();
+
+            return new UpdateUserDTO { IsUpdated = true, Message = "Phone number updated successfully." };
+        }
 
     }
 }

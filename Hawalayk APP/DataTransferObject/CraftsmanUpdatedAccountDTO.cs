@@ -16,13 +16,12 @@ namespace Hawalayk_APP.DataTransferObject
         public string Governorate { get; set; }
         public string City { get; set; }
 
+        
+        //[Required, RegularExpression(@"^\+201([0-2]|5){1}[0-9]{8}$", ErrorMessage = "Invalid phone number format.")]
+        //public string PhoneNumber { get; set; }
 
-        [Required, RegularExpression(@"^\+201([0-2]|5){1}[0-9]{8}$", ErrorMessage = "Invalid phone number format.")]
-        public string PhoneNumber { get; set; }
         [Required]
         public string CraftName { get; set; }
-        [NotMapped]
-        public IFormFile? ProfilePic { get; set; }
 
         [Required]
         public DateTime BirthDate { get; set; }

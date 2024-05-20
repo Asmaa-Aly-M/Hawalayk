@@ -16,5 +16,6 @@ namespace Hawalayk_APP.Services
         Task<List<PendingCraftsmanDTO>> GetPendingCraftsmen();
         Task<List<ServiceRequest>> GetServiceRequestsByCraftName(CraftName craftName);
         Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId, CraftsmanUpdatedAccountDTO craftsmanAccount);
+        Task<UpdateUserDTO> UpdateCraftsmanProfilePicAsync(string craftsmanId, IFormFile profilePic);
     }
 }

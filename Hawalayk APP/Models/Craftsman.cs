@@ -9,6 +9,7 @@ namespace Hawalayk_APP.Models
     {
         public string PersonalImage { get; set; }
         public string NationalIDImage { get; set; }
+        public DateTime? ProfilePicLastUpdated { get; set; }
 
         [ForeignKey("Craft")]
         public int? CraftId { get; set; }
