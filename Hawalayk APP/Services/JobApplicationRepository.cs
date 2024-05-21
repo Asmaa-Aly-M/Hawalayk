@@ -84,5 +84,44 @@ namespace Hawalayk_APP.Services
             int row = await Context.SaveChangesAsync();
             return row;
         }
+
+        public async Task<AcceptedJobApplicationDTO> GetJobApplicationAcceptedByServiceRequest(int ServiceRequestID)
+        {
+            var job = Context.JobApplications.Include(j => j.Craftsman)
+                .FirstOrDefault(job => job.ServiceRequestId == ServiceRequestID && job.ResponseStatus == ResponseStatus.Accepted);
+
+            AcceptedJobApplicationDTO acceptedJob = new AcceptedJobApplicationDTO
+            {
+                CraftsmanID = job.CraftsmanId,
+                CraftsmanFristName = job.Craftsman.FirstName,
+                CraftsmanLastName = job.Craftsman.LastName,
+                CraftsmanProfilePicture = job.Craftsman.ProfilePicture,
+                InitialPrice = job.InitialPrice,
+                Content = job.Content,
+            };
+            return acceptedJob;
+
+
+        }
+
+        public async Task<List<AcceptedJobApplicationDTO>> GetJobApplicationsPendingByServiceRequest(int ServiceRequestID)
+        {
+            var jobs = Context.JobApplications.Include(j => j.Craftsman)
+                .Where(job => job.ServiceRequestId == ServiceRequestID && job.ResponseStatus == ResponseStatus.Pending);
+
+            List<AcceptedJobApplicationDTO> pendingJobs = jobs.Select(j =>
+                new AcceptedJobApplicationDTO
+                {
+                    CraftsmanID = j.CraftsmanId,
+                    CraftsmanFristName = j.Craftsman.FirstName,
+                    CraftsmanLastName = j.Craftsman.LastName,
+                    CraftsmanProfilePicture = j.Craftsman.ProfilePicture,
+                    InitialPrice = j.InitialPrice,
+                    Content = j.Content,
+                }).ToList();
+            return pendingJobs;
+
+
+        }
     }
 }

@@ -18,6 +18,9 @@ namespace Hawalayk_APP.Models
         [ForeignKey("craftName")]
         public int CraftId { get; set; }
         public Craft craft { get; set; }
+        public string Governorate { get; set; }
+        public string City { get; set; }
+        public string Street { get; set; }
         public DateTime DatePosted { get; set; } = DateTime.Now;
 
         public CraftName craftName { get; set; }

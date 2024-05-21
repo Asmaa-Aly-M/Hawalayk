@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,11 +10,13 @@ namespace Hawalayk_APP.Services
     {
         ApplicationDbContext Context;
         private readonly ICustomerRepository customerRepo;
-        public ServiceRequestRepository(ApplicationDbContext _Context, ICustomerRepository _customerRepo)
+        private readonly ICraftRepository craftRepo;
+
+        public ServiceRequestRepository(ApplicationDbContext _Context, ICustomerRepository _customerRepo, ICraftRepository _craftRepo)
         {
             Context = _Context;
             customerRepo = _customerRepo;
-
+            craftRepo = _craftRepo;
         }
 
         public async Task<ServiceRequestSendDTO> GetServiceRequestSend(int id)
@@ -213,5 +216,121 @@ namespace Hawalayk_APP.Services
 
             return count;
         }
+
+        public async Task<List<ServiceNeededRepalyDTO>> GetServiceRequestsNeedToReplayByCraftsmen(CraftName craftName)//بالنسبة للحرفي
+        {
+            var requests = await Context.ServiceRequests
+                .Where(request => request.craft.Name == craftName &&
+               request.JobApplications.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList() == null)
+                .ToListAsync();
+            List<ServiceNeededRepalyDTO> serviceNeededRepaly = requests.Select(x =>
+               new ServiceNeededRepalyDTO
+               {
+
+                   CustomerID = x.CustomerId,
+                   CustomerFristName = x.Customer.FirstName,
+                   CustomerLastName = x.Customer.LastName,
+                   CustomerProfilePicture = x.Customer.ProfilePicture,
+                   Content = x.Content,
+                   OptionalImage = x.OptionalImage,
+                   Governorate = x.Governorate,
+                   City = x.City,
+                   Street = x.Street,
+
+
+               }).ToList();
+            return serviceNeededRepaly;
+
+        }
+
+        public async Task<List<ServiceNeededRepalyForCustomerDTO>> GetServiceRequestsNeedToReplayByCraftsmenForCustomer(string customerId)//بالنسبة للعميل
+        {
+            var requests = await Context.ServiceRequests
+                .Where(request => request.CustomerId == customerId &&
+               request.JobApplications.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList() == null)
+                .ToListAsync();
+            List<ServiceNeededRepalyForCustomerDTO> serviceNeededRepaly =(await Task.WhenAll(requests.Select( async x =>
+               new ServiceNeededRepalyForCustomerDTO
+               {
+                   ServiceRequestId = x.Id,
+                   ServiceContent = x.Content,
+                   ServiceCraftName =await craftRepo.GetCraftNameInArabicByEnumValue(x.craft.Name),
+                   Date = x.DatePosted,
+
+               }))).ToList();
+            return serviceNeededRepaly;
+
+        }
+        public async Task<List<RequestAcceptedForCustomrDTO>> GetServiceRequestsAcceptedCraftsmenForCustomer(string customerID)//بالنسبة للعميل
+        {
+            var AlljopApplications = await Context.JobApplications.Include(j => j.ServiceRequest)
+                .Where(x => x.ServiceRequest.CustomerId == customerID && x.ResponseStatus == ResponseStatus.Accepted).ToListAsync();
+
+            List<RequestAcceptedForCustomrDTO> RequestAcceptedCraftsman = (await Task.WhenAll(AlljopApplications.Select( async y => //حل مشكلة انه مش كان قادر يستخدم تحويل ال enum
+               new RequestAcceptedForCustomrDTO
+               {
+                   ServiceRequestId = y.ServiceRequestId,
+                   CraftName =await craftRepo.GetCraftNameInArabicByEnumValue( y.ServiceRequest.craft.Name),
+                   ServiceContent = y.ServiceRequest.Content,
+                   CraftsmanFristName = y.Craftsman.FirstName,
+                   CraftsmanLastName = y.Craftsman.LastName,
+                   Date = y.ServiceRequest.DatePosted,////محتاج مراجعة نوع الوقت في ال DTO
+
+
+
+               }))).ToList();
+            return RequestAcceptedCraftsman;
+
+        }
+
+        /* public async Task<List<ServiceNeededRepalyDTO>> GetServiceRequestsAcceptedCraftsmenForCustomer(string customerId)//بالنسبة للعميل
+         {
+             var requests = await Context.ServiceRequests
+                 .Where(request => request.CustomerId == customerId && request.JobApplications.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList() != null)
+                 .ToListAsync();
+             List<ServiceNeededRepalyDTO> serviceNeededRepaly = requests.Select(x =>
+                new ServiceNeededRepalyDTO
+                {
+
+                    CustomerID = x.CustomerId,
+                    CustomerFristName = x.Customer.FirstName,
+                    CustomerLastName = x.Customer.LastName,
+                    CustomerProfilePicture = x.Customer.ProfilePicture,
+                    Content = x.Content,
+                    OptionalImage = x.OptionalImage,
+                    Governorate = x.Governorate,
+                    City = x.City,
+                    Street = x.Street,
+
+
+                }).ToList();
+             return serviceNeededRepaly;
+
+         }*/ //مراجعة
+
+        public async Task<List<RequestAcceptedForCraftsmanDTO>> GetAcceptedServiceRequestsFromCustomersByACraftsman(string craftsmanID)//بالنسبة للحرفي
+        {
+            var AlljopApplications = await Context.JobApplications.Include(j => j.ServiceRequest)
+                .Where(x => x.CraftsmanId == craftsmanID &&
+            x.ResponseStatus == ResponseStatus.Accepted).ToListAsync();
+
+            List<RequestAcceptedForCraftsmanDTO> RequestAcceptedCraftsman = AlljopApplications.Select(y =>
+               new RequestAcceptedForCraftsmanDTO
+               {
+
+                   CustomerID = y.ServiceRequest.CustomerId,
+                   CustomerFristName = y.ServiceRequest.Customer.FirstName,
+                   CustomerLastName = y.ServiceRequest.Customer.LastName,
+                   CustomerProfilePicture = y.ServiceRequest.Customer.ProfilePicture,
+                   Content = y.ServiceRequest.Content,
+                   OptionalImage = y.ServiceRequest.OptionalImage,
+
+
+               }).ToList();
+            return RequestAcceptedCraftsman;
+
+        }
+
+
     }
 }
