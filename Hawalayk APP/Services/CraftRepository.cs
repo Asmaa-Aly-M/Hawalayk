@@ -85,6 +85,12 @@ namespace Hawalayk_APP.Services
             return craft;
         }
 
+        public async Task<int> GetCraftIdByCraftEnumValue(CraftName value)
+        {
+            var craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == value);
+            return craft.Id;
+        }
+
         public async Task<int> Create(Craft newCraft)
         {
             Context.Crafts.Add(newCraft);

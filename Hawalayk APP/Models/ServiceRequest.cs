@@ -6,6 +6,7 @@ namespace Hawalayk_APP.Models
     public class ServiceRequest
     {
 
+
         public int Id { get; set; }
 
         public string Content { get; set; }
@@ -23,6 +24,10 @@ namespace Hawalayk_APP.Models
         public CraftName craftName { get; set; }
         public ICollection<JobApplication> JobApplications { get; set; }
         // any craft 
+        public string governorate { get; set; }
+        public string city { get; set; }
+        public string street { get; set; }
+
 
 
 

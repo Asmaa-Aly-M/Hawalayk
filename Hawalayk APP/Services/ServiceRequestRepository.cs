@@ -9,11 +9,12 @@ namespace Hawalayk_APP.Services
     {
         ApplicationDbContext Context;
         private readonly ICustomerRepository customerRepo;
-        public ServiceRequestRepository(ApplicationDbContext _Context, ICustomerRepository _customerRepo)
+        private readonly ICraftRepository _craftService;
+        public ServiceRequestRepository(ApplicationDbContext _Context, ICustomerRepository _customerRepo, ICraftRepository craftService)
         {
             Context = _Context;
             customerRepo = _customerRepo;
-
+            _craftService = craftService;
         }
 
         public async Task<ServiceRequestSendDTO> GetServiceRequestSend(int id)
@@ -103,12 +104,18 @@ namespace Hawalayk_APP.Services
                     file.CopyTo(fileStream);
                 }
             }
+            var CrafEnumVAlue = await _craftService.GetEnumValueOfACraftByArabicDesCription(newservice.craftName);
             ServiceRequest serviceRequest = new ServiceRequest()
             {
                 //  Id = newservice.Id,
+                governorate = newservice.governorate,
+                city = newservice.city,
+                street = newservice.street,
                 Content = newservice.content,
                 OptionalImage = fileName, // IFormFIle
                 CustomerId = customerId,
+                craftName = CrafEnumVAlue,
+                CraftId = await _craftService.GetCraftIdByCraftEnumValue(CrafEnumVAlue)
 
             };
             Context.ServiceRequests.Add(serviceRequest);

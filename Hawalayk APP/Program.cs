@@ -325,12 +325,13 @@ namespace Hawalayk_APP
                 options.AddPolicy("AllowAll", builder =>
                 {
                     builder
-            .WithOrigins("http://localhost:3000")  // Specify allowed origins here
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
+                    .SetIsOriginAllowed(origin => true) // Allow any origin
+                    .AllowAnyMethod()
+                    .AllowAnyHeader()
+                    .AllowCredentials();
                 });
             });
+
 
             builder.Services.AddSignalR();
             builder.Services.AddControllers();
@@ -349,21 +350,21 @@ namespace Hawalayk_APP
                 });
             });
 
-            //#region seeding Address
-            //// Register DataSeeder with the DI container
-            //builder.Services.AddScoped<DataSeeder>();
+            #region seeding Address
+            // Register DataSeeder with the DI container
+            builder.Services.AddScoped<DataSeeder>();
 
-            //// Build the service provider
-            //using var serviceProvider = builder.Services.BuildServiceProvider();
+            // Build the service provider
+            using var serviceProvider = builder.Services.BuildServiceProvider();
 
-            //// Resolve DataSeeder from the service provider
-            //var seeder = serviceProvider.GetRequiredService<DataSeeder>();
+            // Resolve DataSeeder from the service provider
+            var seeder = serviceProvider.GetRequiredService<DataSeeder>();
 
-            //// Call the seeding methods
-            //seeder.SeedGovernoratesData();
-            //seeder.SeedCitiesData();
-            ////start time min : det  : banned : > var : det - s
-            //#endregion
+            // Call the seeding methods
+            seeder.SeedGovernoratesData();
+            seeder.SeedCitiesData();
+            //start time min : det  : banned : > var : det - s
+            #endregion
 
             var app = builder.Build();
 
