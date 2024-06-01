@@ -1,5 +1,6 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -10,6 +11,7 @@ namespace Hawalayk_APP.Services
 
     {
         ApplicationDbContext _context;
+       
         public CustomerRepository(ApplicationDbContext context)
         {
             _context = context;
@@ -64,5 +66,27 @@ namespace Hawalayk_APP.Services
 
             return Requests;
         }
+
+
+        public async Task<List<SearchAboutCraftsmanDTO>> searchAboutCraftsmen(CraftName craftName,string governorate)
+        {
+            var Allcraftsmen=await _context.Craftsmen.Include(g=>g.Address)
+                .Where(c=>c.Craft.Name== craftName && c.Address.Governorate.governorate_name_en== governorate).ToListAsync();
+
+            List<SearchAboutCraftsmanDTO> Craftsmen = Allcraftsmen.Select(y =>
+               new SearchAboutCraftsmanDTO
+               {
+               Id = y.Id,
+               FirstName = y.FirstName,
+               LastName= y.LastName,
+               Rating = y.Rating,
+               ProfilePicture = y.ProfilePicture,
+               
+               }).ToList();
+
+            return Craftsmen;
+
+        }
+
     }
 }
