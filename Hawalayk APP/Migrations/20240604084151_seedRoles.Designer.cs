@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hawalayk_APP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20240519221647_initialCreate")]
-    partial class initialCreate
+    [Migration("20240604084151_seedRoles")]
+    partial class seedRoles
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -494,8 +494,20 @@ namespace Hawalayk_APP.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("city")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("craftName")
                         .HasColumnType("int");
+
+                    b.Property<string>("governorate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("street")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -692,6 +704,9 @@ namespace Hawalayk_APP.Migrations
                     b.Property<string>("PersonalImage")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ProfilePicLastUpdated")
+                        .HasColumnType("datetime2");
 
                     b.Property<double>("Rating")
                         .HasColumnType("float");

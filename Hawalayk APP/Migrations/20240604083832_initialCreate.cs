@@ -103,7 +103,7 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -123,7 +123,7 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.governorate_id,
                         principalTable: "governorates",
                         principalColumn: "id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -371,6 +371,7 @@ namespace Hawalayk_APP.Migrations
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     PersonalImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     NationalIDImage = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProfilePicLastUpdated = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CraftId = table.Column<int>(type: "int", nullable: true),
                     Rating = table.Column<double>(type: "float", nullable: false),
                     RegistrationStatus = table.Column<int>(type: "int", nullable: false)
@@ -499,7 +500,10 @@ namespace Hawalayk_APP.Migrations
                     CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CraftId = table.Column<int>(type: "int", nullable: false),
                     DatePosted = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    craftName = table.Column<int>(type: "int", nullable: false)
+                    craftName = table.Column<int>(type: "int", nullable: false),
+                    governorate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    city = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    street = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -539,13 +543,13 @@ namespace Hawalayk_APP.Migrations
                         column: x => x.CraftsmanId,
                         principalTable: "CraftsMan",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_JobApplications_ServiceRequests_ServiceRequestId",
                         column: x => x.ServiceRequestId,
                         principalTable: "ServiceRequests",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
