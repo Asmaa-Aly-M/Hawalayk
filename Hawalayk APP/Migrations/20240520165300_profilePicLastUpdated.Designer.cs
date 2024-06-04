@@ -4,6 +4,7 @@ using Hawalayk_APP.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Hawalayk_APP.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240520165300_profilePicLastUpdated")]
+    partial class profilePicLastUpdated
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -474,10 +476,6 @@ namespace Hawalayk_APP.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<string>("City")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -492,28 +490,12 @@ namespace Hawalayk_APP.Migrations
                     b.Property<DateTime>("DatePosted")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Governorate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("OptionalImage")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("city")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("craftName")
                         .HasColumnType("int");
-
-                    b.Property<string>("governorate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("street")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -807,8 +789,7 @@ namespace Hawalayk_APP.Migrations
                 {
                     b.HasOne("Hawalayk_APP.Models.Governorate", "Governorate")
                         .WithMany("Cities")
-                        .HasForeignKey("governorate_id")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("governorate_id");
 
                     b.Navigation("Governorate");
                 });
@@ -836,13 +817,11 @@ namespace Hawalayk_APP.Migrations
                 {
                     b.HasOne("Hawalayk_APP.Models.Craft", "craft")
                         .WithMany("Gallery")
-                        .HasForeignKey("CraftId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CraftId");
 
                     b.HasOne("Hawalayk_APP.Models.Craftsman", "Craftsman")
                         .WithMany("Portfolio")
-                        .HasForeignKey("CraftsmanId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CraftsmanId");
 
                     b.Navigation("Craftsman");
 
@@ -853,8 +832,7 @@ namespace Hawalayk_APP.Migrations
                 {
                     b.HasOne("Hawalayk_APP.Models.Craftsman", null)
                         .WithMany("Reviews")
-                        .HasForeignKey("CraftsmanId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CraftsmanId");
                 });
 
             modelBuilder.Entity("Hawalayk_APP.Models.ServiceRequest", b =>
@@ -959,8 +937,7 @@ namespace Hawalayk_APP.Migrations
                 {
                     b.HasOne("Hawalayk_APP.Models.Craft", "Craft")
                         .WithMany("Craftsmen")
-                        .HasForeignKey("CraftId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("CraftId");
 
                     b.HasOne("Hawalayk_APP.Models.ApplicationUser", null)
                         .WithOne()

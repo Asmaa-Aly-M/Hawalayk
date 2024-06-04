@@ -73,12 +73,13 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest(ModelState);
             }
+
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             if (userId == null)
             {
                 return NotFound("This Token Is Not Found : ");
             }
-
 
             var result = await _crafsmenRepository.UpdateCraftsmanAccountAsync(userId, craftmanAccount);
 
@@ -88,9 +89,33 @@ namespace Hawalayk_APP.Controllers
             }
 
             return Ok(result);
-
-
         }
+
+
+        [HttpPut("UpdateMyProfilePic")]
+        public async Task<IActionResult> UpdateCraftsmanProfilePicAsync([FromForm] IFormFile profilePic)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return NotFound("This Token Is Not Found : ");
+            }
+
+            var result = await _crafsmenRepository.UpdateCraftsmanProfilePicAsync(userId, profilePic);
+
+            if (!result.IsUpdated)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
+        }
+
+
 
         [HttpGet("MyPortfolio")]
         public async Task<IActionResult> getPortfolio()

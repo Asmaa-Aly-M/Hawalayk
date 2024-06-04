@@ -17,5 +17,8 @@ namespace Hawalayk_APP.Services
         Task<DeleteUserDTO> DeleteUserAsync(string userId);
         Task<string> LogoutAsync(string userId);
 
+        Task<UpdateUserDTO> RequestUpdatingPhoneNumberAsync(string userId, UpdatePhoneNumberDTO updatePhoneNumber);
+        Task<UpdateUserDTO> ConfirmPhoneNumberUpdateAsync(string userId, string otpToken);
+
     }
 }

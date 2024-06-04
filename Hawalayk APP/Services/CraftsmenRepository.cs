@@ -17,17 +17,19 @@ namespace Hawalayk_APP.Services
         //private readonly IPostRepository _postRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAddressService _addressService;
+        private readonly ISMSService _smsService;
 
 
 
         public CraftsmenRepository(ICraftRepository craftService, ApplicationDbContext _Context,
-            UserManager<ApplicationUser> userManager, IAddressService addressService)
+            UserManager<ApplicationUser> userManager, IAddressService addressService, ISMSService smsService)
         {
             Context = _Context;
             // _postRepository = postRepository;
             _userManager = userManager;
             _craftService = craftService;
             _addressService = addressService;
+            _smsService = smsService;
         }
 
 
@@ -120,6 +122,7 @@ namespace Hawalayk_APP.Services
             };
 
         }
+
         public async Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId, CraftsmanUpdatedAccountDTO craftsmanAccount)
 
         {
@@ -128,7 +131,6 @@ namespace Hawalayk_APP.Services
             if (craftsman == null)
             {
                 return new UpdateUserDTO { IsUpdated = false, Message = "Not Found : " };
-
             }
 
 
@@ -138,35 +140,15 @@ namespace Hawalayk_APP.Services
                 return new UpdateUserDTO { IsUpdated = false, Message = "UserName is already Token : " };
             }
 
-            string fileeName = user.ProfilePicture;
-            if (craftsmanAccount.ProfilePic != null)
-            {
-                fileeName = craftsmanAccount.ProfilePic.FileName;
-                string fileePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-                using (var fileStream = new FileStream(Path.Combine(fileePath, fileeName), FileMode.Create))
-                {
-                    craftsmanAccount.ProfilePic.CopyTo(fileStream);
-                }
-            }
-
-            Craft craft = null;
             CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftsmanAccount.CraftName);
 
-            //if (Enum.TryParse(craftName, out craft_Name))
-            //{
-            craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
+            Craft craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
 
-            //}//parsing : enum 
-
-
-
-
-            //var craft = await _craftService.GetOrCreateCraftAsync(craftsmanAccount.CraftName.ToString());
+            //var craft = await _craftService.GetOrCreateCraftAsync(craftsmanAccount.CraftName);
 
             craftsman.FirstName = craftsmanAccount.FirstName;
             craftsman.LastName = craftsmanAccount.LastName;
             craftsman.UserName = craftsmanAccount.UserName;
-            craftsman.ProfilePicture = fileeName;
             craftsman.Craft = craft;
             craftsman.BirthDate = craftsmanAccount.BirthDate;
             craftsman.Address = await _addressService.CreateAsync(craftsmanAccount.Governorate, craftsmanAccount.City, craftsmanAccount.StreetName);
@@ -186,12 +168,56 @@ namespace Hawalayk_APP.Services
             return new UpdateUserDTO { IsUpdated = true, Message = "The Account Updated Successfully :" };
         }
 
+
+        public async Task<UpdateUserDTO> UpdateCraftsmanProfilePicAsync(string craftsmanId, IFormFile profilePic)
+        {
+            var craftsman = await GetById(craftsmanId);
+            if (craftsman == null)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "Not Found : " };
+
+            }
+            if (craftsman.ProfilePicLastUpdated != null && craftsman.ProfilePicLastUpdated.AddYears(1) > DateTime.UtcNow)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "Profile picture can only be updated once a year." };
+            }
+
+            if (profilePic == null)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "No profile picture provided." };
+            }
+
+            string fileName = profilePic.FileName;
+            string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
+            using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
+            {
+                profilePic.CopyToAsync(fileStream);
+            }
+
+            craftsman.ProfilePicture = fileName;
+            craftsman.ProfilePicLastUpdated = DateTime.UtcNow;
+
+            var result = await _userManager.UpdateAsync(craftsman);
+
+            if (!result.Succeeded)
+            {
+                return new UpdateUserDTO
+                {
+                    IsUpdated = false,
+                    Message = "Failed to update profile picture."
+                };
+            }
+
+            return new UpdateUserDTO { IsUpdated = true, Message = "Profile picture updated successfully." };
+
+        }
+
+
         public async Task<int> craftsmanNumber()
         {
             int counter = await Context.Craftsmen.CountAsync();
             return counter;
         }
-
 
 
         public async Task<List<GallaryPostDTO>> FilterMyCraftGallary(string craftsmanId)
@@ -225,12 +251,6 @@ namespace Hawalayk_APP.Services
             return postDTOs;
 
         }
-
-
-
-
-
-
 
 
         private static T? ConvertToEnum<T>(string arabicString) where T : struct

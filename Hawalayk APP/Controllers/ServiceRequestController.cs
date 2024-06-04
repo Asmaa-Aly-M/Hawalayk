@@ -15,6 +15,7 @@ namespace Hawalayk_APP.Controllers
     public class ServiceRequestController : ControllerBase
     {
         private readonly IServiceRequestRepository serviceRequestRepo;
+        private readonly ICraftsmenRepository CraftsmenRepo;
         private readonly IJobApplicationRepository jobApplicationRepo;
         private readonly ApplicationDbContext _context;
         IHubContext<NotificationHub> _notificationHub;
@@ -22,14 +23,14 @@ namespace Hawalayk_APP.Controllers
         private readonly ICraftRepository _craftRepository;
 
 
-        public ServiceRequestController(ICraftRepository craftRepository, ApplicationDbContext context, IServiceRequestRepository _serviceRequestRepo, IHubContext<NotificationHub> hubContext, IJobApplicationRepository _jobApplicationRepo)
+        public ServiceRequestController(ICraftRepository craftRepository, ApplicationDbContext context, IServiceRequestRepository _serviceRequestRepo, IHubContext<NotificationHub> hubContext, IJobApplicationRepository _jobApplicationRepo, ICraftsmenRepository _CraftsmenRepo)
         {
             serviceRequestRepo = _serviceRequestRepo;
             _notificationHub = hubContext;
             _craftRepository = craftRepository;
             jobApplicationRepo = _jobApplicationRepo;
             _context = context;
-
+            CraftsmenRepo = _CraftsmenRepo;
         }
 
 
@@ -119,6 +120,59 @@ namespace Hawalayk_APP.Controllers
             List<ServiceRequest> allRequest = await serviceRequestRepo.GetAll();
             return Ok(allRequest);
         }
+
+
+        [HttpGet("Get Service Requests Needed To Replay By craftsmen for Craftsman")]
+        public async Task<IActionResult> RequestsByCraftName( )
+        {
+            //var craft_name = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(craftName);
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var craftsman = await CraftsmenRepo.GetById(userId);
+            var craftName = craftsman.Craft.Name;
+            var requests = await serviceRequestRepo.GetServiceRequestsNeedToReplayByCraftsmen(craftName);
+
+            return Ok(requests);
+
+        }
+
+        [HttpGet("Get Accepted Service Requests By Customer for Craftsman")]
+        public async Task<IActionResult> AcceptedRequestServiceForCrafsman()
+        {
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var requests = await serviceRequestRepo.GetAcceptedServiceRequestsFromCustomersByACraftsman(userId);
+
+            return Ok(requests);
+
+        }
+
+
+        [HttpGet("Get Service Requests Needed To Replay By craftsmen for Customer")]
+        public async Task<IActionResult> ServiceRequestsNeededToReplayByCraftsmen()
+        {
+         
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var requests = await serviceRequestRepo.GetServiceRequestsNeedToReplayByCraftsmenForCustomer(userId);
+
+            return Ok(requests);
+
+        }
+
+
+
+        [HttpGet("Get Accepted Service Requests for Customer")]
+        public async Task<IActionResult> AcceptedRequestServiceForCustomer()
+        {
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var requests = await serviceRequestRepo.GetServiceRequestsAcceptedCraftsmenForCustomer(userId);
+
+            return Ok(requests);
+
+        }
+
+       
 
     }
 }

@@ -350,6 +350,7 @@ namespace Hawalayk_APP
                 });
             });
 
+
             #region seeding Address
             // Register DataSeeder with the DI container
             builder.Services.AddScoped<DataSeeder>();

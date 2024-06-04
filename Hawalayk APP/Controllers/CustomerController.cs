@@ -9,10 +9,12 @@ namespace Hawalayk_APP.Controllers
     public class CustomerController : ControllerBase
     {
         ICustomerRepository customerRepo;
+        ICraftRepository craftrepo;
 
-        public CustomerController(ICustomerRepository _customerRepo)
+        public CustomerController(ICustomerRepository _customerRepo, ICraftRepository _craftrepo)
         {
             customerRepo = _customerRepo;
+            craftrepo = _craftrepo;
         }
 
 
@@ -48,5 +50,14 @@ namespace Hawalayk_APP.Controllers
             return Ok(requests);
 
         }
+
+        [HttpGet("searchAboutCraftsmen")]
+        public async Task<IActionResult> searchAboutCraftsmen(string craftName, string gonernorate) 
+        {
+            var craftNameEnumValue= await craftrepo.GetEnumValueOfACraftByArabicDesCription(craftName);
+            var craftsmen = await customerRepo.searchAboutCraftsmen(craftNameEnumValue, gonernorate);
+           return Ok(craftsmen);
+        }
+
     }
 }
