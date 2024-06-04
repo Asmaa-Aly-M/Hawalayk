@@ -238,9 +238,9 @@ namespace Hawalayk_APP.Services
                    CustomerProfilePicture = x.Customer.ProfilePicture,
                    Content = x.Content,
                    OptionalImage = x.OptionalImage,
-                   Governorate = x.Governorate,
-                   City = x.City,
-                   Street = x.Street,
+                   Governorate = x.governorate,
+                   City = x.city,
+                   Street = x.street,
 
 
                }).ToList();
