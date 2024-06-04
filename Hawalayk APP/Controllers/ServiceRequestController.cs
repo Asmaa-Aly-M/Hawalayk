@@ -14,23 +14,23 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class ServiceRequestController : ControllerBase
     {
-        private readonly IServiceRequestRepository serviceRequestRepo;
-        private readonly ICraftsmenRepository CraftsmenRepo;
-        private readonly IJobApplicationRepository jobApplicationRepo;
+        private readonly IServiceRequestRepository _serviceRequestRepository;
+        private readonly ICraftsmenRepository _craftsmenRepository;
+        private readonly IJobApplicationRepository _jobApplicationRepository;
         private readonly ApplicationDbContext _context;
-        IHubContext<NotificationHub> _notificationHub;
+        private readonly IHubContext<NotificationHub> _notificationHub;
 
         private readonly ICraftRepository _craftRepository;
 
 
-        public ServiceRequestController(ICraftRepository craftRepository, ApplicationDbContext context, IServiceRequestRepository _serviceRequestRepo, IHubContext<NotificationHub> hubContext, IJobApplicationRepository _jobApplicationRepo, ICraftsmenRepository _CraftsmenRepo)
+        public ServiceRequestController(ICraftRepository craftRepository, ApplicationDbContext context, IServiceRequestRepository serviceRequestRepository, IHubContext<NotificationHub> hubContext, IJobApplicationRepository jobApplicationRepository, ICraftsmenRepository craftsmenRepository)
         {
-            serviceRequestRepo = _serviceRequestRepo;
+            _serviceRequestRepository = serviceRequestRepository;
             _notificationHub = hubContext;
             _craftRepository = craftRepository;
-            jobApplicationRepo = _jobApplicationRepo;
+            _jobApplicationRepository = jobApplicationRepository;
             _context = context;
-            CraftsmenRepo = _CraftsmenRepo;
+            _craftsmenRepository = craftsmenRepository;
         }
 
 
@@ -44,11 +44,11 @@ namespace Hawalayk_APP.Controllers
                 return BadRequest("No token was sent");
             }
 
-            var serviceRequestId = await serviceRequestRepo.CreateAsync(userId, ServiceRequest);
+            var serviceRequestId = await _serviceRequestRepository.CreateAsync(userId, ServiceRequest);
 
             if (serviceRequestId != -1)
             {
-                var serviceSend = await serviceRequestRepo.GetServiceRequestSend(serviceRequestId);
+                var serviceSend = await _serviceRequestRepository.GetServiceRequestSend(serviceRequestId);
                 _notificationHub.Clients.Group(ServiceRequest.craftName).SendAsync("ReceiveNotification", serviceSend);//// signalR سطر ال 
                 return Ok("Request sent successfully");
 
@@ -64,7 +64,7 @@ namespace Hawalayk_APP.Controllers
         [HttpDelete]
         public async Task<IActionResult> cancleService(int serviceId) ////محتاجة مراجعة؟؟؟
         {
-            await serviceRequestRepo.Delete(serviceId);
+            await _serviceRequestRepository.Delete(serviceId);
             return Ok(new { message = "Service is canceled" });
         }
         //http://localhost:5153/api/ServiceRequest/applyToRequest
@@ -72,16 +72,16 @@ namespace Hawalayk_APP.Controllers
         [HttpPost("applyToRequest")]
         public async Task<IActionResult> applyToRequest(JobApplicationDTO replay)
         {
-            //   var customerID = (await serviceRequestRepo.GetById(requestId)).Customer.Id;
+            //   var customerID = (await _serviceRequestRepository.GetById(requestId)).Customer.Id;
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
                 return NotFound("invalid token");
             }
-            var jobApplicationId = await jobApplicationRepo.Create(userId, replay);
+            var jobApplicationId = await _jobApplicationRepository.Create(userId, replay);
             if (jobApplicationId != -1)
             {
-                var jobApplicationSend = await jobApplicationRepo.GetJpbApplicationSend(jobApplicationId);
+                var jobApplicationSend = await _jobApplicationRepository.GetJpbApplicationSend(jobApplicationId);
                 _notificationHub.Clients.User(replay.customerId).SendAsync("ApplyNotification", jobApplicationSend);
                 return Ok("Sent successfully");
             }
@@ -92,8 +92,8 @@ namespace Hawalayk_APP.Controllers
         [HttpPost("acceptApply")]
         public async Task<IActionResult> acceptApply(int repplyId)
         {
-            (await jobApplicationRepo.GetById(repplyId)).ResponseStatus = ResponseStatus.Accepted;
-            var craftmanID = (await jobApplicationRepo.GetById(repplyId)).Craftsman.Id;
+            (await _jobApplicationRepository.GetById(repplyId)).ResponseStatus = ResponseStatus.Accepted;
+            var craftmanID = (await _jobApplicationRepository.GetById(repplyId)).Craftsman.Id;
             _notificationHub.Clients.User(craftmanID).SendAsync("AcceptApplyRequest");
             return Ok("accept");
         }
@@ -101,8 +101,8 @@ namespace Hawalayk_APP.Controllers
         [HttpPost("rejectApply")]
         public async Task<IActionResult> rejectApply(int repplyId)
         {
-            (await jobApplicationRepo.GetById(repplyId)).ResponseStatus = ResponseStatus.Rejected;
-            var craftmanID = (await jobApplicationRepo.GetById(repplyId)).Craftsman.Id;
+            (await _jobApplicationRepository.GetById(repplyId)).ResponseStatus = ResponseStatus.Rejected;
+            var craftmanID = (await _jobApplicationRepository.GetById(repplyId)).Craftsman.Id;
             _notificationHub.Clients.User(craftmanID).SendAsync("RejectApplyRequest");
             return Ok("this service not available");
         }
@@ -110,14 +110,14 @@ namespace Hawalayk_APP.Controllers
         [HttpGet]
         public async Task<IActionResult> numberOfServiceRequest()
         {
-            int counter = await serviceRequestRepo.countService();
+            int counter = await _serviceRequestRepository.countService();
             return Ok(counter);
         }
 
         [HttpGet("getAllRequest")]
         public async Task<IActionResult> getAllRequest()
         {
-            List<ServiceRequest> allRequest = await serviceRequestRepo.GetAll();
+            List<ServiceRequest> allRequest = await _serviceRequestRepository.GetAll();
             return Ok(allRequest);
         }
 
@@ -128,9 +128,9 @@ namespace Hawalayk_APP.Controllers
             //var craft_name = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(craftName);
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var craftsman = await CraftsmenRepo.GetById(userId);
+            var craftsman = await _craftsmenRepository.GetById(userId);
             var craftName = craftsman.Craft.Name;
-            var requests = await serviceRequestRepo.GetServiceRequestsNeedToReplayByCraftsmen(craftName);
+            var requests = await _serviceRequestRepository.GetServiceRequestsNeedToReplayByCraftsmen(craftName);
 
             return Ok(requests);
 
@@ -141,7 +141,7 @@ namespace Hawalayk_APP.Controllers
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var requests = await serviceRequestRepo.GetAcceptedServiceRequestsFromCustomersByACraftsman(userId);
+            var requests = await _serviceRequestRepository.GetAcceptedServiceRequestsFromCustomersByACraftsman(userId);
 
             return Ok(requests);
 
@@ -153,7 +153,7 @@ namespace Hawalayk_APP.Controllers
         {
          
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var requests = await serviceRequestRepo.GetServiceRequestsNeedToReplayByCraftsmenForCustomer(userId);
+            var requests = await _serviceRequestRepository.GetServiceRequestsNeedToReplayByCraftsmenForCustomer(userId);
 
             return Ok(requests);
 
@@ -166,7 +166,7 @@ namespace Hawalayk_APP.Controllers
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var requests = await serviceRequestRepo.GetServiceRequestsAcceptedCraftsmenForCustomer(userId);
+            var requests = await _serviceRequestRepository.GetServiceRequestsAcceptedCraftsmenForCustomer(userId);
 
             return Ok(requests);
 

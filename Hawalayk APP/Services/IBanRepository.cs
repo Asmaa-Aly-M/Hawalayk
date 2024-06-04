@@ -2,7 +2,7 @@
 
 namespace Hawalayk_APP.Services
 {
-    public interface IBanService
+    public interface IBanRepository
     {
         Task CreateAsync(string userId, int banDurationInMinutes);
         Task UnbanUserAsync(string userId);

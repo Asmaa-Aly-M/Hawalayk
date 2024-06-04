@@ -5,11 +5,11 @@ using Twilio.Rest.Api.V2010.Account;
 
 namespace Hawalayk_APP.Services
 {
-    public class SMSService : ISMSService
+    public class SMSRepository : ISMSRepository
     {
 
         private readonly TwilioSettings _twilio;
-        public SMSService(IOptions<TwilioSettings> twilio)
+        public SMSRepository(IOptions<TwilioSettings> twilio)
         {
             _twilio = twilio.Value;
         }

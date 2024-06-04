@@ -13,11 +13,11 @@ namespace Hawalayk_APP.Services
 
 
         ApplicationDbContext _context;
-        private readonly IApplicationUserService applicationUserService;
-        public AppReportRepository(ApplicationDbContext context, IApplicationUserService _applicationUserService)
+        private readonly IApplicationUserRepository _applicationUserRepository;
+        public AppReportRepository(ApplicationDbContext context, IApplicationUserRepository applicationUserRepository)
         {
             _context = context;
-            applicationUserService = _applicationUserService;
+            _applicationUserRepository = applicationUserRepository;
         }
         //public async Task<AppReport> GetOrCreateCraftAsync(string reprotedIssue)
         //{
@@ -53,7 +53,7 @@ namespace Hawalayk_APP.Services
         }
         //public int Create(string id, AppReportDTO appReport)
         //{
-        //    ApplicationUser ApplicationUser = applicationUserServiceRepo.GetById(id);
+        //    ApplicationUser ApplicationUser = _applicationUserRepositoryRepo.GetById(id);
 
 
         //    ReportedIssue reportedIssue;
@@ -78,7 +78,7 @@ namespace Hawalayk_APP.Services
         //
         public async Task<int> Create(string userId, AppReportDTO appReport)
         {
-            ApplicationUser ApplicationUser = await applicationUserService.GetByIdAsync(userId);
+            ApplicationUser ApplicationUser = await _applicationUserRepository.GetByIdAsync(userId);
 
             //ReportedIssue reportedIssue = Enum.Parse<ReportedIssue>(appReport.ReportedIssue, true);
 

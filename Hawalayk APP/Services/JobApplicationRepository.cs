@@ -9,11 +9,11 @@ namespace Hawalayk_APP.Services
     public class JobApplicationRepository : IJobApplicationRepository
     {
         ApplicationDbContext Context;
-        private readonly ICraftsmenRepository craftsmanRepo;
-        public JobApplicationRepository(ApplicationDbContext _Context, ICraftsmenRepository _craftsmanRepo)
+        private readonly ICraftsmenRepository _craftsmanRepository;
+        public JobApplicationRepository(ApplicationDbContext _Context, ICraftsmenRepository craftsmanRepository)
         {
             Context = _Context;
-            craftsmanRepo = _craftsmanRepo;
+            _craftsmanRepository = craftsmanRepository;
         }
 
         public async Task<JobApplicationSendDTO> GetJpbApplicationSend(int jobApplicationId)
@@ -43,7 +43,7 @@ namespace Hawalayk_APP.Services
 
         public async Task<int> Create(string craftmanId, JobApplicationDTO newJob)
         {
-            Craftsman craftsman = await craftsmanRepo.GetById(craftmanId);
+            Craftsman craftsman = await _craftsmanRepository.GetById(craftmanId);
             if (craftmanId == null)
             {
                 return -1;

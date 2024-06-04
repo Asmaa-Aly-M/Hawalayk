@@ -2,7 +2,7 @@
 
 namespace Hawalayk_APP.Services
 {
-    public interface ISMSService
+    public interface ISMSRepository
     {
         Task<MessageResource> SendSMS(string PhoneNumber, string Body);
         public string GenerateOTP(bool IsAlphanumeric, int length);

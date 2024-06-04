@@ -3,7 +3,7 @@ using Hawalayk_APP.Models;
 
 namespace Hawalayk_APP.Services
 {
-    public interface IAuthService
+    public interface IAuthRepository
     {
         Task<AuthModel> RegisterCustomerAsync(RegisterCustomerModel model);
         Task<AuthModel> GetTokenAsync(TokenRequestModel model);

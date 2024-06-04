@@ -2,7 +2,7 @@
 
 namespace Hawalayk_APP.Services
 {
-    public interface ICityService
+    public interface ICityRepository
     {
         Task<List<City>> GetAllAsync();
 

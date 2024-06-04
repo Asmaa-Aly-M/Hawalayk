@@ -14,29 +14,29 @@ using System.Text;
 
 namespace Hawalayk_APP.Services
 {
-    public class AuthService : IAuthService
+    public class AuthRepository : IAuthRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly ApplicationDbContext _applicationDbContext;
-        private readonly IApplicationUserService _appUser;
-        private readonly ICraftRepository _craftsService;
+        private readonly IApplicationUserRepository _applicationUserRepository;
+        private readonly ICraftRepository _craftRepository;
         private readonly JWT _jwt;
-        private readonly IAddressService _addressService;
-        private readonly ISMSService _smsService;
+        private readonly IAddressRepository _addressRepository;
+        private readonly ISMSRepository _smsRepository;
         //public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, IOptions<JWT> jwt, ISMSService smsService)
 
-        public AuthService(IAddressService addressService, UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, ICraftRepository craftsService, IOptions<JWT> jwt, ISMSService smsService, IApplicationUserService appUser, SignInManager<ApplicationUser> signInManager)
+        public AuthRepository(IAddressRepository addressRepository, UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, ICraftRepository craftsRepository, IOptions<JWT> jwt, ISMSRepository smsRepository, IApplicationUserRepository applicationUserRepository, SignInManager<ApplicationUser> signInManager)
 
         {
             _userManager = userManager;
             _applicationDbContext = applicationDbContext;
-            _craftsService = craftsService;
+            _craftRepository = craftsRepository;
             _jwt = jwt.Value;
-            _smsService = smsService;
-            _appUser = appUser;
+            _smsRepository = smsRepository;
+            _applicationUserRepository = applicationUserRepository;
             _signInManager = signInManager;
-            _addressService = addressService;
+            _addressRepository = addressRepository;
         }
         public async Task<AuthModel> RegisterCustomerAsync(RegisterCustomerModel model)
         {
@@ -65,7 +65,7 @@ namespace Hawalayk_APP.Services
                 LastName = model.LastName,
                 PhoneNumber = model.PhoneNumber,
                 ProfilePicture = fileName,
-                Address = await _addressService.CreateAsync(model.Goveronrate, model.City, model.Street),
+                Address = await _addressRepository.CreateAsync(model.Goveronrate, model.City, model.Street),
                 Gender = model.Gender,
                 BirthDate = model.BirthDate,
                 IsOtpVerified = false
@@ -88,10 +88,10 @@ namespace Hawalayk_APP.Services
             var jwtSecurityToken = await CreateJwtToken(customer);
 
 
-            var otpToken = _smsService.GenerateOTP(false, 4);
+            var otpToken = _smsRepository.GenerateOTP(false, 4);
 
 
-            var smsResult = await _smsService.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
+            var smsResult = await _smsRepository.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
 
             if (String.IsNullOrEmpty(smsResult.ErrorMessage))
             {
@@ -131,8 +131,8 @@ namespace Hawalayk_APP.Services
             if (user == null)
                 return new AuthModel { Message = "Phone number is not correct" };
 
-            var otpToken = _smsService.GenerateOTP(false, 4);
-            var smsResult = await _smsService.SendSMS(phoneNumber, $"Your OTP is: {otpToken}");
+            var otpToken = _smsRepository.GenerateOTP(false, 4);
+            var smsResult = await _smsRepository.SendSMS(phoneNumber, $"Your OTP is: {otpToken}");
 
             if (String.IsNullOrEmpty(smsResult.ErrorMessage))
             {
@@ -237,7 +237,7 @@ namespace Hawalayk_APP.Services
                 return new AuthModel { Message = "UserName is already registered!" };
 
 
-            var craft = await _craftsService.GetOrCreateCraftAsync(model.CraftName.ToString());
+            var craft = await _craftRepository.GetOrCreateCraftAsync(model.CraftName.ToString());
 
             var craftsman = new Craftsman
             {
@@ -252,7 +252,7 @@ namespace Hawalayk_APP.Services
                 NationalIDImage = fileeName,
                 RegistrationStatus = CraftsmanRegistrationStatus.Pending,
                 BirthDate = model.BirthDate,
-                Address = await _addressService.CreateAsync(model.Goveronrate, model.City, model.Street),
+                Address = await _addressRepository.CreateAsync(model.Goveronrate, model.City, model.Street),
             };
 
             var result = await _userManager.CreateAsync(craftsman, model.Password);
@@ -271,10 +271,10 @@ namespace Hawalayk_APP.Services
 
             var jwtSecurityToken = await CreateJwtToken(craftsman);
 
-            var otpToken = _smsService.GenerateOTP(false, 4);
+            var otpToken = _smsRepository.GenerateOTP(false, 4);
 
 
-            var smsResult = await _smsService.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
+            var smsResult = await _smsRepository.SendSMS(model.PhoneNumber, $"Your OTP is: {otpToken}");
 
             if (String.IsNullOrEmpty(smsResult.ErrorMessage))
             {
@@ -346,8 +346,8 @@ namespace Hawalayk_APP.Services
                 return new AuthModel { Message = "Phone number is not registered!" };
             }
 
-            var otpToken = _smsService.GenerateOTP(false, 4);
-            var smsResult = await _smsService.SendSMS(phoneNumber, $"Your OTP is: {otpToken}");
+            var otpToken = _smsRepository.GenerateOTP(false, 4);
+            var smsResult = await _smsRepository.SendSMS(phoneNumber, $"Your OTP is: {otpToken}");
 
             if (String.IsNullOrEmpty(smsResult.ErrorMessage))
             {
@@ -487,7 +487,7 @@ namespace Hawalayk_APP.Services
 
         public async Task<string> LogoutAsync(string userId)
         {
-            if (await _appUser.getCurrentUser(userId) == null)
+            if (await _applicationUserRepository.getCurrentUser(userId) == null)
             {
                 return "User Not Found";
             }
@@ -513,8 +513,8 @@ namespace Hawalayk_APP.Services
             if (await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == updatePhoneNumber.NewPhoneNumber) != null)
                 return new UpdateUserDTO { IsUpdated = false, Message = "Phone number is already registered!" };
 
-            var otpToken = _smsService.GenerateOTP(false, 4);
-            var smsResult = await _smsService.SendSMS(updatePhoneNumber.NewPhoneNumber, $"Your OTP is: {otpToken}");
+            var otpToken = _smsRepository.GenerateOTP(false, 4);
+            var smsResult = await _smsRepository.SendSMS(updatePhoneNumber.NewPhoneNumber, $"Your OTP is: {otpToken}");
 
             if (!string.IsNullOrEmpty(smsResult.ErrorMessage))
             {

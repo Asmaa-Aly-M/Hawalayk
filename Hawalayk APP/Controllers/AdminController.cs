@@ -16,24 +16,24 @@ namespace Hawalayk_APP.Controllers
         private readonly IUserReportRepository _userReportRepository;
         private readonly IAdvertisementRepository _advertisementRepository;
 
-        private readonly IServiceRequestRepository serviceRequestRepo;
-        private readonly ISMSService _smsService;
-        private readonly IBanService _banService;
+        private readonly IServiceRequestRepository _serviceRequestRepository;
+        private readonly ISMSRepository _smsRepository;
+        private readonly IBanRepository _banRepository;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public AdminController(ISMSService smsService, IBanService banService, ICustomerRepository customerRepository, ICraftsmenRepository craftsmanRepository,
+        public AdminController(ISMSRepository smsRepository, IBanRepository banRepository, ICustomerRepository customerRepository, ICraftsmenRepository craftsmanRepository,
             IAppReportRepository appReportRepository, IUserReportRepository userReportRepository,
-            IAdvertisementRepository advertisementRepository, UserManager<ApplicationUser> userManager, IServiceRequestRepository _serviceRequestRepo)
+            IAdvertisementRepository advertisementRepository, UserManager<ApplicationUser> userManager, IServiceRequestRepository serviceRequestRepository)
         {
-            _smsService = smsService;
-            _banService = banService;
+            _smsRepository = smsRepository;
+            _banRepository = banRepository;
             _customerRepository = customerRepository;
             _craftsmanRepository = craftsmanRepository;
             _appReportRepository = appReportRepository;
             _userReportRepository = userReportRepository;
             _advertisementRepository = advertisementRepository;
             _userManager = userManager;
-            _serviceRequestRepo = serviceRequestRepo;
+            _serviceRequestRepository = serviceRequestRepository;
         }
 
         [HttpGet("customers")]
@@ -88,7 +88,7 @@ namespace Hawalayk_APP.Controllers
             try
             {
                 var craftsman = await _craftsmanRepository.ApproveCraftsman(id, isApproved);
-                _smsService.SendCraftsmanApprovalNotification(craftsman.PhoneNumber, isApproved);
+                _smsRepository.SendCraftsmanApprovalNotification(craftsman.PhoneNumber, isApproved);
                 return Ok("Craftsman approval status updated. SMS notification sent.");
             }
 
@@ -121,7 +121,7 @@ namespace Hawalayk_APP.Controllers
             user.IsBanned = true;
             await _userManager.UpdateAsync(user);
 
-            await _banService.CreateAsync(userId, banDurationInMinutes);
+            await _banRepository.CreateAsync(userId, banDurationInMinutes);
 
             return Ok("User banned successfully.");
         }
@@ -134,12 +134,12 @@ namespace Hawalayk_APP.Controllers
                 return BadRequest("User ID is required.");
             }
 
-            if (!await _banService.IsUserBannedAsync(userId))
+            if (!await _banRepository.IsUserBannedAsync(userId))
             {
                 return NotFound("User is not currently banned.");
             }
 
-            await _banService.UnbanUserAsync(userId);
+            await _banRepository.UnbanUserAsync(userId);
 
             return Ok("User unbanned successfully.");
         }
@@ -147,35 +147,35 @@ namespace Hawalayk_APP.Controllers
         [HttpGet("banned-users")]
         public async Task<IActionResult> GetBannedUsers()
         {
-            var bannedUsers = await _banService.GetBannedUsersAsync();
+            var bannedUsers = await _banRepository.GetBannedUsersAsync();
             return Ok(bannedUsers);
         }
         [HttpGet("last 5 service request")]
         public IActionResult Last5TopServic()
         {
 
-            return Ok(serviceRequestRepo.GetLatestServiceRequests());
+            return Ok(_serviceRequestRepository.GetLatestServiceRequests());
 
         }
         [HttpGet("CountUsersMakingRequestsLastMonth")]
         public IActionResult TotalNumberOfUsersMakeingRequstLastMonth()
         {
 
-            return Ok(serviceRequestRepo.CountUsersMakingRequestsLastMonth());
+            return Ok(_serviceRequestRepository.CountUsersMakingRequestsLastMonth());
 
         }
         [HttpGet("CountUsersMakingRequestsLastWeek")]
         public IActionResult TotalNumberOfUsersMakeingRequstLastWeek()
         {
 
-            return Ok(serviceRequestRepo.CountUsersMakingRequestsLastWeek());
+            return Ok(_serviceRequestRepository.CountUsersMakingRequestsLastWeek());
 
         }
         [HttpGet("CountUsersMakingRequestsToday")]
         public IActionResult TotalNumberOfUsersMakeingRequstToday()
         {
 
-            return Ok(serviceRequestRepo.CountUsersMakingRequestsToday());
+            return Ok(_serviceRequestRepository.CountUsersMakingRequestsToday());
 
         }
     }

@@ -10,14 +10,14 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class PostController : ControllerBase
     {
-        private readonly IPostRepository postrepository;
-        private readonly ICraftsmenRepository craftsmanrepo;
-        private readonly ICraftRepository craftRepository;
-        public PostController(IPostRepository _postrepository, ICraftsmenRepository _craftsmanrepo, ICraftRepository _craftRepository)
+        private readonly IPostRepository _postRepository;
+        private readonly ICraftsmenRepository _craftsmanRepository;
+        private readonly ICraftRepository _craftRepository;
+        public PostController(IPostRepository postRepository, ICraftsmenRepository craftsmanRepository, ICraftRepository craftRepository)
         {
-            postrepository = _postrepository;
-            craftsmanrepo = _craftsmanrepo;
-            craftRepository = _craftRepository;
+            _postRepository = postRepository;
+            _craftsmanRepository = craftsmanRepository;
+            _craftRepository = craftRepository;
         }
 
 
@@ -25,14 +25,14 @@ namespace Hawalayk_APP.Controllers
         public async Task<IActionResult> post([FromForm] PostDTO post) /////////////////////////Test
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            await postrepository.Create(userId, post);
+            await _postRepository.Create(userId, post);
             return Ok("The post created successfully");
         }
 
         [HttpGet("CraftsGallary/{craftName}")]
         public async Task<IActionResult> getGallary(string craftName)
         {
-            var gallary = await postrepository.GetGrafGallary(craftName);
+            var gallary = await _postRepository.GetGrafGallary(craftName);
             if (gallary != null)
             {
                 return Ok(gallary);
@@ -49,7 +49,7 @@ namespace Hawalayk_APP.Controllers
             //string craftsmanId
             // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var Portfolio = await postrepository.GetGraftsmanPortfolio(craftsmanId);
+            var Portfolio = await _postRepository.GetGraftsmanPortfolio(craftsmanId);
             if (Portfolio != null)
             {
                 return Ok(Portfolio);
@@ -61,7 +61,7 @@ namespace Hawalayk_APP.Controllers
         [HttpPut("Update")]
         public async Task<IActionResult> Update([FromForm] PostUpdatedDTO post)
         {
-            int raw = await postrepository.Update(post.Id, post);
+            int raw = await _postRepository.Update(post.Id, post);
 
             if (raw < 0)
             {
@@ -74,12 +74,12 @@ namespace Hawalayk_APP.Controllers
         [HttpDelete("DeletePost")]
         public async Task<IActionResult> Delete(int id)
         {
-            Post oldpost = await postrepository.GetById(id);
+            Post oldpost = await _postRepository.GetById(id);
             if (oldpost == null)
             {
                 return NotFound("There is no post to Delete");
             }
-            await postrepository.Delete(id);
+            await _postRepository.Delete(id);
             return Ok("The post Deleted successfully");
         }
 
@@ -89,11 +89,11 @@ namespace Hawalayk_APP.Controllers
         {
             //string craftsmanId
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var craftsman = await craftsmanrepo.GetById(userId);
+            var craftsman = await _craftsmanRepository.GetById(userId);
             var craftNameEnumValue = craftsman.Craft.Name;
-            var craftName = await craftRepository.GetCraftNameInArabicByEnumValue(craftNameEnumValue);
+            var craftName = await _craftRepository.GetCraftNameInArabicByEnumValue(craftNameEnumValue);
 
-            var gallary = await postrepository.GetGrafGallary(craftName);
+            var gallary = await _postRepository.GetGrafGallary(craftName);
             if (gallary != null)
             {
                 return Ok(gallary);

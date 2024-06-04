@@ -7,9 +7,9 @@ namespace Hawalayk_APP.Filters
 {
     public class BlockingFilter:IAsyncAuthorizationFilter
     {
-        private readonly IBlockingService _blockingService;
+        private readonly IBlockingRepository _blockingService;
 
-        public BlockingFilter(IBlockingService blockingService)
+        public BlockingFilter(IBlockingRepository blockingService)
         {
             _blockingService = blockingService;
         }

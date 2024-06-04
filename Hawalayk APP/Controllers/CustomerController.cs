@@ -8,13 +8,13 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        ICustomerRepository customerRepo;
-        ICraftRepository craftrepo;
+        private readonly ICustomerRepository _customerRepository;
+        private readonly ICraftRepository _craftRepository;
 
-        public CustomerController(ICustomerRepository _customerRepo, ICraftRepository _craftrepo)
+        public CustomerController(ICustomerRepository customerRepository, ICraftRepository craftRepository)
         {
-            customerRepo = _customerRepo;
-            craftrepo = _craftrepo;
+            _customerRepository = customerRepository;
+            _craftRepository = craftRepository;
         }
 
 
@@ -26,27 +26,27 @@ namespace Hawalayk_APP.Controllers
             {
                 return NotFound("This Token Is Not Found : ");
             }
-            var customer = await customerRepo.GetByIdAsync(userId);
+            var customer = await _customerRepository.GetByIdAsync(userId);
 
             if (customer == null)
             {
                 return BadRequest("Not Allowed :");
             }
-            var result = await customerRepo.GetCustomerAccountAsync(customer);
+            var result = await _customerRepository.GetCustomerAccountAsync(customer);
             return Ok(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> numberOfCustomer()
         {
-            int counter = await customerRepo.customerNumber();
+            int counter = await _customerRepository.customerNumber();
             return Ok(counter);
         }
         [HttpGet("Get All Service Requests by customer")]
         public async Task<IActionResult> AllRequestsForThisCustomer()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var requests = await customerRepo.GetServiceRequestsForThisCustomer(userId);
+            var requests = await _customerRepository.GetServiceRequestsForThisCustomer(userId);
             return Ok(requests);
 
         }
@@ -54,8 +54,8 @@ namespace Hawalayk_APP.Controllers
         [HttpGet("searchAboutCraftsmen")]
         public async Task<IActionResult> searchAboutCraftsmen(string craftName, string gonernorate) 
         {
-            var craftNameEnumValue= await craftrepo.GetEnumValueOfACraftByArabicDesCription(craftName);
-            var craftsmen = await customerRepo.searchAboutCraftsmen(craftNameEnumValue, gonernorate);
+            var craftNameEnumValue= await _craftRepository.GetEnumValueOfACraftByArabicDesCription(craftName);
+            var craftsmen = await _customerRepository.searchAboutCraftsmen(craftNameEnumValue, gonernorate);
            return Ok(craftsmen);
         }
 

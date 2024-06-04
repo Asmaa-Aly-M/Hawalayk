@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
-    public class BlockingService : IBlockingService
+    public class BlockingRepository : IBlockingRepository
     {
         private readonly ApplicationDbContext _applicationDbContext;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public BlockingService(ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager)
+        public BlockingRepository(ApplicationDbContext applicationDbContext, UserManager<ApplicationUser> userManager)
         {
             _applicationDbContext = applicationDbContext;
             _userManager = userManager;

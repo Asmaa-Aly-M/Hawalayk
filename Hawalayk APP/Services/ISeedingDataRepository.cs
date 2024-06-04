@@ -1,6 +1,6 @@
 ﻿namespace Hawalayk_APP.Services
 {
-    public interface ISeedingDataService
+    public interface ISeedingDataRepository
     {
         Task SeedingData();
     }

@@ -10,12 +10,12 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly IAuthService _authService;
-        private readonly IApplicationUserService _applicationUserService;
-        public AuthController(IAuthService authService, IApplicationUserService applicationUserService)
+        private readonly IAuthRepository _authRepository;
+        private readonly IApplicationUserRepository _applicationUserRepository;
+        public AuthController(IAuthRepository authRepository, IApplicationUserRepository applicationUserRepository)
         {
-            _authService = authService;
-            _applicationUserService = applicationUserService;
+            _authRepository = authRepository;
+            _applicationUserRepository = applicationUserRepository;
         }
         [HttpPost("RegisterCustomer")]
         public async Task<IActionResult> RegisterCustomerAsync([FromForm] RegisterCustomerModel model)
@@ -24,7 +24,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _authService.RegisterCustomerAsync(model);
+            var result = await _authRepository.RegisterCustomerAsync(model);
             if (!result.IsAuthenticated)
             {
                 return BadRequest(result.Message);
@@ -39,7 +39,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _authService.RegisterCraftsmanAsync(model);
+            var result = await _authRepository.RegisterCraftsmanAsync(model);
             if (!result.IsAuthenticated)
             {
                 return BadRequest(result.Message);
@@ -54,7 +54,7 @@ namespace Hawalayk_APP.Controllers
                 return BadRequest("Phone number is required");
             }
 
-            var result = await _authService.ResendOTPAsync(phoneNumber);
+            var result = await _authRepository.ResendOTPAsync(phoneNumber);
             if (!result.ActionSucceeded)
             {
                 return BadRequest(result.Message);
@@ -69,7 +69,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _authService.ForgotPasswordAsync(phoneNumber);
+            var result = await _authRepository.ForgotPasswordAsync(phoneNumber);
 
             if (!result.ActionSucceeded)
             {
@@ -87,7 +87,7 @@ namespace Hawalayk_APP.Controllers
                 return BadRequest(ModelState);
             }
 
-            var result = await _authService.ResetPasswordAsync(model);
+            var result = await _authRepository.ResetPasswordAsync(model);
 
             if (!result.IsAuthenticated)
             {
@@ -104,7 +104,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest(ModelState);
             }
-            var result = await _authService.GetTokenAsync(model);
+            var result = await _authRepository.GetTokenAsync(model);
             if (!result.IsAuthenticated)
             {
                 return BadRequest(result);
@@ -126,9 +126,9 @@ namespace Hawalayk_APP.Controllers
             //}
 
 
-            //var phoneNumber = await _applicationUserService.GetUserPhoneNumber(userId);
+            //var phoneNumber = await _applicationUserRepository.GetUserPhoneNumber(userId);
 
-            var result = await _authService.VerifyOTPAsync(model.OTP);
+            var result = await _authRepository.VerifyOTPAsync(model.OTP);
 
             if (!result.IsAuthenticated)
             {
@@ -146,7 +146,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return NotFound("This Token Not Valid : ");
             }
-            var result = await _authService.DeleteUserAsync(userId);
+            var result = await _authRepository.DeleteUserAsync(userId);
             if (result.isDeleted == false)
             {
                 return BadRequest(result.Message);
@@ -164,7 +164,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return NotFound("This Token Is Not Found : ");
             }
-            var result = await _authService.LogoutAsync(userId);
+            var result = await _authRepository.LogoutAsync(userId);
             if (result == "User Logged Out Successfully")
                 return Ok(result);
             return BadRequest(result);

@@ -10,35 +10,35 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class SuperAdminController : ControllerBase
     {
-        IAdminRepository adminRepo;
-        public SuperAdminController(IAdminRepository adminRepository ) { 
-
-            adminRepo = adminRepository;
+        private readonly IAdminRepository _adminRepository;
+        public SuperAdminController(IAdminRepository _adminRepositorysitory ) 
+        { 
+            _adminRepository = _adminRepositorysitory;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllAdmins()
         {
-            var admins = await adminRepo.GetAll();
+            var admins = await _adminRepository.GetAll();
             return Ok(admins);
         }
 
         [HttpPost]
         public async Task<IActionResult> AddAdmin(Admin admin)
         {
-            await adminRepo.Create(admin);
+            await _adminRepository.Create(admin);
             return Ok();
         }
 
         [HttpDelete]
         public async Task<IActionResult> DeleteAdmin(string id)
         {
-            var existingAmin = await adminRepo.GetById(id);
+            var existingAmin = await _adminRepository.GetById(id);
             if (existingAmin == null)
             {
                 return NotFound();
             }
-            await adminRepo.Delete(id);
+            await _adminRepository.Delete(id);
             return NoContent();
         }
     }

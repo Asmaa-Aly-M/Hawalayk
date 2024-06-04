@@ -5,12 +5,12 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
-    public class BanService : IBanService
+    public class BanRepository : IBanRepository
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public BanService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+        public BanRepository(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;

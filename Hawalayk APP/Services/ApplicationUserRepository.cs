@@ -5,14 +5,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
-    public class ApplicationUserService : IApplicationUserService
+    public class ApplicationUserRepository : IApplicationUserRepository
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly ApplicationDbContext Context;
 
         //public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, IOptions<JWT> jwt, ISMSService smsService)
 
-        public ApplicationUserService(UserManager<ApplicationUser> userManager, ApplicationDbContext _Context)
+        public ApplicationUserRepository(UserManager<ApplicationUser> userManager, ApplicationDbContext _Context)
         {
             _userManager = userManager;
             Context = _Context;

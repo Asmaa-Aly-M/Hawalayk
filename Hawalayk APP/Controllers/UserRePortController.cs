@@ -11,17 +11,17 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class UserRePortController : ControllerBase
     {
-        IUserReportRepository userReportRepo;
-        public UserRePortController(IUserReportRepository _userReportRepo)
+        private readonly IUserReportRepository _userReportRepository;
+        public UserRePortController(IUserReportRepository userReportRepository)
         {
-            userReportRepo = _userReportRepo;
+            _userReportRepository = userReportRepository;
         }
 
         [HttpPost]
         public async Task<IActionResult> writeReport(UserReportDTO userReport)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            await userReportRepo.Create(userId, userReport);
+            await _userReportRepository.Create(userId, userReport);
             return Ok();
 
 

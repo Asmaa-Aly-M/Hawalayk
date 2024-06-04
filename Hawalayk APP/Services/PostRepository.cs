@@ -11,14 +11,14 @@ namespace Hawalayk_APP.Services
     public class PostRepository : IPostRepository
     {
         ApplicationDbContext Context;
-        private readonly ICraftsmenRepository craftsmanRepo;
-        private readonly ICraftRepository _craftService;
+        private readonly ICraftsmenRepository _craftsmanRepository;
+        private readonly ICraftRepository _craftRepository;
 
-        public PostRepository(ApplicationDbContext _Context, ICraftsmenRepository _craftsmanRepo, ICraftRepository craftService)
+        public PostRepository(ApplicationDbContext _Context, ICraftsmenRepository craftsmanRepository, ICraftRepository craftRepository)
         {
             Context = _Context;
-            craftsmanRepo = _craftsmanRepo;
-            _craftService = craftService;
+            _craftsmanRepository = craftsmanRepository;
+            _craftRepository = craftRepository;
         }
 
         public async Task<Post> GetById(int id)
@@ -72,7 +72,7 @@ namespace Hawalayk_APP.Services
         }
         public async Task<int> Create(string craftsmanId, PostDTO postDTO)
         {
-            Craftsman craftsman = await craftsmanRepo.GetById(craftsmanId);
+            Craftsman craftsman = await _craftsmanRepository.GetById(craftsmanId);
             PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postDTO.Flag);
 
 
@@ -102,7 +102,7 @@ namespace Hawalayk_APP.Services
         public async Task<List<GallaryPostDTO>> GetGrafGallary(string craftName)
         {
             Craft craft = null;
-            CraftName enumValue = await _craftService.GetEnumValueOfACraftByArabicDesCription(craftName);
+            CraftName enumValue = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(craftName);
 
             craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
             if (craft == null)
@@ -152,7 +152,7 @@ namespace Hawalayk_APP.Services
 
             List<Post> posts = await Context.Posts.Where(s => s.CraftsmanId == craftsmanId &&
             (s.Flag == Enums.PostStatus.Portfolio | s.Flag == Enums.PostStatus.Both)).ToListAsync();//حبيت اقارن بالاس مش نفع لان الاسم enum وانا ببعته string
-            Craftsman craftsman = await craftsmanRepo.GetById(craftsmanId);
+            Craftsman craftsman = await _craftsmanRepository.GetById(craftsmanId);
 
             var enumValue = (CraftName)craftsman.Craft.Name;
 

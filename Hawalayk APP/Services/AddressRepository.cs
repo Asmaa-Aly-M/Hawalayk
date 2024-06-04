@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
-    public class AddressService : IAddressService
+    public class AddressRepository : IAddressRepository
     {
         private readonly ApplicationDbContext _context;
-        public AddressService(ApplicationDbContext context)
+        public AddressRepository(ApplicationDbContext context)
         {
             _context = context;
         }

@@ -5,12 +5,12 @@ using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-public class SeedingDataService : ISeedingDataService
+public class SeedingDataRepository : ISeedingDataRepository
 {
     private readonly ApplicationDbContext _context;
     private readonly UserManager<ApplicationUser> _userManager;
 
-    public SeedingDataService(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
+    public SeedingDataRepository(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
     {
         _context = context;
         _userManager = userManager;

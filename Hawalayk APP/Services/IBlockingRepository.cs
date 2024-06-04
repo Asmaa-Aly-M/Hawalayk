@@ -1,6 +1,6 @@
 ﻿namespace Hawalayk_APP.Services
 {
-    public interface IBlockingService
+    public interface IBlockingRepository
     {
         Task BlockUserAsync(string blockingUserId, string blockedUserId);
         Task<bool> IsUserBlockedAsync(string blockingUserId, string blockedUserId);

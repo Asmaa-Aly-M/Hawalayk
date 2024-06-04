@@ -8,22 +8,22 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class AddressController : ControllerBase
     {
-        private readonly IAddressService _addressService;
-        private readonly IGovernorateService _governorateService;
-        private readonly ICityService _cityService;
+        private readonly IAddressRepository _addressRepository;
+        private readonly IGovernorateRepository _governorateRepository;
+        private readonly ICityRepository _cityRepository;
 
-        public AddressController(IAddressService addressService, IGovernorateService governorateService, ICityService cityService)
+        public AddressController(IAddressRepository addressRepository, IGovernorateRepository governorateRepository, ICityRepository cityRepository)
         {
-            _addressService = addressService;
-            _governorateService = governorateService;
-            _cityService = cityService;
+            _addressRepository = addressRepository;
+            _governorateRepository = governorateRepository;
+            _cityRepository = cityRepository;
         }
 
         [HttpGet("getAllAddresses")]
 
         public async Task<IActionResult> GetAllAddresses()
         {
-            var addresses = await _addressService.GetAllAsync();
+            var addresses = await _addressRepository.GetAllAsync();
             return Ok(addresses);
         }
 
@@ -32,7 +32,7 @@ namespace Hawalayk_APP.Controllers
         [Route("address/{id}")]
         public async Task<IActionResult> GetAddressById(int id)
         {
-            var address = await _addressService.GetByIdAsync(id);
+            var address = await _addressRepository.GetByIdAsync(id);
             if (address == null)
             {
                 return NotFound();
@@ -44,7 +44,7 @@ namespace Hawalayk_APP.Controllers
         [HttpGet("governorates")]
         public async Task<IActionResult> GetGovernorateNames()
         {
-            var governorateNames = await _governorateService.GetGovernorateNamesAsync();
+            var governorateNames = await _governorateRepository.GetGovernorateNamesAsync();
             return Ok(governorateNames);
         }
 
@@ -58,7 +58,7 @@ namespace Hawalayk_APP.Controllers
             }
             try
             {
-                var cityNames = await _cityService.GetCitiesNamesByGovernorateNameAsync(governorateName);
+                var cityNames = await _cityRepository.GetCitiesNamesByGovernorateNameAsync(governorateName);
                 return Ok(cityNames);
             }
             catch (ArgumentException ex)
@@ -78,7 +78,7 @@ namespace Hawalayk_APP.Controllers
 
             try
             {
-                var address = await _addressService.CreateAsync(addressDTO.GovernorateName, addressDTO.CityName, addressDTO.StreetName);
+                var address = await _addressRepository.CreateAsync(addressDTO.GovernorateName, addressDTO.CityName, addressDTO.StreetName);
                 return Ok(address);
             }
             catch (ArgumentException ex)

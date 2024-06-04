@@ -8,23 +8,23 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class JobApplicationController : ControllerBase
     {
-        IJobApplicationRepository jobApplicationRepo;
-        public JobApplicationController(IJobApplicationRepository _jobApplicationRepo)
+        private readonly IJobApplicationRepository _jobApplicationRepository;
+        public JobApplicationController(IJobApplicationRepository jobApplicationRepository)
         {
-            jobApplicationRepo = _jobApplicationRepo;
+            _jobApplicationRepository = jobApplicationRepository;
         }
 
         [HttpGet("Get Accepted JobApplication By ServiceRequestId")]
         public async Task<IActionResult> GetJobApplicationAcceptedByServiceRequest(int serviceRequestId)
         {
-            var job = await jobApplicationRepo.GetJobApplicationAcceptedByServiceRequest(serviceRequestId);
+            var job = await _jobApplicationRepository.GetJobApplicationAcceptedByServiceRequest(serviceRequestId);
             return Ok(job);
         }
 
         [HttpGet("Get Pending JobApplication By ServiceRequestId")]
         public async Task<IActionResult> GetJobApplicationsPendingByServiceRequest(int serviceRequestId)
         {
-            var jobs = await jobApplicationRepo.GetJobApplicationsPendingByServiceRequest(serviceRequestId);
+            var jobs = await _jobApplicationRepository.GetJobApplicationsPendingByServiceRequest(serviceRequestId);
             return Ok(jobs);
         }
 

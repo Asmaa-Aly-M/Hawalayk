@@ -10,13 +10,13 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly IBlockingService _blockService;
-        private readonly IAuthService _authService;
+        private readonly IBlockingRepository _blockRepository;
+        private readonly IAuthRepository _authRepository;
 
-        public UserController(IBlockingService blockService, IAuthService authService)
+        public UserController(IBlockingRepository blockRepository, IAuthRepository authRepository)
         {
-            _blockService = blockService;
-            _authService = authService;
+            _blockRepository = blockRepository;
+            _authRepository = authRepository;
         }
 
         //  [ServiceFilter(typeof(BlockingFilter))]
@@ -40,7 +40,7 @@ namespace Hawalayk_APP.Controllers
 
             try
             {
-                await _blockService.BlockUserAsync(blockingUserId, blockedUserId);
+                await _blockRepository.BlockUserAsync(blockingUserId, blockedUserId);
                 return Ok("User successfully blocked.");
             }
             catch (ArgumentException ex)
@@ -70,7 +70,7 @@ namespace Hawalayk_APP.Controllers
 
             try
             {
-                await _blockService.UnblockUserAsync(blockingUserId, blockedUserId);
+                await _blockRepository.UnblockUserAsync(blockingUserId, blockedUserId);
                 return Ok("User successfully unblocked.");
             }
             catch (ArgumentException ex)
@@ -98,7 +98,7 @@ namespace Hawalayk_APP.Controllers
                 return NotFound("This Token Is Not Found : ");
             }
 
-            var result = await _authService.RequestUpdatingPhoneNumberAsync(userId, updatePhoneNumber);
+            var result = await _authRepository.RequestUpdatingPhoneNumberAsync(userId, updatePhoneNumber);
 
             if (!result.IsUpdated)
             {
@@ -118,7 +118,7 @@ namespace Hawalayk_APP.Controllers
                 return NotFound("This Token Is Not Found : ");
             }
 
-            var result = await _authService.ConfirmPhoneNumberUpdateAsync(userId, otp);
+            var result = await _authRepository.ConfirmPhoneNumberUpdateAsync(userId, otp);
 
             if (!result.IsUpdated)
             {

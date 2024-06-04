@@ -2,7 +2,7 @@
 
 namespace Hawalayk_APP.Services
 {
-    public interface IGovernorateService
+    public interface IGovernorateRepository
     {
         Task<List<Governorate>> GetAllAsync();
         Task<Governorate> GetByIdAsync(int id);

@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
-    public class CityService : ICityService
+    public class CityRepository : ICityRepository
     {
         private readonly ApplicationDbContext Context;
-        public CityService(ApplicationDbContext _Context)
+        public CityRepository(ApplicationDbContext _Context)
         {
             Context = _Context;
         }

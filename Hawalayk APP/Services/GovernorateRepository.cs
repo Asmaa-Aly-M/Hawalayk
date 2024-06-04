@@ -4,10 +4,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
 {
-    public class GovernorateService:IGovernorateService
+    public class GovernorateRepository:IGovernorateRepository
     {
         private readonly ApplicationDbContext Context;
-        public GovernorateService(ApplicationDbContext _Context)
+        public GovernorateRepository(ApplicationDbContext _Context)
         {
             Context = _Context;
         }

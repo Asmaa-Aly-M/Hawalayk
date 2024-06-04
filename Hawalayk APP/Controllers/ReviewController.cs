@@ -11,16 +11,16 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class ReviewController : ControllerBase
     {
-        IReviewRepository review;
-        public ReviewController(IReviewRepository _review)
+        private readonly IReviewRepository _reviewRepository;
+        public ReviewController(IReviewRepository reviewRepository)
         {
-            review = _review;
+           _reviewRepository= reviewRepository;
         }
         [Route("view")]
         [HttpPost]
         public async Task<IActionResult> writeReview(ReviewDTO newreview) 
         {
-            await review.Create(newreview);//مش المفروض يباصيلنا حاجة من نوع reviewDTO
+            await _reviewRepository.Create(newreview);//مش المفروض يباصيلنا حاجة من نوع reviewDTO
             return Ok();
         }
 
@@ -28,7 +28,7 @@ namespace Hawalayk_APP.Controllers
         [HttpPost]
         public async Task<IActionResult> like(int reviewId)
         {
-            Review theReview = await review.GetById(reviewId);
+            Review theReview = await _reviewRepository.GetById(reviewId);
             int newPositiveReacts = theReview.PositiveReacts + 1;
             return Ok(newPositiveReacts);
         }
@@ -37,7 +37,7 @@ namespace Hawalayk_APP.Controllers
         [HttpPost]
         public async Task<IActionResult> Removelike(int reviewId)
         {
-            Review theReview = await review.GetById(reviewId);
+            Review theReview = await _reviewRepository.GetById(reviewId);
             int newPositiveReacts = theReview.PositiveReacts - 1;
             return Ok(newPositiveReacts);
         }
@@ -46,7 +46,7 @@ namespace Hawalayk_APP.Controllers
         [HttpPost]
         public async Task<IActionResult> disLike(int reviewId)
         {
-            Review theReview = await review.GetById(reviewId);
+            Review theReview = await _reviewRepository.GetById(reviewId);
             int newNegativeReacts = theReview.NegativeReacts + 1;
             return Ok(newNegativeReacts);///// هل محتاجين يرجع حاجة
         }
@@ -56,7 +56,7 @@ namespace Hawalayk_APP.Controllers
         [HttpPost]
         public async Task<IActionResult> removeDisLike(int reviewId) 
         {
-            Review theReview = await review.GetById(reviewId);
+            Review theReview = await _reviewRepository.GetById(reviewId);
             int newNegativeReacts = theReview.NegativeReacts - 1;
             return Ok(newNegativeReacts);
         }
@@ -64,32 +64,32 @@ namespace Hawalayk_APP.Controllers
         [HttpGet] //Test
         public async Task<IActionResult> GetAll()
         {
-            var Reviews = await review.GetAll();
+            var Reviews = await _reviewRepository.GetAll();
             return Ok(Reviews);
         }
         [HttpGet("{id}")]//Test
         public async Task<IActionResult> Get(int id)
         {
-            var Review = await review.GetById(id);
+            var review = await _reviewRepository.GetById(id);
 
-            if (Review == null)
+            if (review == null)
             {
                 return NotFound();
             }
 
-            var ReviewDTO = new ReviewDTO();
-            ReviewDTO.Id = id;
-            ReviewDTO.Content = Review.Content;
-            ReviewDTO.Rating = Review.Rating;
-            ReviewDTO.PositiveReacts = Review.PositiveReacts;
-            ReviewDTO.NegativeReacts = Review.NegativeReacts;
-            return Ok(ReviewDTO);
+            var reviewDTO = new ReviewDTO();
+            reviewDTO.Id = id;
+            reviewDTO.Content = review.Content;
+            reviewDTO.Rating = review.Rating;
+            reviewDTO.PositiveReacts = review.PositiveReacts;
+            reviewDTO.NegativeReacts = review.NegativeReacts;
+            return Ok(reviewDTO);
         }
         [HttpPut] //test
         public async Task<IActionResult> Update(int id, ReviewUpdateDTO updatedReviewDTO) {
 
 
-            var existingReview = await review.GetById(id);
+            var existingReview = await _reviewRepository.GetById(id);
 
             if (existingReview == null)
             {
@@ -100,7 +100,7 @@ namespace Hawalayk_APP.Controllers
             existingReview.Content = updatedReviewDTO.Content;
             existingReview.Rating = updatedReviewDTO.Rating;
 
-            await review.Update(id,existingReview);
+            await _reviewRepository.Update(id,existingReview);
 
             return NoContent();
 
@@ -109,14 +109,14 @@ namespace Hawalayk_APP.Controllers
         [HttpDelete("{id}")]//test
         public async Task<IActionResult> DeleteReview(int id)
         {
-            var existingReview = await review.GetById(id);
+            var existingReview = await _reviewRepository.GetById(id);
 
             if (existingReview == null)
             {
                 return NotFound();
             }
 
-            await review.Delete(id);
+            await _reviewRepository.Delete(id);
 
             return NoContent();
         }

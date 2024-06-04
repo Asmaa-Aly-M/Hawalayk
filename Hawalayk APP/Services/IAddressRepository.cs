@@ -2,7 +2,7 @@
 
 namespace Hawalayk_APP.Services
 {
-    public interface IAddressService
+    public interface IAddressRepository
     {
         Task<List<Address>> GetAllAsync();
         Task<Address> GetByIdAsync(int id);

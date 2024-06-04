@@ -2,7 +2,7 @@
 
 namespace Hawalayk_APP.Services
 {
-    public class EnumServices : IEnumServices
+    public class EnumRepository : IEnumRepository
     {
         public async Task<ReportedIssue> getReportedIssue(string reportedIssue)
         {

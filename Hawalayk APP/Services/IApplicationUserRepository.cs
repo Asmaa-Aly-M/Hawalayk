@@ -2,7 +2,7 @@
 
 namespace Hawalayk_APP.Services
 {
-    public interface IApplicationUserService
+    public interface IApplicationUserRepository
     {
         Task<ApplicationUser> GetByIdAsync(string id);
         Task<string> GetUserPhoneNumber(string userId);

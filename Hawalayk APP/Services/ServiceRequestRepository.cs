@@ -9,13 +9,13 @@ namespace Hawalayk_APP.Services
     public class ServiceRequestRepository : IServiceRequestRepository
     {
         ApplicationDbContext Context;
-        private readonly ICustomerRepository customerRepo;
-        private readonly ICraftRepository _craftService;
-        public ServiceRequestRepository(ApplicationDbContext _Context, ICustomerRepository _customerRepo, ICraftRepository craftService)
+        private readonly ICustomerRepository _customerRepository;
+        private readonly ICraftRepository _craftRepository;
+        public ServiceRequestRepository(ApplicationDbContext _Context, ICustomerRepository customerRepository, ICraftRepository craftRepository)
         {
             Context = _Context;
-            customerRepo = _customerRepo;
-            _craftService = craftService;
+            _customerRepository = customerRepository;
+            _craftRepository = craftRepository;
         }
 
         public async Task<ServiceRequestSendDTO> GetServiceRequestSend(int id)
@@ -53,7 +53,7 @@ namespace Hawalayk_APP.Services
         //    }
 
         //    // Get the customer
-        //    //Customer customer = await customerRepo.GetByIdAsync(customerId);
+        //    //Customer customer = await _customerRepository.GetByIdAsync(customerId);
         //    //if (customer == null)
         //    //{
         //    //    throw new ArgumentException($"Customer with ID '{customerId}' not found.", nameof(customerId));
@@ -87,7 +87,7 @@ namespace Hawalayk_APP.Services
 
         public async Task<int> CreateAsync(string customerId, ServiceRequestDTO newservice)
         {
-            Customer customer = await customerRepo.GetByIdAsync(customerId);
+            Customer customer = await _customerRepository.GetByIdAsync(customerId);
 
             if (customer == null)
             {
@@ -105,7 +105,7 @@ namespace Hawalayk_APP.Services
                     file.CopyTo(fileStream);
                 }
             }
-            var CrafEnumVAlue = await _craftService.GetEnumValueOfACraftByArabicDesCription(newservice.craftName);
+            var CrafEnumVAlue = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(newservice.craftName);
             ServiceRequest serviceRequest = new ServiceRequest()
             {
                 //  Id = newservice.Id,
@@ -116,7 +116,7 @@ namespace Hawalayk_APP.Services
                 OptionalImage = fileName, // IFormFIle
                 CustomerId = customerId,
                 craftName = CrafEnumVAlue,
-                CraftId = await _craftService.GetCraftIdByCraftEnumValue(CrafEnumVAlue)
+                CraftId = await _craftRepository.GetCraftIdByCraftEnumValue(CrafEnumVAlue)
 
             };
             Context.ServiceRequests.Add(serviceRequest);
@@ -259,7 +259,7 @@ namespace Hawalayk_APP.Services
                {
                    ServiceRequestId = x.Id,
                    ServiceContent = x.Content,
-                   ServiceCraftName = await _craftService.GetCraftNameInArabicByEnumValue(x.craft.Name),
+                   ServiceCraftName = await _craftRepository.GetCraftNameInArabicByEnumValue(x.craft.Name),
                    Date = x.DatePosted,
 
                }))).ToList();
@@ -275,7 +275,7 @@ namespace Hawalayk_APP.Services
                new RequestAcceptedForCustomrDTO
                {
                    ServiceRequestId = y.ServiceRequestId,
-                   CraftName = await _craftService.GetCraftNameInArabicByEnumValue(y.ServiceRequest.craft.Name),
+                   CraftName = await _craftRepository.GetCraftNameInArabicByEnumValue(y.ServiceRequest.craft.Name),
                    ServiceContent = y.ServiceRequest.Content,
                    CraftsmanFristName = y.Craftsman.FirstName,
                    CraftsmanLastName = y.Craftsman.LastName,

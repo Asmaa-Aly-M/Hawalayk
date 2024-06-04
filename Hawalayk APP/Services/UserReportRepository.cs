@@ -8,11 +8,11 @@ namespace Hawalayk_APP.Services
     public class UserReportRepository : IUserReportRepository
     {
         private readonly ApplicationDbContext _context;
-        private readonly IApplicationUserService applicationUserService;
-        public UserReportRepository(ApplicationDbContext context, IApplicationUserService _applicationUserService)
+        private readonly IApplicationUserRepository _applicationUserRepository;
+        public UserReportRepository(ApplicationDbContext context, IApplicationUserRepository applicationUserRepository)
         {
             _context = context;
-            applicationUserService = _applicationUserService;
+            _applicationUserRepository = applicationUserRepository;
         }
         public async Task<UserReport> GetById(int id)
         {
@@ -45,7 +45,7 @@ namespace Hawalayk_APP.Services
 
         public async Task<int> Create(string id, UserReportDTO UserRepo)
         {
-            ApplicationUser ApplicationUser = await applicationUserService.GetByIdAsync(id);
+            ApplicationUser ApplicationUser = await _applicationUserRepository.GetByIdAsync(id);
             UserReport userReport = new UserReport()
             {
                 Id= UserRepo.Id,

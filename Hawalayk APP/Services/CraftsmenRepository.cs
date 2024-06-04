@@ -13,23 +13,23 @@ namespace Hawalayk_APP.Services
     {
 
         private readonly ApplicationDbContext Context;
-        private readonly ICraftRepository _craftService;
+        private readonly ICraftRepository _craftRepository;
         //private readonly IPostRepository _postRepository;
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IAddressService _addressService;
-        private readonly ISMSService _smsService;
+        private readonly IAddressRepository _addressRepository;
+        private readonly ISMSRepository _smsRepository;
 
 
 
-        public CraftsmenRepository(ICraftRepository craftService, ApplicationDbContext _Context,
-            UserManager<ApplicationUser> userManager, IAddressService addressService, ISMSService smsService)
+        public CraftsmenRepository(ICraftRepository craftRepository, ApplicationDbContext _Context,
+            UserManager<ApplicationUser> userManager, IAddressRepository addressRepository, ISMSRepository smsRepository)
         {
             Context = _Context;
             // _postRepository = postRepository;
             _userManager = userManager;
-            _craftService = craftService;
-            _addressService = addressService;
-            _smsService = smsService;
+            _craftRepository = craftRepository;
+            _addressRepository = addressRepository;
+            _smsRepository = smsRepository;
         }
 
 
@@ -144,14 +144,14 @@ namespace Hawalayk_APP.Services
 
             Craft craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
 
-            //var craft = await _craftService.GetOrCreateCraftAsync(craftsmanAccount.CraftName);
+            //var craft = await _craftRepository.GetOrCreateCraftAsync(craftsmanAccount.CraftName);
 
             craftsman.FirstName = craftsmanAccount.FirstName;
             craftsman.LastName = craftsmanAccount.LastName;
             craftsman.UserName = craftsmanAccount.UserName;
             craftsman.Craft = craft;
             craftsman.BirthDate = craftsmanAccount.BirthDate;
-            craftsman.Address = await _addressService.CreateAsync(craftsmanAccount.Governorate, craftsmanAccount.City, craftsmanAccount.StreetName);
+            craftsman.Address = await _addressRepository.CreateAsync(craftsmanAccount.Governorate, craftsmanAccount.City, craftsmanAccount.StreetName);
 
 
             var result = await _userManager.UpdateAsync(craftsman);
@@ -225,7 +225,7 @@ namespace Hawalayk_APP.Services
             Craftsman craftsman = await GetById(craftsmanId);
             Craft craft = craftsman.Craft;
             CraftName enumValue = craftsman.Craft.Name;
-            string craftName = await _craftService.GetCraftNameInArabicByEnumValue(enumValue);
+            string craftName = await _craftRepository.GetCraftNameInArabicByEnumValue(enumValue);
             /// craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
             List<Post> posts = await Context.Posts
                 .Include(c => c.Craftsman)

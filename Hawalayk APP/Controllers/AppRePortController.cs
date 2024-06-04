@@ -9,17 +9,17 @@ namespace Hawalayk_APP.Controllers
     [ApiController]
     public class AppRePortController : ControllerBase
     {
-        IAppReportRepository reportRepo;
+        private readonly IAppReportRepository _reportRepository;
 
-        public AppRePortController(IAppReportRepository _reportRepo)
+        public AppRePortController(IAppReportRepository reportRepository)
         {
-            reportRepo = _reportRepo;
+            _reportRepository = reportRepository;
         }
         [HttpPost("ReportApp")]
         public async Task<IActionResult> reportAPP([FromBody] AppReportDTO newReport)
         {
             var reporterId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            await reportRepo.Create(reporterId, newReport);
+            await _reportRepository.Create(reporterId, newReport);
             return Ok(new { message = "Done" });///// محتاجين ترجع حاجة معينة؟
         }
 
