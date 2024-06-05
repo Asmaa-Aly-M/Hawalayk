@@ -37,12 +37,16 @@ namespace Hawalayk_APP.Services
         {
             var pendingCraftsmen = await Context.Craftsmen
                                    .Where(c => c.RegistrationStatus == CraftsmanRegistrationStatus.Pending)
+                                   .Include(c => c.Address).ThenInclude(a => a.Governorate)
+                                   .Include(c => c.Address).ThenInclude(a => a.City)
+                                   .Include(c => c.Craft)
                                    .ToListAsync();
 
             var pendingCraftsmanDTO = pendingCraftsmen.Select(p =>
             {
                 return new PendingCraftsmanDTO
                 {
+                    Id = p.Id,
                     FirstName = p.FirstName,
                     LastName = p.LastName,
                     BirthDate = p.BirthDate,
