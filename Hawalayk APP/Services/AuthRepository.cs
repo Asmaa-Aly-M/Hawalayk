@@ -24,9 +24,13 @@ namespace Hawalayk_APP.Services
         private readonly JWT _jwt;
         private readonly IAddressRepository _addressRepository;
         private readonly ISMSRepository _smsRepository;
+        private readonly IFileService _fileService;
         //public AuthService(UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, IOptions<JWT> jwt, ISMSService smsService)
 
-        public AuthRepository(IAddressRepository addressRepository, UserManager<ApplicationUser> userManager, ApplicationDbContext applicationDbContext, ICraftRepository craftsRepository, IOptions<JWT> jwt, ISMSRepository smsRepository, IApplicationUserRepository applicationUserRepository, SignInManager<ApplicationUser> signInManager)
+        public AuthRepository(IAddressRepository addressRepository, UserManager<ApplicationUser> userManager, 
+            ApplicationDbContext applicationDbContext, ICraftRepository craftsRepository, IOptions<JWT> jwt, 
+            ISMSRepository smsRepository, IApplicationUserRepository applicationUserRepository, 
+            SignInManager<ApplicationUser> signInManager, IFileService fileService)
 
         {
             _userManager = userManager;
@@ -37,6 +41,7 @@ namespace Hawalayk_APP.Services
             _applicationUserRepository = applicationUserRepository;
             _signInManager = signInManager;
             _addressRepository = addressRepository;
+            _fileService = fileService;
         }
         public async Task<AuthModel> RegisterCustomerAsync(RegisterCustomerModel model)
         {
@@ -197,47 +202,23 @@ namespace Hawalayk_APP.Services
 
         public async Task<AuthModel> RegisterCraftsmanAsync(RegisterCraftsmanModel model)
         {
-            IFormFile file = model.PersonalImage;
-            IFormFile filee = model.NationalIdImage;
-            string fileName = file.FileName;
-            string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-            using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
-            {
-                file.CopyTo(fileStream);
-            }
-            string profilePicName = "def";
-            if (model.ProfilePic != null)
-            {
-                IFormFile profilePic = model.ProfilePic;
-                string profilePicPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-                using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
-                {
-                    profilePic.CopyTo(fileStream);
-                }
-
-            }
-
-
-            string fileeName = filee.FileName;
-            string fileePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-            using (var fileStream = new FileStream(Path.Combine(fileePath, fileeName), FileMode.Create))
-            {
-                filee.CopyTo(fileStream);
-            }
-            //Images image = new Images();
-
-
-            //   model.PersonalImage = fileName;
-
-
-            if (await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber) != null)
+            var userWithThisPhoneNumber = await _applicationDbContext.ApplicationUsers.FirstOrDefaultAsync(u => u.PhoneNumber == model.PhoneNumber);
+            if (userWithThisPhoneNumber != null)
                 return new AuthModel { Message = "Phone number is already registered!" };
 
-            if (await _userManager.FindByNameAsync(model.UserName) != null)
+            var userWithThisUserName = await _userManager.FindByNameAsync(model.UserName);
+            if (userWithThisUserName != null)
                 return new AuthModel { Message = "UserName is already registered!" };
 
 
             var craft = await _craftRepository.GetOrCreateCraftAsync(model.CraftName.ToString());
+            var address = await _addressRepository.CreateAsync(model.Goveronrate, model.City, model.Street);
+
+            // Save the files
+            var profilePicturePath = await _fileService.SaveFileAsync(model.ProfilePic, "ProfilePictures");
+            var personalImagePath = await _fileService.SaveFileAsync(model.PersonalImage, "PersonalImages");
+            var nationalIdImagePath = await _fileService.SaveFileAsync(model.NationalIdImage, "NationalIdImages");
+
 
             var craftsman = new Craftsman
             {
@@ -247,12 +228,12 @@ namespace Hawalayk_APP.Services
                 PhoneNumber = model.PhoneNumber,
                 Gender = model.Gender,
                 Craft = craft,
-                ProfilePicture = profilePicName,
-                PersonalImage = fileName,
-                NationalIDImage = fileeName,
+                ProfilePicture = profilePicturePath,
+                PersonalImage = personalImagePath,
+                NationalIDImage = nationalIdImagePath,
                 RegistrationStatus = CraftsmanRegistrationStatus.Pending,
                 BirthDate = model.BirthDate,
-                Address = await _addressRepository.CreateAsync(model.Goveronrate, model.City, model.Street),
+                Address = address,
             };
 
             var result = await _userManager.CreateAsync(craftsman, model.Password);

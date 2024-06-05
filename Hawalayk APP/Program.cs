@@ -280,6 +280,7 @@ namespace Hawalayk_APP
             builder.Services.AddScoped<IUserReportRepository, UserReportRepository>();
             builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
             builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
+            builder.Services.AddScoped<IFileService, FileService>();
 
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();

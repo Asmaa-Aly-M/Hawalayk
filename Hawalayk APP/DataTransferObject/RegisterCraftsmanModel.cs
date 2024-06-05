@@ -24,11 +24,7 @@ namespace Hawalayk_APP.DataTransferObject
         public string PasswordConfirmed { get; set; }
 
         public string CraftName { get; set; }
-        //[Required]
-
-
-
-        ///public Address Address { get; set; }
+      
         [Required]
         public Gender Gender { get; set; }
         public DateTime BirthDate { get; set; }
@@ -42,9 +38,8 @@ namespace Hawalayk_APP.DataTransferObject
         public string Street { get; set; }
         [NotMapped]
         public IFormFile PersonalImage { get; set; }
-        //[Required]
+        [Required]
         [NotMapped]
-
         public IFormFile NationalIdImage { get; set; }
 
 
