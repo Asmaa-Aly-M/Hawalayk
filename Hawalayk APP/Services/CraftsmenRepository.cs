@@ -295,21 +295,67 @@ namespace Hawalayk_APP.Services
             return requests;
         }*/
         //service request => no job app : refused job app
-        public async Task<List<ServiceRequest>> GetServiceRequestsByCraftName(CraftName craftName)
+        public async Task<List<ServiceNeededRepalyDTO>> GetServiceRequestsNeedToReplayByCraftsmen(CraftName craftName)//بالنسبة للحرفي
         {
             var requests = await Context.ServiceRequests
-                .Where(request => request.craft.Name == craftName &&
-               request.JobApplications.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList() == null)
-                .ToListAsync();
+                .Include(r=>r.Customer)
+                .Include(r=>r.craft)
+                .Include(r=>r.JobApplications)
+                .Where(request => request.craft.Name == craftName).ToListAsync();
 
-            return requests;
+            var filteredRequests = requests
+                .Where(request => !request.JobApplications.Any(ja => ja.ResponseStatus == ResponseStatus.Accepted)).ToList();
+            List<ServiceNeededRepalyDTO> serviceNeededRepaly = filteredRequests.Select(x =>
+               new ServiceNeededRepalyDTO
+               {
+
+                   CustomerID = x.CustomerId,
+                   CustomerFristName = x.Customer.FirstName,
+                   CustomerLastName = x.Customer.LastName,
+                   CustomerProfilePicture = x.Customer.ProfilePicture,
+                   Content = x.Content,
+                   OptionalImage = x.OptionalImage,
+                   Governorate = x.governorate,
+                   City = x.city,
+                   Street = x.street,
+
+
+               }).ToList();
+            return serviceNeededRepaly;
+
         }
 
-        public async Task<List<JobApplication>> GetAcceptedJobApplicationForCraftsman(string craftsmanID)
+
+
+
+
+
+
+
+
+
+
+        public async Task<List<RequestAcceptedForCraftsmanDTO>> GetAcceptedServiceRequestsFromCustomersByACraftsman(string craftsmanID)//بالنسبة للحرفي
         {
-            var AlljopApplications = await Context.JobApplications.Where(x => (x.CraftsmanId == craftsmanID) &&
-            (x.ResponseStatus == ResponseStatus.Accepted)).ToListAsync();
-            return AlljopApplications;
+            var AlljopApplications = await Context.JobApplications.Include(j => j.ServiceRequest)
+                .Where(x => x.CraftsmanId == craftsmanID &&
+            x.ResponseStatus == ResponseStatus.Accepted).ToListAsync();
+
+            List<RequestAcceptedForCraftsmanDTO> RequestAcceptedCraftsman = AlljopApplications.Select(y =>
+               new RequestAcceptedForCraftsmanDTO
+               {
+
+                   CustomerID = y.ServiceRequest.CustomerId,
+                   CustomerFristName = y.ServiceRequest.Customer.FirstName,
+                   CustomerLastName = y.ServiceRequest.Customer.LastName,
+                   CustomerProfilePicture = y.ServiceRequest.Customer.ProfilePicture,
+                   Content = y.ServiceRequest.Content,
+                   OptionalImage = y.ServiceRequest.OptionalImage,
+
+
+               }).ToList();
+            return RequestAcceptedCraftsman;
+
         }
 
         /* public List<ServiceRequest> GetServiceRequestsByCraftName(CraftName craft)

@@ -154,7 +154,7 @@ namespace Hawalayk_APP.Controllers
             return craftsmen;
         }
 
-        [HttpGet]
+        [HttpGet("number Of Craftsmen")]
         public async Task<IActionResult> numberOfCraftsmen()
         {
             int counter = await _crafsmenRepository.craftsmanNumber();
@@ -175,26 +175,44 @@ namespace Hawalayk_APP.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Get Service Requests By CraftName")]
-        public async Task<IActionResult> RequestsByCraftName()
+        [HttpGet("Get Service Requests Needed To Replay By craftsmen for Craftsman")]
+        public async Task<IActionResult> RequestsNeededToReplayByCraftName()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return Unauthorized("User ID not found in claims.");
+            }
+
             var craftsman = await _crafsmenRepository.GetById(userId);
+            if (craftsman == null)
+            {
+                return NotFound("Craftsman not found.");
+            }
+
+            if (craftsman.Craft == null)
+            {
+                return BadRequest("Craft information is missing for the craftsman.");
+            }
+
             var craftName = craftsman.Craft.Name;
-            var requests = await _crafsmenRepository.GetServiceRequestsByCraftName(craftName);
+            var requests = await _crafsmenRepository.GetServiceRequestsNeedToReplayByCraftsmen(craftName);
 
             return Ok(requests);
-
         }
 
 
 
-        [HttpGet("AcceptedJobApplication")]
-        public async Task<IActionResult> AcceptedJobApplication()
+
+        [HttpGet("Get Accepted Service Requests By Customer for Craftsman")]
+        public async Task<IActionResult> AcceptedRequestServiceForCrafsman()
         {
+
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var AcceptedJobApplication = await _crafsmenRepository.GetAcceptedJobApplicationForCraftsman(userId);
-            return Ok(AcceptedJobApplication);
+            var requests = await _crafsmenRepository.GetAcceptedServiceRequestsFromCustomersByACraftsman(userId);
+
+            return Ok(requests);
+
         }
 
 

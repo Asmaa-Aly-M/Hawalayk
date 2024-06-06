@@ -222,31 +222,7 @@ namespace Hawalayk_APP.Services
             return count;
         }
 
-        public async Task<List<ServiceNeededRepalyDTO>> GetServiceRequestsNeedToReplayByCraftsmen(CraftName craftName)//بالنسبة للحرفي
-        {
-            var requests = await Context.ServiceRequests
-                .Where(request => request.craft.Name == craftName &&
-               request.JobApplications.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList() == null)
-                .ToListAsync();
-            List<ServiceNeededRepalyDTO> serviceNeededRepaly = requests.Select(x =>
-               new ServiceNeededRepalyDTO
-               {
 
-                   CustomerID = x.CustomerId,
-                   CustomerFristName = x.Customer.FirstName,
-                   CustomerLastName = x.Customer.LastName,
-                   CustomerProfilePicture = x.Customer.ProfilePicture,
-                   Content = x.Content,
-                   OptionalImage = x.OptionalImage,
-                   Governorate = x.governorate,
-                   City = x.city,
-                   Street = x.street,
-
-
-               }).ToList();
-            return serviceNeededRepaly;
-
-        }
 
         public async Task<List<ServiceNeededRepalyForCustomerDTO>> GetServiceRequestsNeedToReplayByCraftsmenForCustomer(string customerId)//بالنسبة للعميل
         {
@@ -313,28 +289,7 @@ namespace Hawalayk_APP.Services
 
          }*/ //مراجعة
 
-        public async Task<List<RequestAcceptedForCraftsmanDTO>> GetAcceptedServiceRequestsFromCustomersByACraftsman(string craftsmanID)//بالنسبة للحرفي
-        {
-            var AlljopApplications = await Context.JobApplications.Include(j => j.ServiceRequest)
-                .Where(x => x.CraftsmanId == craftsmanID &&
-            x.ResponseStatus == ResponseStatus.Accepted).ToListAsync();
 
-            List<RequestAcceptedForCraftsmanDTO> RequestAcceptedCraftsman = AlljopApplications.Select(y =>
-               new RequestAcceptedForCraftsmanDTO
-               {
-
-                   CustomerID = y.ServiceRequest.CustomerId,
-                   CustomerFristName = y.ServiceRequest.Customer.FirstName,
-                   CustomerLastName = y.ServiceRequest.Customer.LastName,
-                   CustomerProfilePicture = y.ServiceRequest.Customer.ProfilePicture,
-                   Content = y.ServiceRequest.Content,
-                   OptionalImage = y.ServiceRequest.OptionalImage,
-
-
-               }).ToList();
-            return RequestAcceptedCraftsman;
-
-        }
 
 
     }

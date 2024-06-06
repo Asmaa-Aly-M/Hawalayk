@@ -122,31 +122,6 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpGet("Get Service Requests Needed To Replay By craftsmen for Craftsman")]
-        public async Task<IActionResult> RequestsByCraftName( )
-        {
-            //var craft_name = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(craftName);
-
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var craftsman = await _craftsmenRepository.GetById(userId);
-            var craftName = craftsman.Craft.Name;
-            var requests = await _serviceRequestRepository.GetServiceRequestsNeedToReplayByCraftsmen(craftName);
-
-            return Ok(requests);
-
-        }
-
-        [HttpGet("Get Accepted Service Requests By Customer for Craftsman")]
-        public async Task<IActionResult> AcceptedRequestServiceForCrafsman()
-        {
-
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var requests = await _serviceRequestRepository.GetAcceptedServiceRequestsFromCustomersByACraftsman(userId);
-
-            return Ok(requests);
-
-        }
-
 
         [HttpGet("Get Service Requests Needed To Replay By craftsmen for Customer")]
         public async Task<IActionResult> ServiceRequestsNeededToReplayByCraftsmen()
