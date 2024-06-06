@@ -19,7 +19,6 @@ namespace Hawalayk_APP.Services
         Task<List<RequestAcceptedForCustomrDTO>> GetServiceRequestsAcceptedCraftsmenForCustomer(string customerID);
         // Task<List<ServiceNeededRepalyDTO>> GetServiceRequestsAcceptedCraftsmenForCustomer(string customerId);
         Task<ServiceRequestSendDTO> GetServiceRequestSend(int id);
-        Task<List<ServiceNeededRepalyDTO>> GetServiceRequestsNeedToReplayByCraftsmen(CraftName craftName);
         Task<List<ServiceNeededRepalyForCustomerDTO>> GetServiceRequestsNeedToReplayByCraftsmenForCustomer(string customerId);
     }
 }
