@@ -19,8 +19,13 @@ namespace Hawalayk_APP.Controllers
         public async Task<IActionResult> reportAPP([FromBody] AppReportDTO newReport)
         {
             var reporterId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            await _reportRepository.Create(reporterId, newReport);
-            return Ok(new { message = "Done" });///// محتاجين ترجع حاجة معينة؟
+            if (reporterId==null)
+            {
+                return Unauthorized("User ID is missing");
+            }
+            var report= await _reportRepository.Create(reporterId, newReport);
+            //return Ok(new { message = "Done" });///// محتاجين ترجع حاجة معينة؟
+            return Ok(report);
         }
 
     }

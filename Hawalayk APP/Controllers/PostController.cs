@@ -25,6 +25,10 @@ namespace Hawalayk_APP.Controllers
         public async Task<IActionResult> post([FromForm] PostDTO post) /////////////////////////Test
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if(userId==null)
+            {
+                return BadRequest("token=null.");
+            }
             await _postRepository.Create(userId, post);
             return Ok("The post created successfully");
         }

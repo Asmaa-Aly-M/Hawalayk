@@ -46,9 +46,14 @@ namespace Hawalayk_APP.Services
         public async Task<int> Create(string id, UserReportDTO UserRepo)
         {
             ApplicationUser ApplicationUser = await _applicationUserRepository.GetByIdAsync(id);
+            if (ApplicationUser == null)
+            {
+               
+                throw new Exception("Reported user does not exist.");
+            }
             UserReport userReport = new UserReport()
             {
-                Id= UserRepo.Id,
+               // Id= UserRepo.Id,
                 ReporedId =UserRepo.ReporedId,
                 Description = UserRepo.Description,
                 ReporerId = ApplicationUser.Id

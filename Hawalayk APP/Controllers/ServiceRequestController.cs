@@ -70,7 +70,7 @@ namespace Hawalayk_APP.Controllers
         //http://localhost:5153/api/ServiceRequest/applyToRequest
 
         [HttpPost("applyToRequest")]
-        public async Task<IActionResult> applyToRequest(JobApplicationDTO replay)
+        public async Task<IActionResult> applyToRequest(int serviceID,JobApplicationDTO replay)
         {
             //   var customerID = (await _serviceRequestRepository.GetById(requestId)).Customer.Id;
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -78,7 +78,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return NotFound("invalid token");
             }
-            var jobApplicationId = await _jobApplicationRepository.Create(userId, replay);
+            var jobApplicationId = await _jobApplicationRepository.Create(userId, serviceID, replay);
             if (jobApplicationId != -1)
             {
                 var jobApplicationSend = await _jobApplicationRepository.GetJpbApplicationSend(jobApplicationId);
@@ -107,7 +107,7 @@ namespace Hawalayk_APP.Controllers
             return Ok("this service not available");
         }
 
-        [HttpGet]
+        [HttpGet("Number Of ServiceRequest")]
         public async Task<IActionResult> numberOfServiceRequest()
         {
             int counter = await _serviceRequestRepository.countService();

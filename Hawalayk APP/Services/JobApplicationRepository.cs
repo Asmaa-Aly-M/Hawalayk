@@ -41,7 +41,7 @@ namespace Hawalayk_APP.Services
             return await Context.JobApplications.ToListAsync();
         }
 
-        public async Task<int> Create(string craftmanId, JobApplicationDTO newJob)
+        public async Task<int> Create(string craftmanId, int serviceID, JobApplicationDTO newJob)
         {
             Craftsman craftsman = await _craftsmanRepository.GetById(craftmanId);
             if (craftmanId == null)
@@ -54,7 +54,8 @@ namespace Hawalayk_APP.Services
                 Content = newJob.Content,
                 InitialPrice = newJob.InitialPrice,
                 CraftsmanId = craftsman.Id,
-                ResponseStatus = ResponseStatus.Pending
+                ResponseStatus = ResponseStatus.Pending,
+                ServiceRequestId = serviceID
 
             };
 
