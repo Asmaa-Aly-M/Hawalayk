@@ -42,9 +42,14 @@ namespace Hawalayk_APP.Services
 
             if (!string.IsNullOrWhiteSpace(postUpdateDto.Flag))
             {
-                PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postUpdateDto.Flag);
-
-                post.Flag = enumValue;
+                if (Enum.TryParse<PostStatus>(postUpdateDto.Flag, out var enumValue))
+                {
+                    post.Flag = enumValue;
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid flag value");
+                }
             }
             string fileName = post.ImageURL;
             if (postUpdateDto.imgFile != null)
@@ -73,7 +78,8 @@ namespace Hawalayk_APP.Services
         public async Task<int> Create(string craftsmanId, PostDTO postDTO)
         {
             Craftsman craftsman = await _craftsmanRepository.GetById(craftsmanId);
-            PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postDTO.Flag);
+            //PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postDTO.Flag);
+            PostStatus enumValue = (PostStatus)Enum.Parse(typeof(PostStatus), postDTO.Flag);
 
 
             var file = postDTO.imgFile;
@@ -90,6 +96,7 @@ namespace Hawalayk_APP.Services
                 ImageURL = fileName,
                 Content = postDTO.Content,
                 Flag = enumValue,
+                //Flag=PostStatus.Gallery, 
                 CraftsmanId = craftsmanId,
                 CraftId = craftsman.CraftId
             };
