@@ -32,6 +32,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(result);
         }
 
+        //done
         [HttpPost("RegisterCraftsman")]
         public async Task<IActionResult> RegisterCraftsmanAsync([FromForm] RegisterCraftsmanModel model)
         {
@@ -46,6 +47,8 @@ namespace Hawalayk_APP.Controllers
             }
             return Ok(result);
         }
+
+
         [HttpPost("ResendOtp")]
         public async Task<IActionResult> ResendOtpAsync([FromBody] string phoneNumber)
         {
@@ -62,6 +65,8 @@ namespace Hawalayk_APP.Controllers
 
             return Ok(result);
         }
+
+
         [HttpPost("ForgotPassword")]
         public async Task<IActionResult> ForgotPasswordAsync([FromBody] string phoneNumber)
         {
@@ -78,6 +83,7 @@ namespace Hawalayk_APP.Controllers
 
             return Ok(result);
         }
+
 
         [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPasswordAsync([FromBody] ResetPasswordModel model)
@@ -97,6 +103,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(result);
         }
 
+        //done
         [HttpPost("Login")]
         public async Task<IActionResult> GetTokenAsync([FromBody] TokenRequestModel model)
         {
@@ -112,6 +119,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(result);
         }
 
+        //done
         [HttpPost("VerifyOTP")]
         public async Task<IActionResult> VerifyOTPAsync([FromBody] VerifyOTPModel model)
         {
@@ -137,6 +145,8 @@ namespace Hawalayk_APP.Controllers
 
             return Ok(result);
         }
+
+
         [Authorize]
         [HttpDelete("DeleteMyAccount")]
         public async Task<IActionResult> DeleteCurrentUser()
@@ -155,8 +165,9 @@ namespace Hawalayk_APP.Controllers
 
 
         }
-        [HttpPost("LogOut")]
 
+
+        [HttpPost("LogOut")]
         public async Task<IActionResult> LogOut()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

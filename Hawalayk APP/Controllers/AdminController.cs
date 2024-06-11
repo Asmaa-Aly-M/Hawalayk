@@ -71,6 +71,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(advertisements);
         }
 
+        //done
         [HttpGet("craftsmen/pending")]
         public async Task<IActionResult> GetPendingCraftsmen()
         {
@@ -78,6 +79,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(pendingCraftsmen);
         }
 
+        //done
         [HttpPut("approveCraftsman/{id}")]
         public async Task<IActionResult> ApproveCraftsman(string id, bool isApproved)
         {

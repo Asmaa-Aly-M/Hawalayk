@@ -128,27 +128,22 @@ namespace Hawalayk_APP.Services
         }
 
         public async Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId, CraftsmanUpdatedAccountDTO craftsmanAccount)
-
         {
 
             var craftsman = await GetById(craftsmanId);
             if (craftsman == null)
             {
-                return new UpdateUserDTO { IsUpdated = false, Message = "Not Found : " };
+                return new UpdateUserDTO { IsUpdated = false, Message = "Not Found" };
             }
 
 
             var user = await _userManager.FindByNameAsync(craftsmanAccount.UserName);
             if (user != null && user.Id != craftsmanId)
             {
-                return new UpdateUserDTO { IsUpdated = false, Message = "UserName is already Token : " };
+                return new UpdateUserDTO { IsUpdated = false, Message = "UserName is already Taken" };
             }
 
-            CraftName enumValue = (CraftName)ConvertToEnum<CraftName>(craftsmanAccount.CraftName);
-
-            Craft craft = await Context.Crafts.FirstOrDefaultAsync(c => c.Name == enumValue);
-
-            //var craft = await _craftRepository.GetOrCreateCraftAsync(craftsmanAccount.CraftName);
+            var craft = await _craftRepository.GetOrCreateCraftAsync(craftsmanAccount.CraftName);
 
             craftsman.FirstName = craftsmanAccount.FirstName;
             craftsman.LastName = craftsmanAccount.LastName;
@@ -169,7 +164,7 @@ namespace Hawalayk_APP.Services
                 };
             }
 
-            return new UpdateUserDTO { IsUpdated = true, Message = "The Account Updated Successfully :" };
+            return new UpdateUserDTO { IsUpdated = true, Message = "The Account Updated Successfully" };
         }
 
 
@@ -295,7 +290,7 @@ namespace Hawalayk_APP.Services
             return requests;
         }*/
         //service request => no job app : refused job app
-        public async Task<List<ServiceNeededRepalyDTO>> GetServiceRequestsNeedToReplayByCraftsmen(CraftName craftName)//بالنسبة للحرفي
+        public async Task<List<ServiceNeededRepalyDTO>> GetAvailableServiceRequestsByCraft(CraftName craftName)//بالنسبة للحرفي
         {
             var requests = await Context.ServiceRequests
                 .Include(r=>r.Customer)

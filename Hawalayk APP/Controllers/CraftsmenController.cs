@@ -46,13 +46,8 @@ namespace Hawalayk_APP.Controllers
 
         // [ServiceFilter(typeof(BlockingFilter))]
         [HttpGet("CraftsmanAccount")]
-        public async Task<IActionResult> ShawCraftsmanAccount(string craftsmanId)
+        public async Task<IActionResult> GetCraftsmanAccountById(string craftsmanId)
         {
-            //  var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            //if (userId == null)
-            //{
-            //    return NotFound("This Token Is Not Found : ");
-            //}
             var craftsman = await _crafsmenRepository.GetById(craftsmanId);
 
             if (craftsman == null)
@@ -65,7 +60,7 @@ namespace Hawalayk_APP.Controllers
 
 
 
-
+        //done
         [HttpPut("UpdateMyAccount")]
         public async Task<IActionResult> UpdateCraftsmanAccountAsync([FromForm] CraftsmanUpdatedAccountDTO craftmanAccount)
         {
@@ -91,9 +86,9 @@ namespace Hawalayk_APP.Controllers
             return Ok(result);
         }
 
-
+        //done
         [HttpPut("UpdateMyProfilePic")]
-        public async Task<IActionResult> UpdateCraftsmanProfilePicAsync([FromForm] IFormFile profilePic)
+        public async Task<IActionResult> UpdateCraftsmanProfilePicAsync(IFormFile profilePic)
         {
             if (!ModelState.IsValid)
             {
@@ -175,7 +170,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Get Service Requests Needed To Replay By craftsmen for Craftsman")]
+        [HttpGet("Get Available Service Requests By Craft")]
         public async Task<IActionResult> RequestsNeededToReplayByCraftName()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -196,7 +191,7 @@ namespace Hawalayk_APP.Controllers
             }
 
             var craftName = craftsman.Craft.Name;
-            var requests = await _crafsmenRepository.GetServiceRequestsNeedToReplayByCraftsmen(craftName);
+            var requests = await _crafsmenRepository.GetAvailableServiceRequestsByCraft(craftName);
 
             return Ok(requests);
         }
