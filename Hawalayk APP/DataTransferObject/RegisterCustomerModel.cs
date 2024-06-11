@@ -17,7 +17,7 @@ namespace Hawalayk_APP.DataTransferObject
 
         [Required]
         public Gender Gender { get; set; }
-        [Required, RegularExpression(@"^\+201[0-2]{1}[0-9]{8}$", ErrorMessage = "Invalid phone number format.")]
+        [Required, RegularExpression(@"^\+201([0-2]|5){1}[0-9]{8}$", ErrorMessage = "Invalid phone number format.")]
         public string PhoneNumber { get; set; }
 
         [Required, StringLength(50)]

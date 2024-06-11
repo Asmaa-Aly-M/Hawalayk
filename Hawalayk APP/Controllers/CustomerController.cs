@@ -18,7 +18,7 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpGet("ShowCustomerAccount")]
+        [HttpGet("Show Customer Account")]
         public async Task<IActionResult> GetCustomerAccount()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -36,13 +36,16 @@ namespace Hawalayk_APP.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
+
+        [HttpGet("Number Of Customer")]
         public async Task<IActionResult> numberOfCustomer()
         {
             int counter = await _customerRepository.customerNumber();
             return Ok(counter);
         }
-        [HttpGet("Get All Service Requests by customer")]
+
+
+        [HttpGet("Get All Service Requests Done by a customer")]
         public async Task<IActionResult> AllRequestsForThisCustomer()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -51,7 +54,7 @@ namespace Hawalayk_APP.Controllers
 
         }
 
-        [HttpGet("searchAboutCraftsmen")]
+        [HttpGet("Search About Craftsmen")]
         public async Task<IActionResult> searchAboutCraftsmen(string craftName, string gonernorate) 
         {
             var craftNameEnumValue= await _craftRepository.GetEnumValueOfACraftByArabicDesCription(craftName);

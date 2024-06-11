@@ -12,5 +12,6 @@ namespace Hawalayk_APP.Services
         Task<AcceptedJobApplicationDTO> GetJobApplicationAcceptedByServiceRequest(int ServiceRequestID);
         Task<List<AcceptedJobApplicationDTO>> GetJobApplicationsPendingByServiceRequest(int ServiceRequestID);
         Task<JobApplicationSendDTO> GetJpbApplicationSend(int jobApplicationId);
+       
     }
 }

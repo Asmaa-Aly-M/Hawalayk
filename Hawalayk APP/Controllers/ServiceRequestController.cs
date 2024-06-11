@@ -6,6 +6,7 @@ using Hawalayk_APP.Services;
 using Hawalayk_APP.System_Hub;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Security.Claims;
 
 namespace Hawalayk_APP.Controllers
@@ -90,10 +91,23 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpPost("acceptApply")]
-        public async Task<IActionResult> acceptApply(int repplyId)
+        public async Task<IActionResult> acceptApply(int applicationId)
         {
-            (await _jobApplicationRepository.GetById(repplyId)).ResponseStatus = ResponseStatus.Accepted;
-            var craftmanID = (await _jobApplicationRepository.GetById(repplyId)).Craftsman.Id;
+            var aJobapplication= await _jobApplicationRepository.GetById(applicationId);
+            aJobapplication.ResponseStatus = ResponseStatus.Accepted;
+            //get serviceRequest id
+            var aServiceRequestId = aJobapplication.ServiceRequestId;
+            ///get All Jopapplicatoin For this ServicceRequest
+            var jobsapplications = await _serviceRequestRepository.getAllJopapplicatoinForAServicceRequest(aServiceRequestId);
+            foreach (var application in jobsapplications)
+            {
+                if (application.Id != applicationId)
+                {
+                    application.ResponseStatus = ResponseStatus.Rejected;
+                }
+            }
+            await _context.SaveChangesAsync();
+            var craftmanID = (await _jobApplicationRepository.GetById(applicationId)).Craftsman.Id;
             _notificationHub.Clients.User(craftmanID).SendAsync("AcceptApplyRequest");
             return Ok("accept");
         }
@@ -102,12 +116,13 @@ namespace Hawalayk_APP.Controllers
         public async Task<IActionResult> rejectApply(int repplyId)
         {
             (await _jobApplicationRepository.GetById(repplyId)).ResponseStatus = ResponseStatus.Rejected;
+            await _context.SaveChangesAsync();
             var craftmanID = (await _jobApplicationRepository.GetById(repplyId)).Craftsman.Id;
             _notificationHub.Clients.User(craftmanID).SendAsync("RejectApplyRequest");
             return Ok("this service not available");
         }
 
-        [HttpGet("Number Of ServiceRequest")]
+        [HttpGet("Number Of All ServiceRequest")]
         public async Task<IActionResult> numberOfServiceRequest()
         {
             int counter = await _serviceRequestRepository.countService();

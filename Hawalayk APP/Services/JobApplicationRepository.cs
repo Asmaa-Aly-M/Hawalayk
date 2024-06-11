@@ -90,6 +90,11 @@ namespace Hawalayk_APP.Services
         {
             var job = Context.JobApplications.Include(j => j.Craftsman)
                 .FirstOrDefault(job => job.ServiceRequestId == ServiceRequestID && job.ResponseStatus == ResponseStatus.Accepted);
+            if (job == null)
+            {
+                return null;
+            }
+
 
             AcceptedJobApplicationDTO acceptedJob = new AcceptedJobApplicationDTO
             {
@@ -119,6 +124,7 @@ namespace Hawalayk_APP.Services
                     CraftsmanProfilePicture = j.Craftsman.ProfilePicture,
                     InitialPrice = j.InitialPrice,
                     Content = j.Content,
+                    Rating=j.Craftsman.Rating
                 }).ToList();
             return pendingJobs;
 

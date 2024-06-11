@@ -15,9 +15,15 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpGet("Get Accepted JobApplication By ServiceRequestId")]
-        public async Task<IActionResult> GetJobApplicationAcceptedByServiceRequest(int serviceRequestId)
+        public async Task<IActionResult> GetAcceptedJobApplicationByServiceRequest(int serviceRequestId)
         {
             var job = await _jobApplicationRepository.GetJobApplicationAcceptedByServiceRequest(serviceRequestId);
+
+            if (job == null)
+            {
+                return NotFound($"No accepted job application found for service request ID {serviceRequestId}");
+            }
+
             return Ok(job);
         }
 
@@ -25,6 +31,10 @@ namespace Hawalayk_APP.Controllers
         public async Task<IActionResult> GetJobApplicationsPendingByServiceRequest(int serviceRequestId)
         {
             var jobs = await _jobApplicationRepository.GetJobApplicationsPendingByServiceRequest(serviceRequestId);
+            if (jobs == null)
+            {
+                return NotFound($"No accepted job application found for service request ID {serviceRequestId}");
+            }
             return Ok(jobs);
         }
 

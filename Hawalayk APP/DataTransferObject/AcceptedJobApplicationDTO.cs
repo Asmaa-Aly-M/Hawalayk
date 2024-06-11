@@ -8,5 +8,6 @@
         public string CraftsmanProfilePicture { get; set; }
         public string? Content { get; set; }
         public int InitialPrice { get; set; }
+        public double Rating { get; set; }
     }
 }

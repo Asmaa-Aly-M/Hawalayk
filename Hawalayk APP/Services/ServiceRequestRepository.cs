@@ -264,6 +264,13 @@ namespace Hawalayk_APP.Services
 
         }
 
+
+
+
+
+
+
+
         /* public async Task<List<ServiceNeededRepalyDTO>> GetServiceRequestsAcceptedCraftsmenForCustomer(string customerId)//بالنسبة للعميل
          {
              var requests = await Context.ServiceRequests
@@ -289,6 +296,14 @@ namespace Hawalayk_APP.Services
 
          }*/ //مراجعة
 
+
+
+        public async Task<List<JobApplication>> getAllJopapplicatoinForAServicceRequest(int serviceId)
+        {
+            var jobApplications = Context.JobApplications.Where(s => s.ServiceRequestId == serviceId).ToList();
+            return jobApplications;
+
+        }
 
 
 

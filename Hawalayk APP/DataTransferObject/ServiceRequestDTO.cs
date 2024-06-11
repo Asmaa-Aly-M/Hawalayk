@@ -11,7 +11,7 @@ namespace Hawalayk_APP.DataTransferObject
         public string craftName { get; set; }
         public string content { get; set; }
         [NotMapped]
-        public IFormFile optionalImage { get; set; }
+        public IFormFile? optionalImage { get; set; }
 
     }
 }

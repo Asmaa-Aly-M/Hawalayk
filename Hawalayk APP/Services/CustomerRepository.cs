@@ -70,7 +70,10 @@ namespace Hawalayk_APP.Services
 
         public async Task<List<SearchAboutCraftsmanDTO>> searchAboutCraftsmen(CraftName craftName, string governorate)
         {
-            var Allcraftsmen = await _context.Craftsmen.Include(g => g.Address)
+            var Allcraftsmen = await _context.Craftsmen
+                .Include(c=>c.Craft)
+                .Include(g => g.Address)
+                    .ThenInclude(g=>g.Governorate)
                 .Where(c => c.Craft.Name == craftName && c.Address.Governorate.governorate_name_en == governorate).ToListAsync();
 
             List<SearchAboutCraftsmanDTO> Craftsmen = Allcraftsmen.Select(y =>
