@@ -57,15 +57,17 @@ namespace Hawalayk_APP.Services
             return counter;
         }
 
-        public async Task<List<ServiceRequest>> GetServiceRequestsForThisCustomer(string customerID)
-        {
+        /* public async Task<List<ServiceRequest>> GetServiceRequestsForThisCustomer(string customerID)
+         {
 
-            var Requests = await _context.ServiceRequests
-                .Where(request => request.CustomerId == customerID)
-                .ToListAsync();
+             var Requests = await _context.ServiceRequests
+                 .Where(request => request.CustomerId == customerID)
+                 .ToListAsync();
 
-            return Requests;
-        }
+             return Requests;
+         } هنركن دى هنا لغاية لما نشوف هنحتاجها ولا لا لان محدش عارف بس محدش يمسحهاهى بترجع كل ال service ا عملها العميل 
+        */
+
 
 
         public async Task<List<SearchAboutCraftsmanDTO>> searchAboutCraftsmen(CraftName craftName, string governorate)
@@ -74,7 +76,7 @@ namespace Hawalayk_APP.Services
                 .Include(c=>c.Craft)
                 .Include(g => g.Address)
                     .ThenInclude(g=>g.Governorate)
-                .Where(c => c.Craft.Name == craftName && c.Address.Governorate.governorate_name_en == governorate).ToListAsync();
+                .Where(c => c.Craft.Name == craftName && c.Address.Governorate.governorate_name_ar == governorate).ToListAsync();
 
             List<SearchAboutCraftsmanDTO> Craftsmen = Allcraftsmen.Select(y =>
                new SearchAboutCraftsmanDTO

@@ -10,7 +10,7 @@ namespace Hawalayk_APP.Services
         Task<List<Customer>> GetAll();
         Task<Customer> GetByIdAsync(string id);
         Task<CustomerAccountDTO> GetCustomerAccountAsync(Customer customer);
-        Task<List<ServiceRequest>> GetServiceRequestsForThisCustomer(string customerID);
+        //Task<List<ServiceRequest>> GetServiceRequestsForThisCustomer(string customerID);
         Task<List<SearchAboutCraftsmanDTO>> searchAboutCraftsmen(CraftName craftName, string governorate);
     }
 }

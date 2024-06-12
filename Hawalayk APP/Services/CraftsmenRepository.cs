@@ -332,7 +332,7 @@ namespace Hawalayk_APP.Services
 
         public async Task<List<RequestAcceptedForCraftsmanDTO>> GetAcceptedServiceRequestsFromCustomersByACraftsman(string craftsmanID)//بالنسبة للحرفي
         {
-            var AlljopApplications = await Context.JobApplications.Include(j => j.ServiceRequest)
+            var AlljopApplications = await Context.JobApplications.Include(j => j.ServiceRequest).ThenInclude(s => s.Customer)
                 .Where(x => x.CraftsmanId == craftsmanID &&
             x.ResponseStatus == ResponseStatus.Accepted).ToListAsync();
 

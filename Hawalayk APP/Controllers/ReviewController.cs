@@ -17,7 +17,7 @@ namespace Hawalayk_APP.Controllers
            _reviewRepository= reviewRepository;
         }
         [Route("view")]
-        [HttpPost]
+        [HttpPost("write a Review")]
         public async Task<IActionResult> writeReview(ReviewDTO newreview) 
         {
             await _reviewRepository.Create(newreview);//مش المفروض يباصيلنا حاجة من نوع reviewDTO

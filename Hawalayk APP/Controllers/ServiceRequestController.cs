@@ -129,13 +129,14 @@ namespace Hawalayk_APP.Controllers
             return Ok(counter);
         }
 
-        [HttpGet("getAllRequest")]
+        /* مدش عرف هى معموة ليه هنعملها comment لغاية لما حد يعرف
+          [HttpGet("Get All Request in App")]
         public async Task<IActionResult> getAllRequest()
         {
             List<ServiceRequest> allRequest = await _serviceRequestRepository.GetAll();
             return Ok(allRequest);
         }
-
+        */
 
 
         [HttpGet("Get Service Requests Needed To Replay By craftsmen for Customer")]
@@ -156,7 +157,16 @@ namespace Hawalayk_APP.Controllers
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userId == null)
+            {
+                return NotFound("invalid token");
+            }
             var requests = await _serviceRequestRepository.GetServiceRequestsAcceptedCraftsmenForCustomer(userId);
+            if (requests == null)
+            {
+                return NotFound("No accepted service requests found for the customer.");
+            }
+
 
             return Ok(requests);
 

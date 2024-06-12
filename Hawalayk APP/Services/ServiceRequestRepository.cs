@@ -224,43 +224,63 @@ namespace Hawalayk_APP.Services
 
 
 
-        public async Task<List<ServiceNeededRepalyForCustomerDTO>> GetServiceRequestsNeedToReplayByCraftsmenForCustomer(string customerId)//بالنسبة للعميل
+        public async Task<List<ServiceNeededRepalyForCustomerDTO>> GetServiceRequestsNeedToReplayByCraftsmenForCustomer(string customerId)
         {
+            // Retrieve service requests that have no accepted job applications for the specified customer ID
             var requests = await Context.ServiceRequests
+                .Include(j=>j.JobApplications)
+                .Include(c=>c.craft)
                 .Where(request => request.CustomerId == customerId &&
-               request.JobApplications.Where(JobApplication => JobApplication.ResponseStatus == ResponseStatus.Accepted).ToList() == null)
+                                  !request.JobApplications.Any(jobApplication => jobApplication.ResponseStatus == ResponseStatus.Accepted))
                 .ToListAsync();
-            List<ServiceNeededRepalyForCustomerDTO> serviceNeededRepaly = (await Task.WhenAll(requests.Select(async x =>
-               new ServiceNeededRepalyForCustomerDTO
-               {
-                   ServiceRequestId = x.Id,
-                   ServiceContent = x.Content,
-                   ServiceCraftName = await _craftRepository.GetCraftNameInArabicByEnumValue(x.craft.Name),
-                   Date = x.DatePosted,
+            // Create a list of DTOs for the service requests needing a replay
+            var serviceNeededReplay = await Task.WhenAll(requests.Select(async request =>
+                new ServiceNeededRepalyForCustomerDTO
+                {
+                    ServiceRequestId = request.Id,
+                    ServiceContent = request.Content,
+                    OptionalImage=request.OptionalImage,
+                    ServiceCraftName = await _craftRepository.GetCraftNameInArabicByEnumValue(request.craft.Name),
+                    Date = request.DatePosted
+                }
+            ));
 
-               }))).ToList();
-            return serviceNeededRepaly;
-
+            return serviceNeededReplay.ToList();
         }
+
         public async Task<List<RequestAcceptedForCustomrDTO>> GetServiceRequestsAcceptedCraftsmenForCustomer(string customerID)//بالنسبة للعميل
         {
-            var AlljopApplications = await Context.JobApplications.Include(j => j.ServiceRequest)
-                .Where(x => x.ServiceRequest.CustomerId == customerID && x.ResponseStatus == ResponseStatus.Accepted).ToListAsync();
+            var requests = await Context.ServiceRequests
+                .Include(j => j.JobApplications)
+                    .ThenInclude(c => c.Craftsman)
+                .Include(c => c.craft)
+                .Where(request => request.CustomerId == customerID &&
+                                  request.JobApplications.Any(jobApplication => jobApplication.ResponseStatus == ResponseStatus.Accepted))
+                .ToListAsync();
+            if (requests == null) 
+            {
+                return null;
+            }
 
-            List<RequestAcceptedForCustomrDTO> RequestAcceptedCraftsman = (await Task.WhenAll(AlljopApplications.Select(async y => //حل مشكلة انه مش كان قادر يستخدم تحويل ال enum
-               new RequestAcceptedForCustomrDTO
-               {
-                   ServiceRequestId = y.ServiceRequestId,
-                   CraftName = await _craftRepository.GetCraftNameInArabicByEnumValue(y.ServiceRequest.craft.Name),
-                   ServiceContent = y.ServiceRequest.Content,
-                   CraftsmanFristName = y.Craftsman.FirstName,
-                   CraftsmanLastName = y.Craftsman.LastName,
-                   Date = y.ServiceRequest.DatePosted,////محتاج مراجعة نوع الوقت في ال DTO
+            var requestAcceptedCraftsman = await Task.WhenAll(requests.Select(async s =>
+            {
+                var acceptedJobApplication = s.JobApplications
+                    .FirstOrDefault(ja => ja.ResponseStatus == ResponseStatus.Accepted);
 
+                return new RequestAcceptedForCustomrDTO
+                {
+                    ServiceRequestId = s.Id,
+                    CraftName = await _craftRepository.GetCraftNameInArabicByEnumValue(s.craft.Name),
+                    ServiceContent = s.Content,
+                    OptionalImage=s.OptionalImage,
+                    CraftsmanFristName = acceptedJobApplication?.Craftsman.FirstName,
+                    CraftsmanLastName = acceptedJobApplication?.Craftsman.LastName,
+                    Date = s.DatePosted
+                };
+            }
+     ));
 
-
-               }))).ToList();
-            return RequestAcceptedCraftsman;
+            return requestAcceptedCraftsman.ToList();
 
         }
 

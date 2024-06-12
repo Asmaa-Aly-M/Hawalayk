@@ -45,14 +45,15 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpGet("Get All Service Requests Done by a customer")]
-        public async Task<IActionResult> AllRequestsForThisCustomer()
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var requests = await _customerRepository.GetServiceRequestsForThisCustomer(userId);
-            return Ok(requests);
+        /* [HttpGet("Get All Service Requests Done by a customer")]
+         public async Task<IActionResult> AllRequestsForThisCustomer()
+         {
+             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+             var requests = await _customerRepository.GetServiceRequestsForThisCustomer(userId);
+             return Ok(requests);
 
-        }
+         }
+        هنركن دى هنا لغاية لما نشوف هنحتاجها ولا لا لان محدش عارف بس محدش يمسحهاهى بترجع كل ال service ا عملها العميل*/
 
         [HttpGet("Search About Craftsmen")]
         public async Task<IActionResult> searchAboutCraftsmen(string craftName, string gonernorate) 
