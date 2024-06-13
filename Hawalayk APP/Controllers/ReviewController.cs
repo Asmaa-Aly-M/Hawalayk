@@ -16,7 +16,7 @@ namespace Hawalayk_APP.Controllers
         {
            _reviewRepository= reviewRepository;
         }
-        [Route("view")]
+        //[Route("view")]
         [HttpPost("write a Review")]
         public async Task<IActionResult> writeReview(ReviewDTO newreview) 
         {
@@ -24,8 +24,8 @@ namespace Hawalayk_APP.Controllers
             return Ok();
         }
 
-        [Route("like")]
-        [HttpPost]
+        //[Route("like")]
+        [HttpPost("click like")]
         public async Task<IActionResult> like(int reviewId)
         {
             Review theReview = await _reviewRepository.GetById(reviewId);
@@ -33,8 +33,8 @@ namespace Hawalayk_APP.Controllers
             return Ok(newPositiveReacts);
         }
         
-        [Route("removeLike")]
-        [HttpPost]
+        //[Route("removeLike")]
+        [HttpPost("remove a Like")]
         public async Task<IActionResult> Removelike(int reviewId)
         {
             Review theReview = await _reviewRepository.GetById(reviewId);
@@ -42,8 +42,8 @@ namespace Hawalayk_APP.Controllers
             return Ok(newPositiveReacts);
         }
 
-        [Route("disLike")]
-        [HttpPost]
+       // [Route("disLike")]
+        [HttpPost("click a dislike")]
         public async Task<IActionResult> disLike(int reviewId)
         {
             Review theReview = await _reviewRepository.GetById(reviewId);
@@ -52,8 +52,8 @@ namespace Hawalayk_APP.Controllers
         }
 
        
-        [Route("removeDisLike")]
-        [HttpPost]
+        //[Route("removeDisLike")]
+        [HttpPost("removeDisLike")]
         public async Task<IActionResult> removeDisLike(int reviewId) 
         {
             Review theReview = await _reviewRepository.GetById(reviewId);
