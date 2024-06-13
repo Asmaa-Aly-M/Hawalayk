@@ -23,7 +23,11 @@ namespace Hawalayk_APP.Services
         {
 
             List<UserReportForAdminDashBoard> userReports = new List<UserReportForAdminDashBoard>();
-            List<UserReport> userReportList = await _context.UserReports.ToListAsync();
+            // List<UserReport> userReportList = await _context.UserReports.ToListAsync();
+            List<UserReport> userReportList = await _context.UserReports
+      .Include(ur => ur.Reporter)
+      .Include(ur => ur.ReportedUser)
+      .ToListAsync();
 
             foreach (var UserReport in userReportList)
             {
@@ -31,9 +35,9 @@ namespace Hawalayk_APP.Services
                 {
                     Id = UserReport.Id,
                     ReporterId = UserReport.ReporerId,
-                    ReporterName = UserReport.Reporter.FirstName + UserReport.Reporter.LastName,
+                    ReporterName = UserReport.Reporter.FirstName + " "+ UserReport.Reporter.LastName,
                     ReportedId = UserReport.ReporedId,
-                    ReportedName = UserReport.ReportedUser.FirstName + UserReport.ReportedUser.LastName,
+                    ReportedName = UserReport.ReportedUser.FirstName +" "+ UserReport.ReportedUser.LastName,
                     Description = UserReport.Description
                 };
 

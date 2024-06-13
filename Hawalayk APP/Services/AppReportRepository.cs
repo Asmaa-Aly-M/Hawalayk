@@ -40,7 +40,10 @@ namespace Hawalayk_APP.Services
 
         public async Task<List<AppReport>> GetAll()
         {
-            List<AppReport> AppReports = await _context.AppReports.ToListAsync();
+           // List<AppReport> AppReports = await _context.AppReports.ToListAsync();
+            List<AppReport> AppReports = await _context.AppReports
+                                         .Include(ar => ar.Reporter)// Eager loading of Reporter
+                                         .ToListAsync();
 
             return AppReports;
 
