@@ -167,15 +167,51 @@ namespace Hawalayk_APP.Services
             int counter = await Context.ServiceRequests.CountAsync();
             return counter;
         }
-        public List<ServiceRequest> GetLatestServiceRequests()
+        /*  public List<ServiceRequest> GetLatestServiceRequests()
+          {
+              // Query the database for the latest 5 service requests
+              var latestRequests = Context.ServiceRequests
+                  .OrderByDescending(sr => sr.DatePosted)
+                  .Take(5)
+                  .ToList();
+
+              return latestRequests;
+          }*/
+        public List<RequestForDashBord> GetLatestServiceRequests()
         {
             // Query the database for the latest 5 service requests
             var latestRequests = Context.ServiceRequests
-                .OrderByDescending(sr => sr.DatePosted)
+                 .Include(sr => sr.Customer)
+            .Include(sr => sr.JobApplications)
+                .ThenInclude(ja => ja.Craftsman)
+                 .OrderByDescending(sr => sr.DatePosted)
                 .Take(5)
                 .ToList();
 
-            return latestRequests;
+            //var requests = await Context.ServiceRequests
+
+            // if (latestRequests == null)
+            // {
+            //    return null;
+            // }
+
+            List<RequestForDashBord> service = latestRequests.Select(x =>
+
+            new RequestForDashBord
+            {
+
+                id = x.Id,
+                Content = x.Content,
+                CustomerId = x.CustomerId,
+                CustomerFristName = x.Customer.FirstName,
+                CustomerLastName = x.Customer.LastName,
+                DatePosted = x.DatePosted,
+                ResponseStatus = x.JobApplications.FirstOrDefault()?.ResponseStatus,
+                CraftsmanFristName = x.JobApplications.FirstOrDefault()?.Craftsman.FirstName,
+                CraftsmanLastName = x.JobApplications.FirstOrDefault()?.Craftsman.LastName,
+            }).ToList();
+
+            return service;
         }
         public int CountUsersMakingRequestsToday()
         {
