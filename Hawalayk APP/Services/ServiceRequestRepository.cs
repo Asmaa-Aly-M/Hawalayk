@@ -3,6 +3,7 @@ using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace Hawalayk_APP.Services
 {
@@ -11,11 +12,16 @@ namespace Hawalayk_APP.Services
         ApplicationDbContext Context;
         private readonly ICustomerRepository _customerRepository;
         private readonly ICraftRepository _craftRepository;
-        public ServiceRequestRepository(ApplicationDbContext _Context, ICustomerRepository customerRepository, ICraftRepository craftRepository)
+        private readonly IFileService _fileService;
+        private readonly IBlockingRepository _blockingRepository;
+        public ServiceRequestRepository(ApplicationDbContext _Context, ICustomerRepository customerRepository,
+            ICraftRepository craftRepository, IFileService fileService, IBlockingRepository blockingRepository)
         {
             Context = _Context;
             _customerRepository = customerRepository;
             _craftRepository = craftRepository;
+            _fileService = fileService;
+            _blockingRepository = blockingRepository;
         }
 
         public async Task<ServiceRequestSendDTO> GetServiceRequestSend(int id)
@@ -27,11 +33,11 @@ namespace Hawalayk_APP.Services
                 CustomerId = serviceRequest.CustomerId,
                 CustomerFirstName = serviceRequest.Customer.FirstName,
                 CustomerLastName = serviceRequest.Customer.LastName,
-                CustomerImg = Path.Combine("imgs/", serviceRequest.Customer.ProfilePicture),
+                CustomerImg = serviceRequest.Customer.ProfilePicture,
                 CustomerUserName = serviceRequest.Customer.UserName,
                 Content = serviceRequest.Content,
                 ServiceRequestId = serviceRequest.Id,
-                ServiceRequestImg = Path.Combine("imgs/", serviceRequest.OptionalImage)
+                ServiceRequestImg = serviceRequest.OptionalImage
             };
         }
 
@@ -93,27 +99,17 @@ namespace Hawalayk_APP.Services
             {
                 return -1;
             }
-            var file = newservice.optionalImage;
 
-            string fileName = "";
-            if (file != null)
-            {
-                fileName = file.FileName;
-                string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-                using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
-                {
-                    file.CopyTo(fileStream);
-                }
-            }
+            var serviceRequestImagePath = await _fileService.SaveFileAsync(newservice.optionalImage, "ServiceRequestImages");
+
             var CrafEnumVAlue = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(newservice.craftName);
             ServiceRequest serviceRequest = new ServiceRequest()
             {
-                //  Id = newservice.Id,
                 governorate = newservice.governorate,
                 city = newservice.city,
                 street = newservice.street,
                 Content = newservice.content,
-                OptionalImage = fileName, // IFormFIle
+                OptionalImage = serviceRequestImagePath, 
                 CustomerId = customerId,
                 craftName = CrafEnumVAlue,
                 CraftId = await _craftRepository.GetCraftIdByCraftEnumValue(CrafEnumVAlue)
@@ -325,7 +321,44 @@ namespace Hawalayk_APP.Services
 
         }
 
+        //Excluding blocked users
+        public async Task<List<AvailableServiceRequestDTO>> GetAvailableServiceRequestsByCraft(CraftName craftName, string craftsmanId)
+        {
 
+            // Retrieve the list of blocked users for the current craftsman
+            var blockedUserIds = await _blockingRepository.GetBlockedUsersAsync(craftsmanId);
+
+            // Fetch all service requests for the specified craft
+            var requests = await Context.ServiceRequests
+                .Include(r => r.Customer)
+                .Include(r => r.craft)
+                .Include(r => r.JobApplications)
+                .Where(request => request.craft.Name == craftName).ToListAsync();
+
+            // Filter out requests from blocked users and those with an accepted job application
+            var filteredRequests = requests
+                .Where(request =>
+                    !blockedUserIds.Contains(request.CustomerId) &&
+                    !request.JobApplications.Any(ja => ja.ResponseStatus == ResponseStatus.Accepted))
+                .ToList();
+
+            // Convert the filtered requests to availableServiceRequests objects
+            List<AvailableServiceRequestDTO> availableServiceRequests = filteredRequests.Select(x =>
+               new AvailableServiceRequestDTO
+               {
+                   CustomerID = x.CustomerId,
+                   CustomerFirstName = x.Customer.FirstName,
+                   CustomerLastName = x.Customer.LastName,
+                   CustomerProfilePicture = x.Customer.ProfilePicture,
+                   Content = x.Content,
+                   OptionalImage = x.OptionalImage,
+                   Governorate = x.governorate,
+                   City = x.city,
+                   Street = x.street,
+               }).ToList();
+
+            return availableServiceRequests;
+        }
 
     }
 }

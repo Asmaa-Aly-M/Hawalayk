@@ -26,7 +26,7 @@ namespace Hawalayk_APP.Services
                 InitialPrice = jobApplication.InitialPrice,
                 CraftsmanFirstName = jobApplication.Craftsman.FirstName,
                 CraftsmanId = jobApplication.Craftsman.Id,
-                CraftsmanImg = Path.Combine("imgs/", jobApplication.Craftsman.ProfilePicture),
+                CraftsmanImg = jobApplication.Craftsman.ProfilePicture,
                 CraftsmanLastName = jobApplication.Craftsman.LastName,
                 CraftsmanUserName = jobApplication.Craftsman.UserName,
             };

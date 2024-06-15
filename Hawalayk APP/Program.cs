@@ -281,9 +281,15 @@ namespace Hawalayk_APP
             builder.Services.AddScoped<IServiceRequestRepository, ServiceRequestRepository>();
             builder.Services.AddScoped<IJobApplicationRepository, JobApplicationRepository>();
             builder.Services.AddScoped<IFileService, FileService>();
-
+            builder.Services.AddScoped<BlockingFilter>();
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            builder.Services.AddControllers(options =>
+            {
+                // Add the BlockingFilter globally using the service container
+                options.Filters.AddService<BlockingFilter>();
+            });
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));//serverserver

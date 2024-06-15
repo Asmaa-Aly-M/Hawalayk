@@ -13,12 +13,14 @@ namespace Hawalayk_APP.Services
         ApplicationDbContext Context;
         private readonly ICraftsmenRepository _craftsmanRepository;
         private readonly ICraftRepository _craftRepository;
-
-        public PostRepository(ApplicationDbContext _Context, ICraftsmenRepository craftsmanRepository, ICraftRepository craftRepository)
+        private readonly IFileService _fileService;
+        public PostRepository(ApplicationDbContext _Context, ICraftsmenRepository craftsmanRepository, 
+            ICraftRepository craftRepository, IFileService fileService)
         {
             Context = _Context;
             _craftsmanRepository = craftsmanRepository;
             _craftRepository = craftRepository;
+            _fileService = fileService;
         }
 
         public async Task<Post> GetById(int id)
@@ -51,19 +53,10 @@ namespace Hawalayk_APP.Services
                     throw new ArgumentException("Invalid flag value");
                 }
             }
-            string fileName = post.ImageURL;
-            if (postUpdateDto.imgFile != null)
-            {
-                var file = postUpdateDto.imgFile;
-                fileName = file.FileName;
-                string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-                using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
-                {
-                    file.CopyTo(fileStream);
-                }
-                post.ImageURL = fileName;
 
-            }
+            var postImagePath = await _fileService.SaveFileAsync(postUpdateDto.imgFile, "PostImages");
+            post.ImageURL = postImagePath;
+
             Context.Posts.Update(post);
             int row = await Context.SaveChangesAsync();
             return row;
@@ -81,19 +74,11 @@ namespace Hawalayk_APP.Services
             //PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postDTO.Flag);
             PostStatus enumValue = (PostStatus)Enum.Parse(typeof(PostStatus), postDTO.Flag);
 
-
-            var file = postDTO.imgFile;
-            string fileName = file.FileName;
-            string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-            using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
-            {
-                file.CopyTo(fileStream);
-            }
-
+            var postImagePath = await _fileService.SaveFileAsync(postDTO.imgFile, "PostImages");
 
             Post post = new Post()
             {
-                ImageURL = fileName,
+                ImageURL = postImagePath,
                 Content = postDTO.Content,
                 Flag = enumValue,
                 //Flag=PostStatus.Gallery, 
@@ -125,7 +110,7 @@ namespace Hawalayk_APP.Services
                 return new GallaryPostDTO
                 {
                     PostId = post.Id,
-                    PostImgUrl = Path.Combine("imgs/", post.ImageURL),// Construct image URL
+                    PostImgUrl = post.ImageURL,// Construct image URL
                     CraftsmanId = post.Craftsman.Id,
                     CraftsmanName = post.Craftsman.UserName,
                     Content = post.Content,
@@ -176,11 +161,11 @@ namespace Hawalayk_APP.Services
                 return new GallaryPostDTO
                 {
                     PostId = post.Id,
-                    PostImgUrl = Path.Combine("imgs/", post.ImageURL),// Construct image URL
+                    PostImgUrl = post.ImageURL,// Construct image URL
                     CraftsmanId = craftsman.Id,
                     CraftsmanName = post.Craftsman.UserName,
                     Content = post.Content,
-                    CraftsmanProfilePicUrl = Path.Combine("imgs/", craftsman.ProfilePicture),
+                    CraftsmanProfilePicUrl = craftsman.ProfilePicture,
                     CraftName = craftName,
                     // Assuming Flag is an enum, convert it to string
                 };

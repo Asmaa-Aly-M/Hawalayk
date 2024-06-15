@@ -5,5 +5,6 @@
         Task BlockUserAsync(string blockingUserId, string blockedUserId);
         Task<bool> IsUserBlockedAsync(string blockingUserId, string blockedUserId);
         Task UnblockUserAsync(string blockingUserId, string blockedUserId);
+        Task<List<string>> GetBlockedUsersAsync(string userId);
     }
 }

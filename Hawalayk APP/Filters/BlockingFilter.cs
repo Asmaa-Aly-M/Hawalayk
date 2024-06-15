@@ -3,30 +3,35 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Security.Claims;
 
-namespace Hawalayk_APP.Filters
+public class BlockingFilter : IAsyncActionFilter
 {
-    public class BlockingFilter:IAsyncAuthorizationFilter
-    {
-        private readonly IBlockingRepository _blockingService;
+    private readonly IBlockingRepository _blockingRepository;
 
-        public BlockingFilter(IBlockingRepository blockingService)
+    public BlockingFilter(IBlockingRepository blockingRepository)
+    {
+        _blockingRepository = blockingRepository;
+    }
+
+    public async Task OnActionExecutionAsync(ActionExecutingContext context, ActionExecutionDelegate next)
+    {
+        var blockingUserId = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        if (blockingUserId == null)
         {
-            _blockingService = blockingService;
+            context.Result = new UnauthorizedResult();
+            return;
         }
 
-        public async Task OnAuthorizationAsync(AuthorizationFilterContext context)
+        if (context.ActionArguments.TryGetValue("blockedUserId", out var blockedUserIdObj) &&
+            blockedUserIdObj is string blockedUserId)
         {
-            var blockingUserId = context.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
-            var blockedUserId = context.RouteData.Values["id"]?.ToString();
-
-            if (!string.IsNullOrEmpty(blockedUserId))
+            var isBlocked = await _blockingRepository.IsUserBlockedAsync(blockingUserId, blockedUserId);
+            if (isBlocked)
             {
-                if (await _blockingService.IsUserBlockedAsync(blockingUserId, blockedUserId))
-                {
-                    context.Result = new ForbidResult();
-                    return;
-                }
+                context.Result = new ForbidResult();
+                return;
             }
         }
+
+        await next();
     }
 }

@@ -100,5 +100,16 @@ namespace Hawalayk_APP.Services
             _applicationDbContext.Blocks.Remove(existingBlock);
             await _applicationDbContext.SaveChangesAsync();
         }
+
+        public async Task<List<string>> GetBlockedUsersAsync(string userId)
+        {
+            var blockedUsers = await _applicationDbContext.Blocks
+                .Where(b => b.BlockingUserId == userId || b.BlockedUserId == userId)
+                .Select(b => b.BlockingUserId == userId ? b.BlockedUserId : b.BlockingUserId)
+                .ToListAsync();
+
+            return blockedUsers;
+        }
+            
     }
 }

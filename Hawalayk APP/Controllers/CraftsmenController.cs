@@ -16,13 +16,16 @@ namespace Hawalayk_APP.Controllers
         private readonly ICraftsmenRepository _crafsmenRepository;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IPostRepository _postRepository;
+        private readonly IServiceRequestRepository _serviceRequestRepository;
         // c s , oop csh , database , linq ,EF , MVc , 
-        public CraftsmenController(ICraftRepository craftRepository, ICraftsmenRepository crafsmenRepository, UserManager<ApplicationUser> userManager, IPostRepository postRepository)
+        public CraftsmenController(ICraftRepository craftRepository, ICraftsmenRepository crafsmenRepository, UserManager<ApplicationUser> userManager, 
+            IPostRepository postRepository, IServiceRequestRepository serviceRequestRepository)
         {
             _craftRepository = craftRepository;
             _userManager = userManager;
             _crafsmenRepository = crafsmenRepository;
             _postRepository = postRepository;
+            _serviceRequestRepository = serviceRequestRepository;
         }
 
         [HttpGet("MyAccount")]
@@ -171,7 +174,7 @@ namespace Hawalayk_APP.Controllers
         }
 
         [HttpGet("Get Available Service Requests By Craft")]
-        public async Task<IActionResult> RequestsNeededToReplayByCraftName()
+        public async Task<IActionResult> AvailableServiceRequestsByCraft()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
@@ -191,7 +194,7 @@ namespace Hawalayk_APP.Controllers
             }
 
             var craftName = craftsman.Craft.Name;
-            var requests = await _crafsmenRepository.GetAvailableServiceRequestsByCraft(craftName);
+            var requests = await _serviceRequestRepository.GetAvailableServiceRequestsByCraft(craftName, userId);
 
             return Ok(requests);
         }

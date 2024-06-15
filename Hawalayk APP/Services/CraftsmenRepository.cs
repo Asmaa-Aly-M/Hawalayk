@@ -290,35 +290,7 @@ namespace Hawalayk_APP.Services
             return requests;
         }*/
         //service request => no job app : refused job app
-        public async Task<List<ServiceNeededRepalyDTO>> GetAvailableServiceRequestsByCraft(CraftName craftName)//بالنسبة للحرفي
-        {
-            var requests = await Context.ServiceRequests
-                .Include(r=>r.Customer)
-                .Include(r=>r.craft)
-                .Include(r=>r.JobApplications)
-                .Where(request => request.craft.Name == craftName).ToListAsync();
-
-            var filteredRequests = requests
-                .Where(request => !request.JobApplications.Any(ja => ja.ResponseStatus == ResponseStatus.Accepted)).ToList();
-            List<ServiceNeededRepalyDTO> serviceNeededRepaly = filteredRequests.Select(x =>
-               new ServiceNeededRepalyDTO
-               {
-
-                   CustomerID = x.CustomerId,
-                   CustomerFristName = x.Customer.FirstName,
-                   CustomerLastName = x.Customer.LastName,
-                   CustomerProfilePicture = x.Customer.ProfilePicture,
-                   Content = x.Content,
-                   OptionalImage = x.OptionalImage,
-                   Governorate = x.governorate,
-                   City = x.city,
-                   Street = x.street,
-
-
-               }).ToList();
-            return serviceNeededRepaly;
-
-        }
+        
 
 
 

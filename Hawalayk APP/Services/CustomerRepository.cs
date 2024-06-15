@@ -35,7 +35,7 @@ namespace Hawalayk_APP.Services
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
                 UserName = customer.UserName,
-                ProfilePic = Path.Combine("imgs/", customer.ProfilePicture),
+                ProfilePic = customer.ProfilePicture,
                 BirthDate = customer.BirthDate,
                 PhoneNumber = customer.PhoneNumber,
                 Governorate = customer.Address.Governorate.governorate_name_ar,
