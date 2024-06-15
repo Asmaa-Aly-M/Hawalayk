@@ -11,11 +11,8 @@
         public string Governorate { get; set; }
         public string City { get; set; }
         public string Street { get; set; }
-<<<<<<< HEAD:Hawalayk APP/DataTransferObject/AvailableServiceRequestDTO.cs
-        public DateTime Date { get; set; } = DateTime.Now;
-=======
         public int ServiceRequestId { get; set; }
         public DateTime DatePosted { get; set; }
->>>>>>> 27c68d1993d377eee2dd232c3420b1ed436779cf:Hawalayk APP/DataTransferObject/ServiceNeededRepalyDTO.cs
+
     }
 }

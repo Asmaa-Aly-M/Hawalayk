@@ -108,23 +108,10 @@ namespace Hawalayk_APP.Services
                 return -1;
             }
 
-<<<<<<< HEAD
             var serviceRequestImagePath = await _fileService.SaveFileAsync(newservice.optionalImage, "ServiceRequestImages");
 
-            var CrafEnumVAlue = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(newservice.craftName);
-=======
-            string fileName = "";
-            if (file != null)
-            {
-                fileName = file.FileName;
-                string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-                using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
-                {
-                    file.CopyTo(fileStream);
-                }
-            }
             var CrafEnumVAlue = await _craftRepository.GetEnumValueOfACraftByArabicDesCription( craftName);
->>>>>>> 27c68d1993d377eee2dd232c3420b1ed436779cf
+
             ServiceRequest serviceRequest = new ServiceRequest()
             {
                 governorate = newservice.governorate,

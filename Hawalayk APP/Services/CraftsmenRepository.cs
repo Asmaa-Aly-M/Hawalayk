@@ -296,10 +296,8 @@ namespace Hawalayk_APP.Services
             return requests;
         }*/
         //service request => no job app : refused job app
-<<<<<<< HEAD
-        
-=======
-        public async Task<List<ServiceNeededRepalyDTO>> GetAvailableServiceRequestsByCraft(CraftName craftName)//بالنسبة للحرفي
+
+        public async Task<List<AvailableServiceRequestDTO>> GetAvailableServiceRequestsByCraft(CraftName craftName)//بالنسبة للحرفي
         {
             var requests = await Context.ServiceRequests
                 .Include(r=>r.Customer)
@@ -309,12 +307,12 @@ namespace Hawalayk_APP.Services
 
             var filteredRequests = requests
                 .Where(request => !request.JobApplications.Any(ja => ja.ResponseStatus == ResponseStatus.Accepted)).ToList();
-            List<ServiceNeededRepalyDTO> serviceNeededRepaly = filteredRequests.Select(x =>
-               new ServiceNeededRepalyDTO
+            List<AvailableServiceRequestDTO> serviceNeededRepaly = filteredRequests.Select(x =>
+               new AvailableServiceRequestDTO
                {
 
                    CustomerID = x.CustomerId,
-                   CustomerFristName = x.Customer.FirstName,
+                   CustomerFirstName = x.Customer.FirstName,
                    CustomerLastName = x.Customer.LastName,
                    CustomerProfilePicture = x.Customer.ProfilePicture,
                    Content = x.Content,
@@ -330,15 +328,6 @@ namespace Hawalayk_APP.Services
             return serviceNeededRepaly;
 
         }
->>>>>>> 27c68d1993d377eee2dd232c3420b1ed436779cf
-
-
-
-
-
-
-
-
 
 
 
