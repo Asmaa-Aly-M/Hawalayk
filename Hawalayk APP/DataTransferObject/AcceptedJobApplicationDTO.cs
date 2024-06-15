@@ -3,6 +3,9 @@
     public class AcceptedJobApplicationDTO
     {
         public string CraftsmanID { get; set; }
+        public string CustomerID { get; set; }
+        public int JobApplicationID { get; set; }
+        public int ServiceRequestID { get; set; }
         public string CraftsmanFristName { get; set; }
         public string CraftsmanLastName { get; set; }
         public string CraftsmanProfilePicture { get; set; }

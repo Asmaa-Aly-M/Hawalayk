@@ -85,8 +85,16 @@ namespace Hawalayk_APP.Services
         //}
 
 
-        public async Task<int> CreateAsync(string customerId, ServiceRequestDTO newservice)
+        public async Task<int> CreateAsync(string craftName, string customerId, ServiceRequestDTO newservice)
         {
+            var enumValueOfCraft = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(craftName);
+            var craftsmenOfCraft = Context.Craftsmen.Include(c => c.Craft)
+                .Where(c => c.Craft.Name == enumValueOfCraft).ToList();
+            if (craftsmenOfCraft == null)
+            {
+                return 0;
+            }
+
             Customer customer = await _customerRepository.GetByIdAsync(customerId);
 
             if (customer == null)
@@ -105,7 +113,7 @@ namespace Hawalayk_APP.Services
                     file.CopyTo(fileStream);
                 }
             }
-            var CrafEnumVAlue = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(newservice.craftName);
+            var CrafEnumVAlue = await _craftRepository.GetEnumValueOfACraftByArabicDesCription( craftName);
             ServiceRequest serviceRequest = new ServiceRequest()
             {
                 //  Id = newservice.Id,
@@ -274,6 +282,7 @@ namespace Hawalayk_APP.Services
                 new ServiceNeededRepalyForCustomerDTO
                 {
                     ServiceRequestId = request.Id,
+                    CustomerId = request.CustomerId,
                     ServiceContent = request.Content,
                     OptionalImage=request.OptionalImage,
                     ServiceCraftName = await _craftRepository.GetCraftNameInArabicByEnumValue(request.craft.Name),
@@ -306,9 +315,12 @@ namespace Hawalayk_APP.Services
                 return new RequestAcceptedForCustomrDTO
                 {
                     ServiceRequestId = s.Id,
+                    CutomerId=s.CustomerId,
                     CraftName = await _craftRepository.GetCraftNameInArabicByEnumValue(s.craft.Name),
                     ServiceContent = s.Content,
                     OptionalImage=s.OptionalImage,
+                    JobApplicationId= acceptedJobApplication.Id,
+                    CraftsmanId = acceptedJobApplication?.Craftsman.Id,
                     CraftsmanFristName = acceptedJobApplication?.Craftsman.FirstName,
                     CraftsmanLastName = acceptedJobApplication?.Craftsman.LastName,
                     Date = s.DatePosted

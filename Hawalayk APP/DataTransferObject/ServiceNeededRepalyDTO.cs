@@ -11,5 +11,7 @@
         public string Governorate { get; set; }
         public string City { get; set; }
         public string Street { get; set; }
+        public int ServiceRequestId { get; set; }
+        public DateTime DatePosted { get; set; }
     }
 }
