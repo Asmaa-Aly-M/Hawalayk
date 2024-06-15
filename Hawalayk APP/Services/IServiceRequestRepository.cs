@@ -10,11 +10,11 @@ namespace Hawalayk_APP.Services
         int CountUsersMakingRequestsLastMonth();
         int CountUsersMakingRequestsLastWeek();
         int CountUsersMakingRequestsToday();
-        Task<int> CreateAsync(string customerId, ServiceRequestDTO newservice);
+        Task<int> CreateAsync(string craftName, string customerId, ServiceRequestDTO newservice);
         Task<int> Delete(int id);
         Task<List<ServiceRequest>> GetAll();
         Task<ServiceRequest> GetById(int id);
-        List<ServiceRequest> GetLatestServiceRequests();
+        List<RequestForDashBord> GetLatestServiceRequests();
         Task<List<RequestAcceptedForCustomrDTO>> GetServiceRequestsAcceptedCraftsmenForCustomer(string customerID);
         Task<ServiceRequestSendDTO> GetServiceRequestSend(int id);
         Task<List<ServiceNeededRepalyForCustomerDTO>> GetServiceRequestsNeedToReplayByCraftsmenForCustomer(string customerId);

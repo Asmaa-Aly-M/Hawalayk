@@ -88,7 +88,9 @@ namespace Hawalayk_APP.Services
 
         public async Task<AcceptedJobApplicationDTO> GetJobApplicationAcceptedByServiceRequest(int ServiceRequestID)
         {
-            var job = Context.JobApplications.Include(j => j.Craftsman)
+            var job = Context.JobApplications
+                .Include(j => j.Craftsman)
+                .Include(s => s.ServiceRequest)
                 .FirstOrDefault(job => job.ServiceRequestId == ServiceRequestID && job.ResponseStatus == ResponseStatus.Accepted);
             if (job == null)
             {
@@ -98,12 +100,16 @@ namespace Hawalayk_APP.Services
 
             AcceptedJobApplicationDTO acceptedJob = new AcceptedJobApplicationDTO
             {
+                CustomerID=job.ServiceRequest.CustomerId,
+                ServiceRequestID=job.ServiceRequestId,
+                JobApplicationID=job.Id,
                 CraftsmanID = job.CraftsmanId,
                 CraftsmanFristName = job.Craftsman.FirstName,
                 CraftsmanLastName = job.Craftsman.LastName,
                 CraftsmanProfilePicture = job.Craftsman.ProfilePicture,
                 InitialPrice = job.InitialPrice,
                 Content = job.Content,
+                Rating=job.Craftsman.Rating,    
             };
             return acceptedJob;
 
@@ -113,12 +119,16 @@ namespace Hawalayk_APP.Services
         public async Task<List<AcceptedJobApplicationDTO>> GetJobApplicationsPendingByServiceRequest(int ServiceRequestID)
         {
             var jobs = Context.JobApplications.Include(j => j.Craftsman)
+                .Include(s=>s.ServiceRequest)
                 .Where(job => job.ServiceRequestId == ServiceRequestID && job.ResponseStatus == ResponseStatus.Pending);
 
             List<AcceptedJobApplicationDTO> pendingJobs = jobs.Select(j =>
                 new AcceptedJobApplicationDTO
                 {
                     CraftsmanID = j.CraftsmanId,
+                    JobApplicationID=j.Id,
+                    ServiceRequestID=j.ServiceRequestId,
+                    CustomerID=j.ServiceRequest.CustomerId,
                     CraftsmanFristName = j.Craftsman.FirstName,
                     CraftsmanLastName = j.Craftsman.LastName,
                     CraftsmanProfilePicture = j.Craftsman.ProfilePicture,

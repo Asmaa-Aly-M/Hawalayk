@@ -36,7 +36,7 @@ namespace Hawalayk_APP.Controllers
 
 
         [HttpPost("CreateRequest")]//
-        public async Task<IActionResult> createRequest([FromForm] ServiceRequestDTO ServiceRequest)
+        public async Task<IActionResult> createRequest(string craftName,[FromForm] ServiceRequestDTO ServiceRequest)
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -45,12 +45,16 @@ namespace Hawalayk_APP.Controllers
                 return BadRequest("No token was sent");
             }
 
-            var serviceRequestId = await _serviceRequestRepository.CreateAsync(userId, ServiceRequest);
+            var serviceRequestId = await _serviceRequestRepository.CreateAsync(craftName, userId, ServiceRequest);
+            if (serviceRequestId== 0) 
+            {
+                return BadRequest("No craftsmen in this craft");
+            }
 
             if (serviceRequestId != -1)
             {
                 var serviceSend = await _serviceRequestRepository.GetServiceRequestSend(serviceRequestId);
-                _notificationHub.Clients.Group(ServiceRequest.craftName).SendAsync("ReceiveNotification", serviceSend);//// signalR سطر ال 
+                _notificationHub.Clients.Group(craftName).SendAsync("ReceiveNotification", serviceSend);//// signalR سطر ال 
                 return Ok("Request sent successfully");
 
             }

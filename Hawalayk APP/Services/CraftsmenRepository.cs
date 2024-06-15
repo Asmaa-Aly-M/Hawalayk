@@ -4,6 +4,7 @@ using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System;
 using System.ComponentModel;
 using System.Reflection;
 
@@ -88,6 +89,11 @@ namespace Hawalayk_APP.Services
         {
             Craftsman Craftman = await Context.Craftsmen.Include(c => c.Craft).Include(a => a.Address).ThenInclude(city => city.City).ThenInclude(gov => gov.Governorate).FirstOrDefaultAsync(s => s.Id == id);
             return Craftman;//craft : 
+        }
+        public async Task<Craftsman> GetByID(string id)
+        {
+            Craftsman craftsman = await Context.Craftsmen.SingleOrDefaultAsync(c => c.Id == id);
+            return craftsman;
         }
 
         public async Task<List<Craftsman>> GetAll()
@@ -290,7 +296,41 @@ namespace Hawalayk_APP.Services
             return requests;
         }*/
         //service request => no job app : refused job app
+<<<<<<< HEAD
         
+=======
+        public async Task<List<ServiceNeededRepalyDTO>> GetAvailableServiceRequestsByCraft(CraftName craftName)//بالنسبة للحرفي
+        {
+            var requests = await Context.ServiceRequests
+                .Include(r=>r.Customer)
+                .Include(r=>r.craft)
+                .Include(r=>r.JobApplications)
+                .Where(request => request.craft.Name == craftName).ToListAsync();
+
+            var filteredRequests = requests
+                .Where(request => !request.JobApplications.Any(ja => ja.ResponseStatus == ResponseStatus.Accepted)).ToList();
+            List<ServiceNeededRepalyDTO> serviceNeededRepaly = filteredRequests.Select(x =>
+               new ServiceNeededRepalyDTO
+               {
+
+                   CustomerID = x.CustomerId,
+                   CustomerFristName = x.Customer.FirstName,
+                   CustomerLastName = x.Customer.LastName,
+                   CustomerProfilePicture = x.Customer.ProfilePicture,
+                   Content = x.Content,
+                   OptionalImage = x.OptionalImage,
+                   Governorate = x.governorate,
+                   City = x.city,
+                   Street = x.street,
+                   ServiceRequestId=x.Id,
+                   DatePosted=x.DatePosted,
+
+
+               }).ToList();
+            return serviceNeededRepaly;
+
+        }
+>>>>>>> 27c68d1993d377eee2dd232c3420b1ed436779cf
 
 
 
@@ -318,6 +358,10 @@ namespace Hawalayk_APP.Services
                    CustomerProfilePicture = y.ServiceRequest.Customer.ProfilePicture,
                    Content = y.ServiceRequest.Content,
                    OptionalImage = y.ServiceRequest.OptionalImage,
+                   ServiceRequestId = y.ServiceRequest.Id,
+                   DatePosted = y.ServiceRequest.DatePosted,
+                   JobApplicationId=y.Id,
+                   CraftsmanID=y.CraftsmanId,
 
 
                }).ToList();
