@@ -71,8 +71,8 @@ namespace Hawalayk_APP.Services
         public async Task<int> Create(string craftsmanId, PostDTO postDTO)
         {
             Craftsman craftsman = await _craftsmanRepository.GetById(craftsmanId);
-            //PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postDTO.Flag);
-            PostStatus enumValue = (PostStatus)Enum.Parse(typeof(PostStatus), postDTO.Flag);
+            PostStatus enumValue = (PostStatus)ConvertToEnum<PostStatus>(postDTO.Flag);
+            //PostStatus enumValue = (PostStatus)Enum.Parse(typeof(PostStatus), postDTO.Flag);
 
             var postImagePath = await _fileService.SaveFileAsync(postDTO.imgFile, "PostImages");
 
@@ -114,7 +114,7 @@ namespace Hawalayk_APP.Services
                     CraftsmanId = post.Craftsman.Id,
                     CraftsmanName = post.Craftsman.UserName,
                     Content = post.Content,
-                    CraftsmanProfilePicUrl = Path.Combine("imgs/", post.Craftsman.ProfilePicture),
+                    CraftsmanProfilePicUrl = post.Craftsman.ProfilePicture,
                     CraftName = craftName,
                     // Assuming Flag is an enum, convert it to string
                 };

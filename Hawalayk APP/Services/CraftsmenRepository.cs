@@ -19,11 +19,11 @@ namespace Hawalayk_APP.Services
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly IAddressRepository _addressRepository;
         private readonly ISMSRepository _smsRepository;
-
+        private readonly IFileService _fileService;
 
 
         public CraftsmenRepository(ICraftRepository craftRepository, ApplicationDbContext _Context,
-            UserManager<ApplicationUser> userManager, IAddressRepository addressRepository, ISMSRepository smsRepository)
+            UserManager<ApplicationUser> userManager, IAddressRepository addressRepository, ISMSRepository smsRepository, IFileService fileService)
         {
             Context = _Context;
             // _postRepository = postRepository;
@@ -31,6 +31,7 @@ namespace Hawalayk_APP.Services
             _craftRepository = craftRepository;
             _addressRepository = addressRepository;
             _smsRepository = smsRepository;
+            _fileService = fileService;
         }
 
 
@@ -121,7 +122,7 @@ namespace Hawalayk_APP.Services
                 FirstName = craftsman.FirstName,
                 LastName = craftsman.LastName,
                 UserName = craftsman.UserName,
-                ProfilePic = Path.Combine("imgs/", craftsman.ProfilePicture),
+                ProfilePic = craftsman.ProfilePicture,
                 BirthDate = craftsman.BirthDate,
                 PhoneNumber = craftsman.PhoneNumber,
                 CraftName = craftName,
@@ -192,15 +193,12 @@ namespace Hawalayk_APP.Services
                 return new UpdateUserDTO { IsUpdated = false, Message = "No profile picture provided." };
             }
 
-            string fileName = profilePic.FileName;
-            string filePath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), "wwwroot\\imgs"));
-            using (var fileStream = new FileStream(Path.Combine(filePath, fileName), FileMode.Create))
-            {
-                profilePic.CopyToAsync(fileStream);
-            }
+         
+            var profilePicturePath = await _fileService.SaveFileAsync(profilePic, "ProfilePictures");
 
-            craftsman.ProfilePicture = fileName;
-            craftsman.ProfilePicLastUpdated = DateTime.UtcNow;
+
+            craftsman.ProfilePicture = profilePicturePath;
+            craftsman.ProfilePicLastUpdated = DateTime.Now;
 
             var result = await _userManager.UpdateAsync(craftsman);
 
@@ -243,11 +241,11 @@ namespace Hawalayk_APP.Services
                 return new GallaryPostDTO
                 {
                     PostId = post.Id,
-                    PostImgUrl = Path.Combine("imgs/", post.ImageURL),// Construct image URL
+                    PostImgUrl = post.ImageURL,// Construct image URL
                     CraftsmanId = post.Craftsman.Id,
                     CraftsmanName = post.Craftsman.UserName,
                     Content = post.Content,
-                    CraftsmanProfilePicUrl = Path.Combine("imgs/", post.Craftsman.ProfilePicture),
+                    CraftsmanProfilePicUrl = post.Craftsman.ProfilePicture,
                     CraftName = craftName,
                     // Assuming Flag is an enum, convert it to string
                 };

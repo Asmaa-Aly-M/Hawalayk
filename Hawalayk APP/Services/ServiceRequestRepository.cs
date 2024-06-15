@@ -124,8 +124,11 @@ namespace Hawalayk_APP.Services
                 CraftId = await _craftRepository.GetCraftIdByCraftEnumValue(CrafEnumVAlue)
 
             };
+
             Context.ServiceRequests.Add(serviceRequest);
+
             int row = await Context.SaveChangesAsync();
+
             if (row > 0)
             {
                 return serviceRequest.Id;
