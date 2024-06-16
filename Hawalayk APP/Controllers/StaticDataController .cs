@@ -72,7 +72,7 @@ namespace YourNamespace.Controllers
 
 
 
-        [HttpGet("CraftsNameValues")]
+        [HttpGet("CraftNameValues")]
         public async Task<ActionResult<IEnumerable<string>>> getArabicValuesOfCraftName()
         {
             List<string> arabicValues = await getArabicValues<CraftName>();

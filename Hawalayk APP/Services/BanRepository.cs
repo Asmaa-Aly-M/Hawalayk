@@ -16,7 +16,7 @@ namespace Hawalayk_APP.Services
             _userManager = userManager;
         }
 
-        public async Task CreateAsync(string userId, int banDurationInMinutes)
+        public async Task CreateAsync(string userId, int banDurationInHours)
         {
             var user = await _userManager.FindByIdAsync(userId);
 
@@ -28,7 +28,7 @@ namespace Hawalayk_APP.Services
                 var ban = new Ban
                 {
                     UserId = userId,
-                    BanDurationInMinutes = banDurationInMinutes
+                    BanDurationInMinutes = banDurationInHours*60
                 };
 
                 _context.Bans.Add(ban);

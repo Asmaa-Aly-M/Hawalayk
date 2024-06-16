@@ -18,8 +18,8 @@ namespace Hawalayk_APP.Controllers
            _reviewRepository= reviewRepository;
         }
         //[Route("view")]
-        [HttpPost("write a Review")]
-        public async Task<IActionResult> writeReview(string craftsman,ReviewDTO newreview) 
+        [HttpPost("WriteReview")]
+        public async Task<IActionResult> WriteReview(string craftsman,ReviewDTO newreview) 
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
@@ -32,24 +32,24 @@ namespace Hawalayk_APP.Controllers
         
 
         //[Route("like")]
-        [HttpPost("click like")]
-        public async Task<IActionResult> like(int reviewId)
+        [HttpPost("ClickLike")]
+        public async Task<IActionResult> Like(int reviewId)
         {
            var newPositiveReacts = await _reviewRepository.like(reviewId);
             return Ok(newPositiveReacts);
         }
        
         //[Route("removeLike")]
-        [HttpPost("remove a Like")]
-        public async Task<IActionResult> Removelike(int reviewId)
+        [HttpPost("RemoveLike")]
+        public async Task<IActionResult> RemoveLike(int reviewId)
         {
             var newPositiveReacts = await _reviewRepository.removeLike(reviewId);
             return Ok(newPositiveReacts);
         }
 
        // [Route("disLike")]
-        [HttpPost("click a dislike")]
-        public async Task<IActionResult> disLike(int reviewId)
+        [HttpPost("ClickDislike")]
+        public async Task<IActionResult> DisLike(int reviewId)
         {
             var newNegativeReacts = await _reviewRepository.disLike(reviewId);
             return Ok(newNegativeReacts);
@@ -57,8 +57,8 @@ namespace Hawalayk_APP.Controllers
 
        
         //[Route("removeDisLike")]
-        [HttpPost("removeDisLike")]
-        public async Task<IActionResult> removeDisLike(int reviewId) 
+        [HttpPost("RemoveDisLike")]
+        public async Task<IActionResult> RemoveDisLike(int reviewId) 
         {
             var newNegativeReacts = await _reviewRepository.removeLike(reviewId);
             return Ok(newNegativeReacts);
@@ -123,8 +123,8 @@ namespace Hawalayk_APP.Controllers
        }
 
 
-        [HttpGet("Get All Review for a craftsman")]
-        public async Task<IActionResult> getAllReview(string craftsmanId) 
+        [HttpGet("GetAllReviewsForCraftsman(craftsmanId)")]
+        public async Task<IActionResult> GetAllReview(string craftsmanId) 
         { 
             var reviews = await _reviewRepository.getAllReview(craftsmanId);
             return Ok(reviews);

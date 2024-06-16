@@ -36,43 +36,43 @@ namespace Hawalayk_APP.Controllers
             _serviceRequestRepository = serviceRequestRepository;
         }
 
-        [HttpGet("customers")]
+        [HttpGet("GetAllCustomers")]
         public async Task<IActionResult> GetAllCustomers()
         {
             var customers = await _customerRepository.GetAll();
             return Ok(customers);
         }
 
-        [HttpGet("craftsmen")]
+        [HttpGet("GetAllCraftsmen")]
         public async Task<IActionResult> GetAllCraftsmen()
         {
             var craftsmen = await _craftsmanRepository.GetAll();
             return Ok(craftsmen);
         }
 
-        [HttpGet("app-reports")]
+        [HttpGet("GetAllAppReports")]
         public async Task<IActionResult> GetAllAppReports()
         {
             var appReports = await _appReportRepository.GetAll();
             return Ok(appReports);
         }
 
-        [HttpGet("user-reports")]
+        [HttpGet("GetAllUserReports")]
         public async Task<IActionResult> GetAllUserReports()
         {
             var userReports = await _userReportRepository.GetAllUserReports();
             return Ok(userReports);
         }
 
-        [HttpGet("advertisement")]
-        public async Task<IActionResult> GetAlladvertisement()
+        [HttpGet("GetAllAdvertisement")]
+        public async Task<IActionResult> GetAllAdvertisements()
         {
             var advertisements = await _advertisementRepository.GetAll();
             return Ok(advertisements);
         }
 
         //done
-        [HttpGet("craftsmen/pending")]
+        [HttpGet("GetPendingCraftsmen")]
         public async Task<IActionResult> GetPendingCraftsmen()
         {
             var pendingCraftsmen = await _craftsmanRepository.GetPendingCraftsmen();
@@ -80,7 +80,7 @@ namespace Hawalayk_APP.Controllers
         }
 
         //done
-        [HttpPut("approveCraftsman/{id}")]
+        [HttpPut("ApproveCraftsman(id, isApproved)")]
         public async Task<IActionResult> ApproveCraftsman(string id, bool isApproved)
         {
             if (string.IsNullOrEmpty(id))
@@ -100,15 +100,15 @@ namespace Hawalayk_APP.Controllers
             }
         }
 
-        [HttpPost("ban-user")]
-        public async Task<IActionResult> BanUser(string userId, int banDurationInMinutes)
+        [HttpPost("BanUser(id, hours)")]
+        public async Task<IActionResult> BanUser(string userId, int banDurationInHours)
         {
             if (string.IsNullOrEmpty(userId))
             {
                 return BadRequest("User ID is required.");
             }
 
-            if (banDurationInMinutes <= 0)
+            if (banDurationInHours <= 0)
             {
                 return BadRequest("Ban duration must be greater than zero");
             }
@@ -123,12 +123,12 @@ namespace Hawalayk_APP.Controllers
             user.IsBanned = true;
             await _userManager.UpdateAsync(user);
 
-            await _banRepository.CreateAsync(userId, banDurationInMinutes);
+            await _banRepository.CreateAsync(userId, banDurationInHours);
 
             return Ok("User banned successfully.");
         }
 
-        [HttpPost("unban-user")]
+        [HttpPost("UnbanUser(id)")]
         public async Task<IActionResult> UnbanUser(string userId)
         {
             if (string.IsNullOrEmpty(userId))
@@ -146,34 +146,34 @@ namespace Hawalayk_APP.Controllers
             return Ok("User unbanned successfully.");
         }
 
-        [HttpGet("banned-users")]
+        [HttpGet("GetBannedUsers")]
         public async Task<IActionResult> GetBannedUsers()
         {
             var bannedUsers = await _banRepository.GetBannedUsersAsync();
             return Ok(bannedUsers);
         }
-        [HttpGet("last 5 service request")]
-        public IActionResult Last5TopServic()
+        [HttpGet("GetLast5ServiceRequests")]
+        public IActionResult GetLast5ServiceRequests()
         {
 
             return Ok(_serviceRequestRepository.GetLatestServiceRequests());
 
         }
-        [HttpGet("CountUsersMakingRequestsLastMonth")]
+        [HttpGet("GetNumberOfUsersWhoMadeRequestsLastMonth")]
         public IActionResult TotalNumberOfUsersMakeingRequstLastMonth()
         {
 
             return Ok(_serviceRequestRepository.CountUsersMakingRequestsLastMonth());
 
         }
-        [HttpGet("CountUsersMakingRequestsLastWeek")]
+        [HttpGet("GetNumberOfUsersWhoMadeRequestsLastWeek")]
         public IActionResult TotalNumberOfUsersMakeingRequstLastWeek()
         {
 
             return Ok(_serviceRequestRepository.CountUsersMakingRequestsLastWeek());
 
         }
-        [HttpGet("CountUsersMakingRequestsToday")]
+        [HttpGet("GetNumberOfUsersWhoMadeRequestsToday")]
         public IActionResult TotalNumberOfUsersMakeingRequstToday()
         {
 

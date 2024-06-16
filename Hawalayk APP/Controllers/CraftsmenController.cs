@@ -48,7 +48,7 @@ namespace Hawalayk_APP.Controllers
 
 
         // [ServiceFilter(typeof(BlockingFilter))]
-        [HttpGet("CraftsmanAccount")]
+        [HttpGet("CraftsmanAccount(id)")]
         public async Task<IActionResult> GetCraftsmanAccountById(string craftsmanId)
         {
             var craftsman = await _crafsmenRepository.GetById(craftsmanId);
@@ -140,7 +140,7 @@ namespace Hawalayk_APP.Controllers
          }
         */
 
-        [HttpGet("CraftsmenOfAcraft")]
+        [HttpGet("GetCraftsmenOfAcraft")]
         public async Task<ActionResult<List<CraftsmanDTO>>> GetCraftsmenOfACraft(string craftName)
         {
             //if (!Enum.TryParse<CraftName>(craftName, out var craftNameAsEnum))
@@ -152,16 +152,16 @@ namespace Hawalayk_APP.Controllers
             return craftsmen;
         }
 
-        [HttpGet("number Of Craftsmen")]
-        public async Task<IActionResult> numberOfCraftsmen()
+        [HttpGet("GetNumberOfCraftsmen")]
+        public async Task<IActionResult> NumberOfCraftsmen()
         {
             int counter = await _crafsmenRepository.craftsmanNumber();
             return Ok(counter);
         }
 
 
-        [HttpGet("FilterMyCraftGallary")]
-        public async Task<IActionResult> MyCraftGallary()
+        [HttpGet("GetMyOwnPostsFromMyCraftGallary")]
+        public async Task<IActionResult> GetMyOwnPostsFromMyCraftGallary()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
@@ -173,7 +173,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(result);
         }
 
-        [HttpGet("Get Available Service Requests By Craft")]
+        [HttpGet("GetAvailableServiceRequestsByCraft")]
         public async Task<IActionResult> AvailableServiceRequestsByCraft()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -202,8 +202,8 @@ namespace Hawalayk_APP.Controllers
 
 
 
-        [HttpGet("Get Accepted Service Requests By Customer for Craftsman")]
-        public async Task<IActionResult> AcceptedRequestServiceForCrafsman()
+        [HttpGet("GetAcceptedServiceRequestsForCraftsman")]
+        public async Task<IActionResult> GetAcceptedServiceRequestsForCraftsman()
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

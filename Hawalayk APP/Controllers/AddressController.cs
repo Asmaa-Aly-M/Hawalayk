@@ -19,7 +19,7 @@ namespace Hawalayk_APP.Controllers
             _cityRepository = cityRepository;
         }
 
-        [HttpGet("getAllAddresses")]
+        [HttpGet("GetAllAddresses")]
 
         public async Task<IActionResult> GetAllAddresses()
         {
@@ -29,7 +29,7 @@ namespace Hawalayk_APP.Controllers
 
 
         [HttpGet]
-        [Route("address/{id}")]
+        [Route("GetAddressById/{id}")]
         public async Task<IActionResult> GetAddressById(int id)
         {
             var address = await _addressRepository.GetByIdAsync(id);
@@ -41,16 +41,16 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpGet("governorates")]
-        public async Task<IActionResult> GetGovernorateNames()
+        [HttpGet("GetGovernoratesNames")]
+        public async Task<IActionResult> GetGovernoratesNames()
         {
             var governorateNames = await _governorateRepository.GetGovernorateNamesAsync();
             return Ok(governorateNames);
         }
 
 
-        [HttpGet("cities/{governorateName}")]
-        public async Task<IActionResult> GetCityNamesByGovernorate(string governorateName)
+        [HttpGet(" GetCitiesInGovernorate/{governorateName}")]
+        public async Task<IActionResult> GetCitiesInGovernorate(string governorateName)
         {
             if (string.IsNullOrEmpty(governorateName))
             {
@@ -68,7 +68,7 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpPost]
+        [HttpPost("CreateAddress")]
         public async Task<IActionResult> CreateAddress([FromBody] AddressDTO addressDTO)
         {
             if (!ModelState.IsValid)

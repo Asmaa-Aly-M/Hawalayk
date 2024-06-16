@@ -33,8 +33,8 @@ namespace Hawalayk_APP.Controllers
             return Ok("The post created successfully");
         }
 
-        [HttpGet("CraftsGallary/{craftName}")]
-        public async Task<IActionResult> getGallary(string craftName)
+        [HttpGet("GetCraftGallary(craftName)")]
+        public async Task<IActionResult> GetGallary(string craftName)
         {
             var gallary = await _postRepository.GetGrafGallary(craftName);
             if (gallary != null)
@@ -47,8 +47,8 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpGet("Portfolio/{craftsmanId}")]
-        public async Task<IActionResult> getPortfolio(string craftsmanId)
+        [HttpGet("GetCraftsmanPortfolio(craftsmanId)")]
+        public async Task<IActionResult> GetCraftsmanPortfolio(string craftsmanId)
         {
             //string craftsmanId
             // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -62,8 +62,8 @@ namespace Hawalayk_APP.Controllers
                 return NotFound(new { message = "no posts yet" });
 
         }
-        [HttpPut("Update")]
-        public async Task<IActionResult> Update([FromForm] PostUpdatedDTO post)
+        [HttpPut("UpdatePost")]
+        public async Task<IActionResult> UpdatePost([FromForm] PostUpdatedDTO post)
         {
             int raw = await _postRepository.Update(post.Id, post);
 
@@ -76,7 +76,7 @@ namespace Hawalayk_APP.Controllers
 
         }
         [HttpDelete("DeletePost")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeletePost(int id)
         {
             Post oldpost = await _postRepository.GetById(id);
             if (oldpost == null)
@@ -88,8 +88,8 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpGet("MyCraftsGallary")]
-        public async Task<IActionResult> getGallary()
+        [HttpGet("GetMyCraftGallary")]
+        public async Task<IActionResult> GetGallary()
         {
             //string craftsmanId
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

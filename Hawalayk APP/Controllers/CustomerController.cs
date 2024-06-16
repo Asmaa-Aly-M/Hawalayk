@@ -18,7 +18,7 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpGet("Show Customer Account")]
+        [HttpGet("GetCustomerAccount")]
         public async Task<IActionResult> GetCustomerAccount()
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -37,7 +37,7 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpGet("Number Of Customer")]
+        [HttpGet("NumberOfCustomer")]
         public async Task<IActionResult> numberOfCustomer()
         {
             int counter = await _customerRepository.customerNumber();
@@ -55,8 +55,8 @@ namespace Hawalayk_APP.Controllers
          }
         هنركن دى هنا لغاية لما نشوف هنحتاجها ولا لا لان محدش عارف بس محدش يمسحهاهى بترجع كل ال service ا عملها العميل*/
 
-        [HttpGet("Search About Craftsmen")]
-        public async Task<IActionResult> searchAboutCraftsmen(string craftName, string gonernorate) 
+        [HttpGet("SearchAboutCraftsmen")]
+        public async Task<IActionResult> SearchAboutCraftsmen(string craftName, string gonernorate) 
         {
             var craftNameEnumValue= await _craftRepository.GetEnumValueOfACraftByArabicDesCription(craftName);
             var craftsmen = await _customerRepository.searchAboutCraftsmen(craftNameEnumValue, gonernorate);

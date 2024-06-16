@@ -35,8 +35,8 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpPost("CreateRequest")]//
-        public async Task<IActionResult> createRequest(string craftName,[FromForm] ServiceRequestDTO ServiceRequest)
+        [HttpPost("CreateServiceRequest")]//
+        public async Task<IActionResult> CreateServiceRequest(string craftName,[FromForm] ServiceRequestDTO ServiceRequest)
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -66,16 +66,16 @@ namespace Hawalayk_APP.Controllers
 
 
 
-        [HttpDelete]
-        public async Task<IActionResult> cancleService(int serviceId) ////محتاجة مراجعة؟؟؟
+        [HttpDelete("CancelServiceRequest")]
+        public async Task<IActionResult> CancelServiceRequest(int serviceId) ////محتاجة مراجعة؟؟؟
         {
             await _serviceRequestRepository.Delete(serviceId);
             return Ok(new { message = "Service is canceled" });
         }
         //http://localhost:5153/api/ServiceRequest/applyToRequest
 
-        [HttpPost("applyToRequest")]
-        public async Task<IActionResult> applyToRequest(int serviceID,JobApplicationDTO replay)
+        [HttpPost("ApplyToServiceRequest")]
+        public async Task<IActionResult> ApplyToServiceRequest(int serviceID,JobApplicationDTO replay)
         {
             //   var customerID = (await _serviceRequestRepository.GetById(requestId)).Customer.Id;
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -94,8 +94,8 @@ namespace Hawalayk_APP.Controllers
 
         }
 
-        [HttpPost("acceptApply")]
-        public async Task<IActionResult> acceptApply(int applicationId)
+        [HttpPost("AcceptJobApplication")]
+        public async Task<IActionResult> AcceptJobApplication(int applicationId)
         {
             var aJobapplication= await _jobApplicationRepository.GetById(applicationId);
             aJobapplication.ResponseStatus = ResponseStatus.Accepted;
@@ -116,8 +116,8 @@ namespace Hawalayk_APP.Controllers
             return Ok("accept");
         }
 
-        [HttpPost("rejectApply")]
-        public async Task<IActionResult> rejectApply(int repplyId)
+        [HttpPost("RejectJobApplication")]
+        public async Task<IActionResult> RejectJobApplication(int repplyId)
         {
             (await _jobApplicationRepository.GetById(repplyId)).ResponseStatus = ResponseStatus.Rejected;
             await _context.SaveChangesAsync();
@@ -126,8 +126,8 @@ namespace Hawalayk_APP.Controllers
             return Ok("this service not available");
         }
 
-        [HttpGet("Number Of All ServiceRequest")]
-        public async Task<IActionResult> numberOfServiceRequest()
+        [HttpGet("GetNumberOfAllServiceRequests")]
+        public async Task<IActionResult> GetNumberOfAllServiceRequests()
         {
             int counter = await _serviceRequestRepository.countService();
             return Ok(counter);
@@ -143,8 +143,8 @@ namespace Hawalayk_APP.Controllers
         */
 
 
-        [HttpGet("Get Service Requests Needed To Replay By craftsmen for Customer")]
-        public async Task<IActionResult> ServiceRequestsNeededToReplayByCraftsmen()
+        [HttpGet("GetServiceRequestsWithNoAcceptedJobApplicationsForCustomer")]
+        public async Task<IActionResult> GetServiceRequestsWithNoAcceptedJobApplicationsForCustomer()
         {
          
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -156,8 +156,8 @@ namespace Hawalayk_APP.Controllers
 
 
 
-        [HttpGet("Get Accepted Service Requests for Customer")]
-        public async Task<IActionResult> AcceptedRequestServiceForCustomer()
+        [HttpGet("GetServiceRequestsWithAcceptedJobApplicationForCustomer")]
+        public async Task<IActionResult> GetServiceRequestsWithAcceptedJobApplicationForCustomer()
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

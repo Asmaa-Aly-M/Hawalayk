@@ -17,8 +17,8 @@ namespace Hawalayk_APP.Controllers
             _userReportRepository = userReportRepository;
         }
 
-        [HttpPost("Write a Report")]
-        public async Task<IActionResult> writeReport(UserReportDTO userReport)
+        [HttpPost("WriteReport")]
+        public async Task<IActionResult> WriteReport(UserReportDTO userReport)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var newReport=await _userReportRepository.Create(userId, userReport);

@@ -58,7 +58,7 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpPost("UnBlockUser")]
+        [HttpPost("UnblockUser")]
         public async Task<IActionResult> UnblockUser(string blockedUserId)
         {
             if (string.IsNullOrEmpty(blockedUserId))
@@ -83,7 +83,7 @@ namespace Hawalayk_APP.Controllers
             }
         }
 
-        [HttpPost("request-updating-phone-number")]
+        [HttpPost("RequestUpdatingPhoneNumber")]
         public async Task<IActionResult> RequestUpdatingPhoneNumber([FromBody] UpdatePhoneNumberDTO updatePhoneNumber)
         {
             if (!ModelState.IsValid)
@@ -108,7 +108,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(result.Message);
         }
 
-        [HttpPut("confirm-phone-number-update")]
+        [HttpPut("ConfirmPhoneNumberUpdate")]
         public async Task<IActionResult> ConfirmPhoneNumberUpdate(string otp)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;

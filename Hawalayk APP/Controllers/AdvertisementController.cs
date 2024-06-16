@@ -17,7 +17,7 @@ namespace Hawalayk_APP.Controllers
             _advertisementRepository = advertisementRepository;
         }
 
-        [HttpGet]
+        [HttpGet("GetAllAdvertisements")]
         public async Task<ActionResult<List<Advertisement>>> GetAll()
         {
             List<Advertisement> advertisements = await _advertisementRepository.GetAll();
@@ -25,7 +25,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(advertisements);
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetAdvertisement(id)")]
         public async Task<ActionResult<Advertisement>> GetById(int id)//test
         {
             var advertisement = await _advertisementRepository.GetById(id);
@@ -42,14 +42,14 @@ namespace Hawalayk_APP.Controllers
             return Ok(advertisementData);
         }
 
-        [HttpPost]
+        [HttpPost("CreateAdvertisement")]
         public async Task<IActionResult> Create(Advertisement advertisement)//test//لازم نضيف انها  autourized للادمن فقط
         {
             await _advertisementRepository.Create(advertisement);
             return Ok();
         }
 
-        [HttpDelete("{id}")]     
+        [HttpDelete("DeleteAdvertisement(id)")]     
         public async Task<IActionResult> Delete(int id)//test لازم نضيف انها  autourized للادمن فقط
         {
             var existingAdvertisement = await _advertisementRepository.GetById(id);
@@ -61,7 +61,7 @@ namespace Hawalayk_APP.Controllers
             return NoContent();
         }
 
-        [HttpPut("{id}")] //test لازم نضيف انها  autourized للادمن فقط
+        [HttpPut("UpdateAdvertisement")] //test لازم نضيف انها  autourized للادمن فقط
         public async Task<IActionResult> Update(int id, Advertisement updatedAdvertisement)
         {
             var existingAdvertisement = await _advertisementRepository.GetById(id);
