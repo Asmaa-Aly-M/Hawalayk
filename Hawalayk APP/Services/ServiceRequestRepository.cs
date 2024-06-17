@@ -235,6 +235,30 @@ namespace Hawalayk_APP.Services
 
             return count;
         }
+        public async Task<double> GetPercentageOfUsersMakingRequestsToday()
+        {
+            // Calculate the start of today
+            DateTime today = DateTime.Today;
+
+            // Get the count of distinct users who made service requests today
+            int usersMakingRequestsToday = await Context.ServiceRequests
+                .Where(sr => sr.DatePosted >= today)
+                .Select(sr => sr.CustomerId)
+                .Distinct()
+                .CountAsync();
+
+            // Get the total number of customers
+            int totalCustomers = await Context.Customers.CountAsync();
+
+            // Calculate the percentage
+            double percentage = 0;
+            if (totalCustomers > 0)
+            {
+                percentage = (double)usersMakingRequestsToday / totalCustomers * 100;
+            }
+
+            return percentage;
+        }
 
         public int CountUsersMakingRequestsLastWeek()
         {

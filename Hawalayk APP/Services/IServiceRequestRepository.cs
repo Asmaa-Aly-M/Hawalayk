@@ -10,6 +10,7 @@ namespace Hawalayk_APP.Services
         int CountUsersMakingRequestsLastMonth();
         int CountUsersMakingRequestsLastWeek();
         int CountUsersMakingRequestsToday();
+        Task<double> GetPercentageOfUsersMakingRequestsToday();
         Task<int> CreateAsync(string craftName, string customerId, ServiceRequestDTO newservice);
         Task<int> Delete(int id);
         Task<List<ServiceRequest>> GetAll();
