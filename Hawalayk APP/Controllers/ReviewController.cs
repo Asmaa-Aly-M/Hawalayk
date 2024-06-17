@@ -24,7 +24,7 @@ namespace Hawalayk_APP.Controllers
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
-                return BadRequest("token=null.");
+                return BadRequest("invalid Token");
             }
             await _reviewRepository.Create(craftsman, userId ,newreview);//مش المفروض يباصيلنا حاجة من نوع reviewDTO
             return Ok(newreview);

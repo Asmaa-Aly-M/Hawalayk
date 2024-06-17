@@ -65,7 +65,8 @@ namespace Hawalayk_APP.Services
                 FirstName = c.FirstName,
                 LastName = c.LastName,
                 Rating = c.Rating,
-                Id = c.Id
+                Id = c.Id,
+                ProfilePic=c.ProfilePicture,
 
 
             }).ToList();
