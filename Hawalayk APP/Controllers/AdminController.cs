@@ -180,5 +180,12 @@ namespace Hawalayk_APP.Controllers
             return Ok(_serviceRequestRepository.CountUsersMakingRequestsToday());
 
         }
+        [HttpGet("GetPercentageOfUsersMakingRequestsToday")]
+        public IActionResult PrecentageOfUsersMakeingRequstToday()
+        {
+
+            return Ok(_serviceRequestRepository.GetPercentageOfUsersMakingRequestsToday());
+
+        }
     }
 }
