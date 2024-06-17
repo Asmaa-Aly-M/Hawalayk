@@ -1,4 +1,5 @@
-﻿using Hawalayk_APP.DataTransferObject;
+﻿using Hawalayk_APP.Attributes;
+using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Identity;
@@ -47,8 +48,9 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        // [ServiceFilter(typeof(BlockingFilter))]
-        [HttpGet("CraftsmanAccount(id)")]
+        [ServiceFilter(typeof(BlockingFilter))]
+        [BlockCheck("craftsmanId")] // Specify the parameter name used in the action
+        [HttpGet("CraftsmanAccount/{craftsmanId}")]
         public async Task<IActionResult> GetCraftsmanAccountById(string craftsmanId)
         {
             var craftsman = await _crafsmenRepository.GetById(craftsmanId);
@@ -124,7 +126,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return NotFound("This Token Is Not Found : ");
             }
-            var Portfolio = await _postRepository.GetGraftsmanPortfolio(craftsmanId);
+            var Portfolio = await _postRepository.GetGraftsmanPortfolio(craftsmanId, craftsmanId);
             if (Portfolio != null)
             {
                 return Ok(Portfolio);
@@ -140,15 +142,16 @@ namespace Hawalayk_APP.Controllers
          }
         */
 
-        [HttpGet("GetCraftsmenOfAcraft")]
+        [HttpGet("GetCraftsmenOfAcraft/{craftName}")]
         public async Task<ActionResult<List<CraftsmanDTO>>> GetCraftsmenOfACraft(string craftName)
         {
             //if (!Enum.TryParse<CraftName>(craftName, out var craftNameAsEnum))
             //{
             //    return BadRequest("Invalid craftName");
             //}
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var craftsmen = await _craftRepository.GetCraftsmenOfACraft(craftName);
+            var craftsmen = await _craftRepository.GetCraftsmenOfACraft(userId, craftName);
             return craftsmen;
         }
 

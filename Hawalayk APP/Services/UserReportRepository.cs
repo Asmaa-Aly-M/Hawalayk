@@ -47,7 +47,7 @@ namespace Hawalayk_APP.Services
             return userReports;
         }
 
-        public async Task<int> Create(string id, UserReportDTO UserRepo)
+        public async Task<int> Create(string id, string reportedUserId, UserReportDTO UserRepo)
         {
             ApplicationUser ApplicationUser = await _applicationUserRepository.GetByIdAsync(id);
             if (ApplicationUser == null)
@@ -58,7 +58,7 @@ namespace Hawalayk_APP.Services
             UserReport userReport = new UserReport()
             {
                // Id= UserRepo.Id,
-                ReporedId =UserRepo.ReporedId,
+                ReporedId = reportedUserId,
                 Description = UserRepo.Description,
                 ReporerId = ApplicationUser.Id
             };

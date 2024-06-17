@@ -1,4 +1,5 @@
-﻿using Hawalayk_APP.DataTransferObject;
+﻿using Hawalayk_APP.Attributes;
+using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Http;
@@ -17,11 +18,13 @@ namespace Hawalayk_APP.Controllers
             _userReportRepository = userReportRepository;
         }
 
-        [HttpPost("WriteReport")]
-        public async Task<IActionResult> WriteReport(UserReportDTO userReport)
+        [ServiceFilter(typeof(BlockingFilter))]
+        [BlockCheck("reportedUserId")]
+        [HttpPost("WriteReport/{reportedUserId}")]
+        public async Task<IActionResult> WriteReport(string reportedUserId, UserReportDTO userReport)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            var newReport=await _userReportRepository.Create(userId, userReport);
+            var newReport=await _userReportRepository.Create(userId, reportedUserId, userReport);
             return Ok(newReport);
 
 

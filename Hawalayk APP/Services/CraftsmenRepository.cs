@@ -335,6 +335,7 @@ namespace Hawalayk_APP.Services
                 .Where(x => x.CraftsmanId == craftsmanID &&
             x.ResponseStatus == ResponseStatus.Accepted).ToListAsync();
 
+
             List<RequestAcceptedForCraftsmanDTO> RequestAcceptedCraftsman = AlljopApplications.Select(y =>
                new RequestAcceptedForCraftsmanDTO
                {

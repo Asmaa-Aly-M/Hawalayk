@@ -10,8 +10,8 @@ namespace Hawalayk_APP.Services
         Task<int> Delete(int id);
         Task<List<Post>> GetAll();
         Task<Post> GetById(int id);
-        Task<List<GallaryPostDTO>> GetGrafGallary(string craftName);
-        Task<List<GallaryPostDTO>> GetGraftsmanPortfolio(string craftsmanId);
+        Task<List<GallaryPostDTO>> GetGrafGallary(string userId, string craftName);
+        Task<List<GallaryPostDTO>> GetGraftsmanPortfolio(string userId, string craftsmanId);
         Task<int> Update(int id, PostUpdatedDTO newPost);
     }
 }

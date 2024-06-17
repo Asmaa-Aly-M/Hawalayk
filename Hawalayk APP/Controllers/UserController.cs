@@ -24,7 +24,7 @@ namespace Hawalayk_APP.Controllers
 
         // add this attribute on top of actions you want executed only for unblocked users
 
-        [HttpPost("BlockUser")]
+        [HttpPost("BlockUser/{blockedUserId}")]
         public async Task<IActionResult> BlockUser(string blockedUserId)
         {
             var blockingUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -58,7 +58,7 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpPost("UnblockUser")]
+        [HttpPost("UnblockUser/{blockedUserId}")]
         public async Task<IActionResult> UnblockUser(string blockedUserId)
         {
             if (string.IsNullOrEmpty(blockedUserId))
@@ -108,7 +108,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(result.Message);
         }
 
-        [HttpPut("ConfirmPhoneNumberUpdate")]
+        [HttpPut("ConfirmPhoneNumberUpdate/{otp}")]
         public async Task<IActionResult> ConfirmPhoneNumberUpdate(string otp)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -126,6 +126,22 @@ namespace Hawalayk_APP.Controllers
             }
 
             return Ok(result.Message);
+        }
+
+        [HttpGet("GetMyBlockedUsers")]
+        public async Task<IActionResult> GetMyBlockedUsersAsync()
+        {
+            var blockingUserId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            try
+            {
+                var blockedUsers = await _blockRepository.GetMyBlockedUsersAsync(blockingUserId);
+
+                return Ok(blockedUsers);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

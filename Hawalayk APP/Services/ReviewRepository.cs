@@ -10,10 +10,12 @@ namespace Hawalayk_APP.Services
     {
         ApplicationDbContext Context;
         private readonly ICraftsmenRepository craftsmenRepository;
-        public ReviewRepository(ApplicationDbContext _Context, ICraftsmenRepository _craftsmenRepository)
+        private readonly IBlockingRepository _blockingRepository;
+        public ReviewRepository(ApplicationDbContext _Context, ICraftsmenRepository _craftsmenRepository, IBlockingRepository blockingRepository)
         {
             Context = _Context;
             craftsmenRepository = _craftsmenRepository;
+            _blockingRepository = blockingRepository;
         }
         public async Task<Review> GetById(int id)
         {
@@ -127,6 +129,7 @@ namespace Hawalayk_APP.Services
             var reviews=await Context.Reviews
                 .Include(c=>c.Customer)
                 .Where(r=>r.CraftsmanId == craftsmanId).ToListAsync();
+
 
             var ShowReviewDTO = reviews.Select(r =>
             {

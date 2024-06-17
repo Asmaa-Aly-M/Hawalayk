@@ -11,11 +11,11 @@ namespace Hawalayk_APP.Services
 
     {
         ApplicationDbContext _context;
-
-        public CustomerRepository(ApplicationDbContext context)
+        private readonly IBlockingRepository _blockingRepository;
+        public CustomerRepository(ApplicationDbContext context, IBlockingRepository blockingRepository)
         {
             _context = context;
-
+            _blockingRepository = blockingRepository;
         }
 
         public async Task<List<Customer>> GetAll()
@@ -70,13 +70,15 @@ namespace Hawalayk_APP.Services
 
 
 
-        public async Task<List<SearchAboutCraftsmanDTO>> searchAboutCraftsmen(CraftName craftName, string governorate)
+        public async Task<List<SearchAboutCraftsmanDTO>> searchAboutCraftsmen(string userId, CraftName craftName, string governorate)
         {
             var Allcraftsmen = await _context.Craftsmen
                 .Include(c=>c.Craft)
                 .Include(g => g.Address)
                     .ThenInclude(g=>g.Governorate)
                 .Where(c => c.Craft.Name == craftName && c.Address.Governorate.governorate_name_ar == governorate).ToListAsync();
+
+            var blockedUserIds = await _blockingRepository.GetBlockedUsersAsync(userId);
 
             List<SearchAboutCraftsmanDTO> Craftsmen = Allcraftsmen.Select(y =>
                new SearchAboutCraftsmanDTO

@@ -30,7 +30,7 @@ namespace Hawalayk_APP.Controllers
             return Ok();
         }
 
-        [HttpDelete("DeleteAdmin")]
+        [HttpDelete("DeleteAdmin/{id}")]
         public async Task<IActionResult> DeleteAdmin(string id)
         {
             var existingAmin = await _adminRepository.GetById(id);

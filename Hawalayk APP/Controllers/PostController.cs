@@ -1,4 +1,5 @@
-﻿using Hawalayk_APP.DataTransferObject;
+﻿using Hawalayk_APP.Attributes;
+using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -33,10 +34,11 @@ namespace Hawalayk_APP.Controllers
             return Ok("The post created successfully");
         }
 
-        [HttpGet("GetCraftGallary(craftName)")]
+        [HttpGet("GetCraftGallary/{craftName}")]
         public async Task<IActionResult> GetGallary(string craftName)
         {
-            var gallary = await _postRepository.GetGrafGallary(craftName);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var gallary = await _postRepository.GetGrafGallary(userId, craftName);
             if (gallary != null)
             {
                 return Ok(gallary);
@@ -46,14 +48,14 @@ namespace Hawalayk_APP.Controllers
 
         }
 
-
-        [HttpGet("GetCraftsmanPortfolio(craftsmanId)")]
+        [ServiceFilter(typeof(BlockingFilter))]
+        [BlockCheck("craftsmanId")]
+        [HttpGet("GetCraftsmanPortfolio/{craftsmanId}")]
         public async Task<IActionResult> GetCraftsmanPortfolio(string craftsmanId)
         {
-            //string craftsmanId
-            // var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-            var Portfolio = await _postRepository.GetGraftsmanPortfolio(craftsmanId);
+            var Portfolio = await _postRepository.GetGraftsmanPortfolio(userId, craftsmanId);
             if (Portfolio != null)
             {
                 return Ok(Portfolio);
@@ -75,7 +77,7 @@ namespace Hawalayk_APP.Controllers
             else return BadRequest("issue happend while updating :");
 
         }
-        [HttpDelete("DeletePost")]
+        [HttpDelete("DeletePost/{id}")]
         public async Task<IActionResult> DeletePost(int id)
         {
             Post oldpost = await _postRepository.GetById(id);
@@ -97,7 +99,7 @@ namespace Hawalayk_APP.Controllers
             var craftNameEnumValue = craftsman.Craft.Name;
             var craftName = await _craftRepository.GetCraftNameInArabicByEnumValue(craftNameEnumValue);
 
-            var gallary = await _postRepository.GetGrafGallary(craftName);
+            var gallary = await _postRepository.GetGrafGallary(userId, craftName);
             if (gallary != null)
             {
                 return Ok(gallary);

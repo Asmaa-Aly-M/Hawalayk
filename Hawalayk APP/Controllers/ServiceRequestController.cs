@@ -35,7 +35,7 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpPost("CreateServiceRequest")]//
+        [HttpPost("CreateServiceRequest/{craftName}")]//
         public async Task<IActionResult> CreateServiceRequest(string craftName,[FromForm] ServiceRequestDTO ServiceRequest)
         {
 
@@ -66,7 +66,7 @@ namespace Hawalayk_APP.Controllers
 
 
 
-        [HttpDelete("CancelServiceRequest")]
+        [HttpDelete("CancelServiceRequest/{serviceId}")]
         public async Task<IActionResult> CancelServiceRequest(int serviceId) ////محتاجة مراجعة؟؟؟
         {
             await _serviceRequestRepository.Delete(serviceId);
@@ -74,7 +74,7 @@ namespace Hawalayk_APP.Controllers
         }
         //http://localhost:5153/api/ServiceRequest/applyToRequest
 
-        [HttpPost("ApplyToServiceRequest")]
+        [HttpPost("ApplyToServiceRequest/{serviceId}")]
         public async Task<IActionResult> ApplyToServiceRequest(int serviceID,JobApplicationDTO replay)
         {
             //   var customerID = (await _serviceRequestRepository.GetById(requestId)).Customer.Id;
@@ -94,7 +94,7 @@ namespace Hawalayk_APP.Controllers
 
         }
 
-        [HttpPost("AcceptJobApplication")]
+        [HttpPost("AcceptJobApplication/{applicationId}")]
         public async Task<IActionResult> AcceptJobApplication(int applicationId)
         {
             var aJobapplication= await _jobApplicationRepository.GetById(applicationId);
@@ -116,12 +116,12 @@ namespace Hawalayk_APP.Controllers
             return Ok("accept");
         }
 
-        [HttpPost("RejectJobApplication")]
-        public async Task<IActionResult> RejectJobApplication(int repplyId)
+        [HttpPost("RejectJobApplication/{applicationId}")]
+        public async Task<IActionResult> RejectJobApplication(int applicationId)
         {
-            (await _jobApplicationRepository.GetById(repplyId)).ResponseStatus = ResponseStatus.Rejected;
+            (await _jobApplicationRepository.GetById(applicationId)).ResponseStatus = ResponseStatus.Rejected;
             await _context.SaveChangesAsync();
-            var craftmanID = (await _jobApplicationRepository.GetById(repplyId)).Craftsman.Id;
+            var craftmanID = (await _jobApplicationRepository.GetById(applicationId)).Craftsman.Id;
             _notificationHub.Clients.User(craftmanID).SendAsync("RejectApplyRequest");
             return Ok("this service not available");
         }

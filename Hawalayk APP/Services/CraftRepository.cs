@@ -11,9 +11,11 @@ namespace Hawalayk_APP.Services
     public class CraftRepository : ICraftRepository
     {
         ApplicationDbContext Context;
-        public CraftRepository(ApplicationDbContext _Context)
+        private readonly IBlockingRepository _blockingRepository;
+        public CraftRepository(ApplicationDbContext _Context, IBlockingRepository blockingRepository)
         {
             Context = _Context;
+            _blockingRepository = blockingRepository;
         }
 
 
@@ -52,13 +54,18 @@ namespace Hawalayk_APP.Services
             var craftNames = Enum.GetNames(typeof(CraftName)).ToList();
             return Task.FromResult(craftNames);
         }
-        public async Task<List<CraftsmanDTO>> GetCraftsmenOfACraft(string craftName)
+        public async Task<List<CraftsmanDTO>> GetCraftsmenOfACraft(string userId, string craftName)
         {
             Craft existingCraft = null;
             CraftName enumValue = await GetEnumValueOfACraftByArabicDesCription(craftName);
 
+            var blockedUserIds = await _blockingRepository.GetBlockedUsersAsync(userId);
+
             var craftsmen = await Context.Craftsmen.Include(c => c.Craft).Where(c => c.Craft.Name == enumValue).ToListAsync();
-            return craftsmen.Select(c => new CraftsmanDTO
+
+            var filteredCraftsmen = craftsmen.Where(craftsman => !blockedUserIds.Contains(craftsman.Id)).ToList();
+
+            return filteredCraftsmen.Select(c => new CraftsmanDTO
             {
                 CraftName = craftName,
                 UserName = c.UserName,

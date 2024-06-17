@@ -80,7 +80,7 @@ namespace Hawalayk_APP.Controllers
         }
 
         //done
-        [HttpPut("ApproveCraftsman(id, isApproved)")]
+        [HttpPut("ApproveCraftsman")]
         public async Task<IActionResult> ApproveCraftsman(string id, bool isApproved)
         {
             if (string.IsNullOrEmpty(id))
@@ -100,7 +100,7 @@ namespace Hawalayk_APP.Controllers
             }
         }
 
-        [HttpPost("BanUser(id, hours)")]
+        [HttpPost("BanUser")]
         public async Task<IActionResult> BanUser(string userId, int banDurationInHours)
         {
             if (string.IsNullOrEmpty(userId))
@@ -128,7 +128,7 @@ namespace Hawalayk_APP.Controllers
             return Ok("User banned successfully.");
         }
 
-        [HttpPost("UnbanUser(id)")]
+        [HttpPost("UnbanUser")]
         public async Task<IActionResult> UnbanUser(string userId)
         {
             if (string.IsNullOrEmpty(userId))

@@ -5,7 +5,7 @@ namespace Hawalayk_APP.Services
 {
     public interface IUserReportRepository
     {
-        Task<int> Create(string id, UserReportDTO UserRepo);
+        Task<int> Create(string id, string reportedUserId, UserReportDTO UserRepo);
         Task<int> Delete(int id);
         Task<List<UserReportForAdminDashBoard>> GetAllUserReports();
         Task<UserReport> GetById(int id);

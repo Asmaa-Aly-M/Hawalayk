@@ -49,7 +49,7 @@ namespace Hawalayk_APP.Controllers
         }
 
 
-        [HttpGet(" GetCitiesInGovernorate/{governorateName}")]
+        [HttpGet("GetCitiesInGovernorate/{governorateName}")]
         public async Task<IActionResult> GetCitiesInGovernorate(string governorateName)
         {
             if (string.IsNullOrEmpty(governorateName))

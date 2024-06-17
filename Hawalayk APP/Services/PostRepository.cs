@@ -14,13 +14,15 @@ namespace Hawalayk_APP.Services
         private readonly ICraftsmenRepository _craftsmanRepository;
         private readonly ICraftRepository _craftRepository;
         private readonly IFileService _fileService;
+        private readonly IBlockingRepository _blockingRepository;
         public PostRepository(ApplicationDbContext _Context, ICraftsmenRepository craftsmanRepository, 
-            ICraftRepository craftRepository, IFileService fileService)
+            ICraftRepository craftRepository, IFileService fileService, IBlockingRepository blockingRepository)
         {
             Context = _Context;
             _craftsmanRepository = craftsmanRepository;
             _craftRepository = craftRepository;
             _fileService = fileService;
+            _blockingRepository = blockingRepository;
         }
 
         public async Task<Post> GetById(int id)
@@ -91,7 +93,7 @@ namespace Hawalayk_APP.Services
 
         }
 
-        public async Task<List<GallaryPostDTO>> GetGrafGallary(string craftName)
+        public async Task<List<GallaryPostDTO>> GetGrafGallary(string userId, string craftName)
         {
             Craft craft = null;
             CraftName enumValue = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(craftName);
@@ -104,8 +106,11 @@ namespace Hawalayk_APP.Services
             List<Post> posts = await Context.Posts.Include(c => c.Craftsman).Where(s => s.CraftId == craft.Id &&
             (s.Flag == Enums.PostStatus.Gallery | s.Flag == Enums.PostStatus.Both)).ToListAsync();
 
+            var blockedUserIds = await _blockingRepository.GetBlockedUsersAsync(userId);
+            var filteredPosts = posts.Where(p => !blockedUserIds.Contains(p.CraftsmanId)).ToList();
+
             // Convert Post objects to PostDTO objects
-            List<GallaryPostDTO> postDTOs = posts.Select(post =>
+            List<GallaryPostDTO> postDTOs = filteredPosts.Select(post =>
             {
                 return new GallaryPostDTO
                 {
@@ -139,7 +144,7 @@ namespace Hawalayk_APP.Services
         //    return posts;
         //}
 
-        public async Task<List<GallaryPostDTO>> GetGraftsmanPortfolio(string craftsmanId)
+        public async Task<List<GallaryPostDTO>> GetGraftsmanPortfolio(string userId, string craftsmanId)
         {
 
             List<Post> posts = await Context.Posts.Where(s => s.CraftsmanId == craftsmanId &&
@@ -155,8 +160,10 @@ namespace Hawalayk_APP.Services
 
             var craftName = descriptionAttributes?.Length > 0 ? descriptionAttributes[0].Description : "Description not found.";
 
+            var blockedUserIds = await _blockingRepository.GetBlockedUsersAsync(userId);
 
-            List<GallaryPostDTO> postDTOs = posts.Select(post =>
+            var filteredPosts = posts.Where(p => !blockedUserIds.Contains(p.CraftsmanId)).ToList();
+            List<GallaryPostDTO> postDTOs = filteredPosts.Select(post =>
             {
                 return new GallaryPostDTO
                 {

@@ -14,7 +14,7 @@ namespace Hawalayk_APP.Controllers
             _jobApplicationRepository = jobApplicationRepository;
         }
 
-        [HttpGet("GetAcceptedJobApplicationByServiceRequestId")]
+        [HttpGet("GetAcceptedJobApplicationByServiceRequestId/{serviceRequestId}")]
         public async Task<IActionResult> GetAcceptedJobApplicationByServiceRequest(int serviceRequestId)
         {
             var job = await _jobApplicationRepository.GetJobApplicationAcceptedByServiceRequest(serviceRequestId);
@@ -27,7 +27,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(job);
         }
 
-        [HttpGet("GetPendingJobApplicationByServiceRequestId")]
+        [HttpGet("GetPendingJobApplicationByServiceRequestId/{serviceRequestId}")]
         public async Task<IActionResult> GetJobApplicationsPendingByServiceRequest(int serviceRequestId)
         {
             var jobs = await _jobApplicationRepository.GetJobApplicationsPendingByServiceRequest(serviceRequestId);

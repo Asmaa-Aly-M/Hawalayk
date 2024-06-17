@@ -1,4 +1,5 @@
 ﻿using Hawalayk_APP.Context;
+using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -68,7 +69,7 @@ namespace Hawalayk_APP.Services
                 throw new KeyNotFoundException("User not found.");
 
             var existingBlock = await _applicationDbContext.Blocks
-                .FirstOrDefaultAsync(b => b.BlockingUserId == blockingUserId && b.BlockedUserId == blockedUserId);
+                .FirstOrDefaultAsync(b => b.BlockingUserId == blockingUserId || b.BlockedUserId == blockingUserId);
 
             if (existingBlock != null)
                 return true;
@@ -110,6 +111,24 @@ namespace Hawalayk_APP.Services
 
             return blockedUsers;
         }
-            
+
+        public async Task<List<BlockedUserDTO>> GetMyBlockedUsersAsync(string userId)
+        {
+            var myBlockedUsers = await _applicationDbContext.Blocks
+                .Where(b => b.BlockingUserId == userId)
+                .Select(b => b.BlockedUser)
+                .ToListAsync();
+
+            var myBlockedUsersDto = myBlockedUsers.Select(user => new BlockedUserDTO
+            {
+                BlockedUserId = user.Id,
+                BlockedUserFirstName = user.FirstName,
+                BlockedUserLastName = user.LastName,
+                BlockedUserProfilePicture = user.ProfilePicture
+            }).ToList();
+
+            return myBlockedUsersDto;
+        }
+
     }
 }
