@@ -12,7 +12,6 @@
         public string PhoneNumber { get; set; }
         public string CraftName { get; set; }
         public string ProfilePic { get; set; }
-        public DateTime BirthDate { get; set; }
         public double Rating { get; set; }
     }
 }

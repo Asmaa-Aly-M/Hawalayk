@@ -9,7 +9,8 @@ namespace Hawalayk_APP.Services
         Task<int> customerNumber();
         Task<List<Customer>> GetAll();
         Task<Customer> GetByIdAsync(string id);
-        Task<CustomerAccountDTO> GetCustomerAccountAsync(Customer customer);
+        Task<CustomerAccountDTO> GetCustomerAccountAsync(string customerId);
+        Task<UpdateUserDTO> UpdateCustomerAccountAsync(string customerId, UpdateCustomerAccountDTO customerAccount);
         //Task<List<ServiceRequest>> GetServiceRequestsForThisCustomer(string customerID);
         Task<List<SearchAboutCraftsmanDTO>> searchAboutCraftsmen(string userId, CraftName craftName, string governorate);
     }

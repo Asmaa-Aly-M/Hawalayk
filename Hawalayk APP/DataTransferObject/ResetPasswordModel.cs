@@ -6,7 +6,7 @@ namespace Hawalayk_APP.DataTransferObject
     {
         [Required]
         public string NewPassword { get; set; }
-        [Required, Compare("Password")]
+        [Required, Compare("NewPassword")]
         public string ConfirmPassword { get; set; }
         [Required]
         public string OTPToken { get; set;}

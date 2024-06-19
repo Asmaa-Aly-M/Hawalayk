@@ -136,7 +136,7 @@ namespace Hawalayk_APP.Services
                     UserId = user.Id,
                     PhoneNumber = phoneNumber,
                     Token = otpToken,
-                    ExpirationTime = DateTime.Now.AddMinutes(5)
+                    ExpirationTime = DateTime.Now.AddMinutes(20)
                 };
 
                 _applicationDbContext.OTPTokens.Add(otpEntity);

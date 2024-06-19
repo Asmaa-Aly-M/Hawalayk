@@ -2,6 +2,7 @@
 using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
 using Hawalayk_APP.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Hawalayk_APP.Services
@@ -12,10 +13,17 @@ namespace Hawalayk_APP.Services
     {
         ApplicationDbContext _context;
         private readonly IBlockingRepository _blockingRepository;
-        public CustomerRepository(ApplicationDbContext context, IBlockingRepository blockingRepository)
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IAddressRepository _addressRepository;
+        private readonly IFileService _fileService;
+        public CustomerRepository(ApplicationDbContext context, IBlockingRepository blockingRepository, UserManager<ApplicationUser> userManager, IFileService fileService, IAddressRepository addressRepository)
         {
             _context = context;
             _blockingRepository = blockingRepository;
+            _userManager = userManager;
+            _fileService = fileService;
+            _addressRepository = addressRepository;
+
         }
 
         public async Task<List<Customer>> GetAll()
@@ -28,20 +36,70 @@ namespace Hawalayk_APP.Services
         }
 
 
-        public async Task<CustomerAccountDTO> GetCustomerAccountAsync(Customer customer)
+        public async Task<CustomerAccountDTO> GetCustomerAccountAsync(string customerId)
         {
-            return new CustomerAccountDTO
+            var customer = await _context.Customers.Include(c => c.Address).ThenInclude(A => A.Governorate).Include(c =>c.Address).ThenInclude(A => A.City).FirstOrDefaultAsync(c => c.Id == customerId);
+            var customerAccountDTO = new CustomerAccountDTO()
             {
                 FirstName = customer.FirstName,
                 LastName = customer.LastName,
                 UserName = customer.UserName,
                 ProfilePic = customer.ProfilePicture,
-                BirthDate = customer.BirthDate,
+                //BirthDate = customer.BirthDate,
                 PhoneNumber = customer.PhoneNumber,
                 Governorate = customer.Address.Governorate.governorate_name_ar,
                 City = customer.Address.City.city_name_ar,
                 StreetName = customer.Address.StreetName
             };
+
+
+            return customerAccountDTO;
+
+        }
+
+
+        public async Task<UpdateUserDTO> UpdateCustomerAccountAsync(string customerId, UpdateCustomerAccountDTO customerAccount)
+        {
+            var customer = await _context.Customers.Include(c => c.Address).ThenInclude(A => A.Governorate).Include(c => c.Address).ThenInclude(A => A.City).FirstOrDefaultAsync(c => c.Id == customerId);
+
+            if (customer == null)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "Not Found" };
+            }
+
+
+            var user = await _userManager.FindByNameAsync(customerAccount.UserName);
+            if (user != null && user.Id != customerId)
+            {
+                return new UpdateUserDTO { IsUpdated = false, Message = "UserName is already Taken" };
+            }
+
+
+            customer.FirstName = customerAccount.FirstName;
+            customer.LastName = customerAccount.LastName;
+            customer.UserName = customerAccount.UserName;
+            if(customerAccount.ProfilePic != null)
+            {
+                var profilePicturePath = await _fileService.SaveFileAsync(customerAccount.ProfilePic, "ProfilePictures");
+
+                customer.ProfilePicture = profilePicturePath;
+            }
+            
+            customer.Address = await _addressRepository.CreateAsync(customerAccount.Governorate, customerAccount.City, customerAccount.StreetName);
+
+
+            var result = await _userManager.UpdateAsync(customer);
+
+            if (!result.Succeeded)
+            {
+                return new UpdateUserDTO
+                {
+                    IsUpdated = false,
+                    Message = "Failed to update"
+                };
+            }
+
+            return new UpdateUserDTO { IsUpdated = true, Message = "The Account Updated Successfully" };
 
         }
 

@@ -4,8 +4,6 @@ namespace Hawalayk_APP.DataTransferObject
 {
     public class CustomerAccountDTO
     {
-
-
         [Required, StringLength(50)]
         public string FirstName { get; set; }
 
@@ -18,20 +16,11 @@ namespace Hawalayk_APP.DataTransferObject
         //[Required, StringLength(11)]
         //public string PhoneNumber { get; set; }
 
-        // [Required, StringLength(50)]
-        // public string Password { get; set; }
-
-
         [Required]
         public string ProfilePic { get; set; }
         [Required, RegularExpression(@"^\+201([0-2]|5){1}[0-9]{8}$", ErrorMessage = "Invalid phone number format.")]
         public string PhoneNumber { get; set; }
-        //[Required]
-        //public Image NationalIdImage { get; set; }
         
-        [Required]
-
-        public DateTime BirthDate { get; set; }
         public string Governorate { get; set; }
         public string City { get; set; }
         public string StreetName { get; set; }

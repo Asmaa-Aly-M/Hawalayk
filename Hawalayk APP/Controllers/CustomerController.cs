@@ -1,4 +1,5 @@
-﻿using Hawalayk_APP.Services;
+﻿using Hawalayk_APP.DataTransferObject;
+using Hawalayk_APP.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
@@ -32,7 +33,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest("Not Allowed :");
             }
-            var result = await _customerRepository.GetCustomerAccountAsync(customer);
+            var result = await _customerRepository.GetCustomerAccountAsync(customer.Id);
             return Ok(result);
         }
 
@@ -63,6 +64,31 @@ namespace Hawalayk_APP.Controllers
             var craftNameEnumValue = await _craftRepository.GetEnumValueOfACraftByArabicDesCription(craftName);
             var craftsmen = await _customerRepository.searchAboutCraftsmen(customerId, craftNameEnumValue, gonernorate);
            return Ok(craftsmen);
+        }
+
+        [HttpPut("UpdateMyAccount")]
+        public async Task<IActionResult> UpdateCustomerAccountAsync([FromForm] UpdateCustomerAccountDTO customerAccount)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (userId == null)
+            {
+                return NotFound("This Token Is Not Found");
+            }
+
+            var result = await _customerRepository.UpdateCustomerAccountAsync(userId, customerAccount);
+
+            if (!result.IsUpdated)
+            {
+                return BadRequest(result.Message);
+            }
+
+            return Ok(result);
         }
 
     }

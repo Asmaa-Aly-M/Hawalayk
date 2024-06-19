@@ -422,6 +422,7 @@ namespace Hawalayk_APP.Services
             List<AvailableServiceRequestDTO> availableServiceRequests = filteredRequests.Select(x =>
                new AvailableServiceRequestDTO
                {
+                   ServiceRequestId = x.Id,
                    CustomerID = x.CustomerId,
                    CustomerFirstName = x.Customer.FirstName,
                    CustomerLastName = x.Customer.LastName,

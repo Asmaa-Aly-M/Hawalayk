@@ -283,7 +283,8 @@ namespace Hawalayk_APP
             builder.Services.AddScoped<IFileService, FileService>();
             builder.Services.AddScoped<BlockingFilter>();
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+                .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
+            
 
             builder.Services.AddControllers(options =>
             {

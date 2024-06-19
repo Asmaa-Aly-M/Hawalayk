@@ -123,7 +123,6 @@ namespace Hawalayk_APP.Services
                 LastName = craftsman.LastName,
                 UserName = craftsman.UserName,
                 ProfilePic = craftsman.ProfilePicture,
-                BirthDate = craftsman.BirthDate,
                 PhoneNumber = craftsman.PhoneNumber,
                 CraftName = craftName,
                 Rating = craftsman.Rating,
@@ -156,7 +155,6 @@ namespace Hawalayk_APP.Services
             craftsman.LastName = craftsmanAccount.LastName;
             craftsman.UserName = craftsmanAccount.UserName;
             craftsman.Craft = craft;
-            craftsman.BirthDate = craftsmanAccount.BirthDate;
             craftsman.Address = await _addressRepository.CreateAsync(craftsmanAccount.Governorate, craftsmanAccount.City, craftsmanAccount.StreetName);
 
 
