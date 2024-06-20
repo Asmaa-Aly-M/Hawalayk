@@ -108,6 +108,8 @@ namespace Hawalayk_APP.Controllers
                 if (application.Id != applicationId)
                 {
                     application.ResponseStatus = ResponseStatus.Rejected;
+                    /*var craftmanId = (await _jobApplicationRepository.GetById(applicationId)).Craftsman.Id;
+                    _notificationHub.Clients.User(craftmanId).SendAsync("RejectApplyRequest");*/
                 }
             }
             await _context.SaveChangesAsync();

@@ -10,6 +10,6 @@
         public string Content { get; set; }
         public int InitialPrice { get; set; }
         public string CraftsmanImg { get; set; }
-        public string Raing { get; set; }
+        public double Rating { get; set; }
     }
 }

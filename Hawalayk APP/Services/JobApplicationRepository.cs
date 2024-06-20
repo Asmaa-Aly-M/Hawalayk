@@ -29,6 +29,7 @@ namespace Hawalayk_APP.Services
                 CraftsmanImg = jobApplication.Craftsman.ProfilePicture,
                 CraftsmanLastName = jobApplication.Craftsman.LastName,
                 CraftsmanUserName = jobApplication.Craftsman.UserName,
+                Rating=jobApplication.Craftsman.Rating,
             };
         }
         public async Task<JobApplication> GetById(int id)
@@ -55,7 +56,8 @@ namespace Hawalayk_APP.Services
                 InitialPrice = newJob.InitialPrice,
                 CraftsmanId = craftsman.Id,
                 ResponseStatus = ResponseStatus.Pending,
-                ServiceRequestId = serviceID
+                ServiceRequestId = serviceID,
+                
 
             };
 
