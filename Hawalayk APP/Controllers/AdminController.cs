@@ -184,7 +184,15 @@ namespace Hawalayk_APP.Controllers
         public IActionResult PrecentageOfUsersMakeingRequstToday()
         {
 
-            return Ok(_serviceRequestRepository.GetPercentageOfUsersMakingRequestsToday());
+            try
+            {
+                return Ok(_serviceRequestRepository.GetPercentageOfUsersMakingRequestsToday());
+            }
+            catch (Exception ex)
+            {
+                // Log the exception (not shown here)
+                return StatusCode(StatusCodes.Status500InternalServerError, "Internal server error");
+            }
 
         }
     }
