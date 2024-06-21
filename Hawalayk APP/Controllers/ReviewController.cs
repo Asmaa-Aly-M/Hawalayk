@@ -17,7 +17,7 @@ namespace Hawalayk_APP.Controllers
         }
         //[Route("view")]
         [ServiceFilter(typeof(BlockingFilter))]
-        [BlockCheck("craftsman")]
+        [BlockCheck("craftsmanId")]
         [HttpPost("WriteReview/{craftsmanId}")]
         public async Task<IActionResult> WriteReview(string craftsmanId, ReviewDTO newreview)
         {

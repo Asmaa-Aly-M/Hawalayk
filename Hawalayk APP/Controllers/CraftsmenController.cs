@@ -43,7 +43,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest("Not Allowed :");
             }
-            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(userId, craftsman);
+            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(userId, craftsman.Id);
             return Ok(result);
         }
 
@@ -61,7 +61,7 @@ namespace Hawalayk_APP.Controllers
             }
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
  
-            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(userId, craftsman);
+            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(userId, craftsmanId);
             return Ok(result);
         }
 

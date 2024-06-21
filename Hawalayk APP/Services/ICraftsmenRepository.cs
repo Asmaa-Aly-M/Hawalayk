@@ -13,7 +13,7 @@ namespace Hawalayk_APP.Services
         Task<List<Craftsman>> GetAll();
         Task<Craftsman> GetById(string id);
         Task<Craftsman> GetByID(string id);//////???
-        Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(string userId, Craftsman craftsman);
+        Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(string userId, string craftsmanId);
         Task<List<PendingCraftsmanDTO>> GetPendingCraftsmen();
         Task<UpdateUserDTO> UpdateCraftsmanAccountAsync(string craftsmanId, CraftsmanUpdatedAccountDTO craftsmanAccount);
         Task<UpdateUserDTO> UpdateCraftsmanProfilePicAsync(string craftsmanId, IFormFile profilePic);

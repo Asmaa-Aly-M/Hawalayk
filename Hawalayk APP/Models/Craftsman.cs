@@ -23,8 +23,15 @@ namespace Hawalayk_APP.Models
 
         public double GetRating()
         {
-            var overallRating = Reviews.Average(r => r.Rating);
-            return overallRating;
+            if(Reviews == null)
+            {
+                return 0;
+            }
+            else
+            {
+                var overallRating = Reviews.Average(r => (double)(r.Rating));
+                return overallRating;
+            }
         }
     }
 }

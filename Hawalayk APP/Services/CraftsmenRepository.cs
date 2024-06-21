@@ -103,9 +103,9 @@ namespace Hawalayk_APP.Services
         }
 
 
-        public async Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(string userId, Craftsman craftsman)
+        public async Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(string userId, string craftsmanId)
         {
-
+            var craftsman = await Context.Craftsmen.Include(c => c.Reviews).FirstOrDefaultAsync(c => c.Id == craftsmanId);
             var enumValue = (CraftName)craftsman.Craft.Name;
 
             var descriptionAttributes = typeof(CraftName)
