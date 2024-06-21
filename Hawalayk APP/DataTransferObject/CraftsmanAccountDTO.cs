@@ -13,5 +13,6 @@
         public string CraftName { get; set; }
         public string ProfilePic { get; set; }
         public double Rating { get; set; }
+        public bool isBlocked { get; set; } = false;
     }
 }

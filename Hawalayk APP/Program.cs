@@ -286,11 +286,11 @@ namespace Hawalayk_APP
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
 
 
-            builder.Services.AddControllers(options =>
-            {
-                // Add the BlockingFilter globally using the service container
-                options.Filters.AddService<BlockingFilter>();
-            });
+            //builder.Services.AddControllers(options =>
+            //{
+            //    // Add the BlockingFilter globally using the service container
+            //    options.Filters.AddService<BlockingFilter>();
+            //});
 
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));//serverserver

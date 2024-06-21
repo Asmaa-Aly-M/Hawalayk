@@ -43,13 +43,13 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest("Not Allowed :");
             }
-            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(craftsman);
+            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(userId, craftsman);
             return Ok(result);
         }
 
 
-        [ServiceFilter(typeof(BlockingFilter))]
-        [BlockCheck("craftsmanId")] // Specify the parameter name used in the action
+        //[ServiceFilter(typeof(BlockingFilter))]
+        //[BlockCheck("craftsmanId")] // Specify the parameter name used in the action
         [HttpGet("CraftsmanAccount/{craftsmanId}")]
         public async Task<IActionResult> GetCraftsmanAccountById(string craftsmanId)
         {
@@ -59,7 +59,9 @@ namespace Hawalayk_APP.Controllers
             {
                 return BadRequest("Not Allowed :");
             }
-            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(craftsman);
+            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+ 
+            var result = await _crafsmenRepository.GetCraftsmanAccountAsync(userId, craftsman);
             return Ok(result);
         }
 

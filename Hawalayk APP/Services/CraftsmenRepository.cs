@@ -103,7 +103,7 @@ namespace Hawalayk_APP.Services
         }
 
 
-        public async Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(Craftsman craftsman)
+        public async Task<CraftsmanAccountDTO> GetCraftsmanAccountAsync(string userId, Craftsman craftsman)
         {
 
             var enumValue = (CraftName)craftsman.Craft.Name;
@@ -115,7 +115,8 @@ namespace Hawalayk_APP.Services
 
             var craftName = descriptionAttributes?.Length > 0 ? descriptionAttributes[0].Description : "Description not found.";
 
-            //
+            bool isCraftsmanBlocked = Context.Blocks.Any(b => (b.BlockingUserId == userId && b.BlockedUserId == craftsman.Id) || (b.BlockedUserId == userId && b.BlockingUserId == craftsman.Id));
+       
             return new CraftsmanAccountDTO
             {
                 CraftsmanId = craftsman.Id,
@@ -125,10 +126,11 @@ namespace Hawalayk_APP.Services
                 ProfilePic = craftsman.ProfilePicture,
                 PhoneNumber = craftsman.PhoneNumber,
                 CraftName = craftName,
-                Rating = craftsman.Rating,
+                Rating = craftsman.GetRating(),
                 City = craftsman.Address.City.city_name_ar,
                 Governorate = craftsman.Address.Governorate.governorate_name_ar,
-                street = craftsman.Address.StreetName
+                street = craftsman.Address.StreetName,
+                isBlocked = isCraftsmanBlocked
             };
 
         }
