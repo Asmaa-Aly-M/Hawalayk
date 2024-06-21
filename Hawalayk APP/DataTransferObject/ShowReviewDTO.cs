@@ -2,6 +2,8 @@
 {
     public class ShowReviewDTO
     {
+        // isLiked = false ;
+        //isUnlided =
         public int Id { get; set; }
         public int Rating { get; set; }
         public string Content { get; set; }

@@ -1,12 +1,10 @@
 ﻿using Hawalayk_APP.Context;
 using Hawalayk_APP.DataTransferObject;
 using Hawalayk_APP.Enums;
-using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
 using Hawalayk_APP.System_Hub;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using System;
 using System.Security.Claims;
 
 namespace Hawalayk_APP.Controllers
@@ -36,7 +34,7 @@ namespace Hawalayk_APP.Controllers
 
 
         [HttpPost("CreateServiceRequest/{craftName}")]//
-        public async Task<IActionResult> CreateServiceRequest(string craftName,[FromForm] ServiceRequestDTO ServiceRequest)
+        public async Task<IActionResult> CreateServiceRequest(string craftName, [FromForm] ServiceRequestDTO ServiceRequest)
         {
 
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -46,7 +44,7 @@ namespace Hawalayk_APP.Controllers
             }
 
             var serviceRequestId = await _serviceRequestRepository.CreateAsync(craftName, userId, ServiceRequest);
-            if (serviceRequestId== 0) 
+            if (serviceRequestId == 0)
             {
                 return BadRequest("No craftsmen in this craft");
             }
@@ -75,7 +73,7 @@ namespace Hawalayk_APP.Controllers
         //http://localhost:5153/api/ServiceRequest/applyToRequest
 
         [HttpPost("ApplyToServiceRequest/{serviceId}")]
-        public async Task<IActionResult> ApplyToServiceRequest(int serviceID,JobApplicationDTO replay)
+        public async Task<IActionResult> ApplyToServiceRequest(int serviceId, JobApplicationDTO replay)
         {
             //   var customerID = (await _serviceRequestRepository.GetById(requestId)).Customer.Id;
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -83,7 +81,7 @@ namespace Hawalayk_APP.Controllers
             {
                 return NotFound("invalid token");
             }
-            var jobApplicationId = await _jobApplicationRepository.Create(userId, serviceID, replay);
+            var jobApplicationId = await _jobApplicationRepository.Create(userId, serviceId, replay);
             if (jobApplicationId != -1)
             {
                 var jobApplicationSend = await _jobApplicationRepository.GetJpbApplicationSend(jobApplicationId);
@@ -97,7 +95,7 @@ namespace Hawalayk_APP.Controllers
         [HttpPost("AcceptJobApplication/{applicationId}")]
         public async Task<IActionResult> AcceptJobApplication(int applicationId)
         {
-            var aJobapplication= await _jobApplicationRepository.GetById(applicationId);
+            var aJobapplication = await _jobApplicationRepository.GetById(applicationId);
             aJobapplication.ResponseStatus = ResponseStatus.Accepted;
             //get serviceRequest id
             var aServiceRequestId = aJobapplication.ServiceRequestId;
@@ -148,7 +146,7 @@ namespace Hawalayk_APP.Controllers
         [HttpGet("GetServiceRequestsWithNoAcceptedJobApplicationsForCustomer")]
         public async Task<IActionResult> GetServiceRequestsWithNoAcceptedJobApplicationsForCustomer()
         {
-         
+
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             var requests = await _serviceRequestRepository.GetServiceRequestsNeedToReplayByCraftsmenForCustomer(userId);
 
@@ -178,7 +176,7 @@ namespace Hawalayk_APP.Controllers
 
         }
 
-       
+
 
     }
 }

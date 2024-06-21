@@ -284,7 +284,7 @@ namespace Hawalayk_APP
             builder.Services.AddScoped<BlockingFilter>();
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>().AddDefaultTokenProviders();
-            
+
 
             builder.Services.AddControllers(options =>
             {
@@ -360,18 +360,18 @@ namespace Hawalayk_APP
 
 
             #region seeding Address
-            // Register DataSeeder with the DI container
-            builder.Services.AddScoped<DataSeeder>();
+            //// Register DataSeeder with the DI container
+            //builder.Services.AddScoped<DataSeeder>();
 
-            // Build the service provider
-            using var serviceProvider = builder.Services.BuildServiceProvider();
+            //// Build the service provider
+            //using var serviceProvider = builder.Services.BuildServiceProvider();
 
-            // Resolve DataSeeder from the service provider
-            var seeder = serviceProvider.GetRequiredService<DataSeeder>();
+            //// Resolve DataSeeder from the service provider
+            //var seeder = serviceProvider.GetRequiredService<DataSeeder>();
 
-            // Call the seeding methods
-            seeder.SeedGovernoratesData();
-            seeder.SeedCitiesData();
+            //// Call the seeding methods
+            //seeder.SeedGovernoratesData();
+            //seeder.SeedCitiesData();
             //start time min : det  : banned : > var : det - s
             #endregion
 

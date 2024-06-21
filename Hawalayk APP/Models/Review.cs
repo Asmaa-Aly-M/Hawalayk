@@ -5,9 +5,7 @@ namespace Hawalayk_APP.Models
 {
     public class Review
     {
-       
         public int Id { get; set; }
-        
         public int Rating { get; set; }
         [Required]
         public string Content { get; set; }

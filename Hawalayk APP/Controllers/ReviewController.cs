@@ -1,10 +1,7 @@
 ﻿using Hawalayk_APP.Attributes;
 using Hawalayk_APP.DataTransferObject;
-using Hawalayk_APP.Models;
 using Hawalayk_APP.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Hawalayk_APP.Controllers
@@ -16,32 +13,32 @@ namespace Hawalayk_APP.Controllers
         private readonly IReviewRepository _reviewRepository;
         public ReviewController(IReviewRepository reviewRepository)
         {
-           _reviewRepository= reviewRepository;
+            _reviewRepository = reviewRepository;
         }
         //[Route("view")]
         [ServiceFilter(typeof(BlockingFilter))]
         [BlockCheck("craftsman")]
         [HttpPost("WriteReview/{craftsmanId}")]
-        public async Task<IActionResult> WriteReview(string craftsmanId,ReviewDTO newreview) 
+        public async Task<IActionResult> WriteReview(string craftsmanId, ReviewDTO newreview)
         {
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             if (userId == null)
             {
                 return BadRequest("invalid Token");
             }
-            await _reviewRepository.Create(craftsmanId, userId ,newreview);//مش المفروض يباصيلنا حاجة من نوع reviewDTO
+            await _reviewRepository.Create(craftsmanId, userId, newreview);//مش المفروض يباصيلنا حاجة من نوع reviewDTO
             return Ok(newreview);
         }
-        
+
 
         //[Route("like")]
         [HttpPost("ClickLike/{reviewId}")]
         public async Task<IActionResult> Like(int reviewId)
         {
-           var newPositiveReacts = await _reviewRepository.like(reviewId);
+            var newPositiveReacts = await _reviewRepository.like(reviewId);
             return Ok(newPositiveReacts);
         }
-       
+
         //[Route("removeLike")]
         [HttpPost("RemoveLike/{reviewId}")]
         public async Task<IActionResult> RemoveLike(int reviewId)
@@ -50,7 +47,7 @@ namespace Hawalayk_APP.Controllers
             return Ok(newPositiveReacts);
         }
 
-       // [Route("disLike")]
+        // [Route("disLike")]
         [HttpPost("ClickDislike/{reviewId}")]
         public async Task<IActionResult> DisLike(int reviewId)
         {
@@ -58,10 +55,10 @@ namespace Hawalayk_APP.Controllers
             return Ok(newNegativeReacts);
         }
 
-       
+
         //[Route("removeDisLike")]
         [HttpPost("RemoveDisLike/{reviewId}")]
-        public async Task<IActionResult> RemoveDisLike(int reviewId) 
+        public async Task<IActionResult> RemoveDisLike(int reviewId)
         {
             var newNegativeReacts = await _reviewRepository.removeLike(reviewId);
             return Ok(newNegativeReacts);
@@ -114,23 +111,24 @@ namespace Hawalayk_APP.Controllers
          */
 
         [HttpDelete("DeleteReview/{reviewId}")]//test
-       public async Task<IActionResult> DeleteReview(int reviewID)
-       {
-           var review = await _reviewRepository.Delete( reviewID);
+        public async Task<IActionResult> DeleteReview(int reviewID)
+        {
+            var review = await _reviewRepository.Delete(reviewID);
             if (review == 0)
             {
                 // Return a 404 Not Found if no review was deleted
                 return NotFound("Review not found.");
             }
             return Ok("review is deleted");
-       }
+        }
 
         [ServiceFilter(typeof(BlockingFilter))]
         [BlockCheck("craftsmanId")]
         [HttpGet("GetAllReviewsForCraftsman/{craftsmanId}")]
-        public async Task<IActionResult> GetAllReview(string craftsmanId) 
+        public async Task<IActionResult> GetAllReview(string craftsmanId)
         {
             var reviews = await _reviewRepository.getAllReview(craftsmanId);
+
             return Ok(reviews);
         }
 
