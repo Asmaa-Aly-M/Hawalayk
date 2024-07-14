@@ -1,6 +1,7 @@
 # Hawalayk
 
-[Hawalayk logo.jpg](https://github.com/Asmaa-Aly-M/Hawalayk/blob/master/Hawalayk%20logo.jpg?raw=true)
+
+![Hawalayk logo](https://github.com/user-attachments/assets/46b46c0d-1539-4f03-8966-33c3b8fd2dfe)
 
 Hawalayk is a platform that connects customers with skilled craftsmen (e.g., plumbers, electricians, carpenters) through an online marketplace. The app allows customers to quickly contact craftsmen, submit service requests, browse craft galleries, and interact with artisans. For craftsmen, the app provides an electronic exhibition to display their crafts and attract job opportunities.
 
